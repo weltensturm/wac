@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\xm8\aimpoint"
+	"$bumpmap" "models\weapons\v_models\xm8\aimpointnormal"
+	"$normalmapalphaenvmapmask" 1
+	"$envmaptint" "[ 0.15 0.15 0.15 ]"
+	"$envmap" "env_cubemap"
+}

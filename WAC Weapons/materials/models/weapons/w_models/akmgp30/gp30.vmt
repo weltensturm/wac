@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\akmgp30\gp30"
+	"$bumpmap" "models\weapons\v_models\akmgp30\gp30_normal"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+
+	

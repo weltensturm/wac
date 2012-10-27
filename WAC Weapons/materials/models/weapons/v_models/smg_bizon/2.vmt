@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/weapons/v_models/smg_bizon/2m"	
+	"$bumpmap" "models\weapons\v_models\smg_bizon\2 norm"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1

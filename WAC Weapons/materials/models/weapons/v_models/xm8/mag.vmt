@@ -1,0 +1,9 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\xm8\mag"
+	"$phong" "1"
+	"$phongboost" "1"
+	"$phongfresnelranges" "[1 3 6]"
+	"$phongexponenttexture" "models\weapons\v_models\xm8\mag"
+	"$phongalbedotint"	"1"
+}

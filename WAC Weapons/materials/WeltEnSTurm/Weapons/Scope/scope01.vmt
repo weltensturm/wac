@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$baseTexture"		"WeltEnSTurm/Weapons/Scope/scope01"
+	"$model"			"1"
+	"$translucent" 		"1"
+}

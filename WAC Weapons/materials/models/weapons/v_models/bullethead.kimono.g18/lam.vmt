@@ -1,0 +1,5 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\bullethead.kimono.g18\lam"
+    	"$bumpmap" "models\weapons\v_models\bullethead.kimono.g18\lam_norm"
+}

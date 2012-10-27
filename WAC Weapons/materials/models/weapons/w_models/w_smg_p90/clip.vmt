@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\smg_p90\clip"
+	"$translucent" 1
+	"$bumpmap" "models/weapons\v_models/smg_p90\clip_normal"
+	
+}		
+

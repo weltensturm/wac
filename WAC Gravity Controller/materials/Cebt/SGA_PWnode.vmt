@@ -1,0 +1,14 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "cebt/SGA_PWnode"
+	"$envmapmask" "cebt/SGA_PWnode_spec"
+	"$bumpmap" "cebt/SGA_PWnode_normal"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+	"$envmapcontrast" 1
+	"$envmapsaturation" 0.2
+	"$envmaptint" "[ .2 .2 .2 ]"
+	"$surfaceprop" "Metal"
+	"$model" 1
+	"$translucent" 0
+}

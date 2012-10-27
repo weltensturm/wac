@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\xm8\scope"
+	"$bumpmap" "models\weapons\v_models\xm8\scope_norm"
+	"$envmap" "env_cubemap"
+	"%compilewater" 1
+	"$surfaceprop" "water"
+	"$additive" "1"
+	"$envmaptint" "[ 0.3 0.3 0.3 ]"
+	"$normalmapalphaenvmapmask" 1
+}

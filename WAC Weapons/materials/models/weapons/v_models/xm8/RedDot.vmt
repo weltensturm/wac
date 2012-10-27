@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\xm8\RedDot"
+	"$selfillum" "1"
+        "$additive" "1"
+	"$phong" "1"
+	"$phongboost" "1"
+	"$phongfresnelranges" "[1 3 6]"
+	"$phongexponenttexture" "models\weapons\v_models\xm8\reddot"
+	"$phongalbedotint"	"1"
+}

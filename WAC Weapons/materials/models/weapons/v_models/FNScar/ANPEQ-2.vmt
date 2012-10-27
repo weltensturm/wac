@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\weapons\v_models\FNScar\ANPEQ-2"
+	"$bumpmap" "models\weapons\v_models\FNScar\ANPEQ-2_norm"
+}

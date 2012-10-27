@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\darkeh.twinke.g36.550\sproily\handle"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\darkeh.twinke.g36.550\sproily\handle_ref"
+}

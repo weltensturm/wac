@@ -1,0 +1,7 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\twinke_geno_mp5sd\silencer"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\twinke_geno_mp5sd\silencer_ref"
+	"$envmaptint" "[.5 .5 .5]"
+}

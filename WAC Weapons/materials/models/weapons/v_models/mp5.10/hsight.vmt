@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\weapons\v_models\mp5.10\hsight"
+	"$bumpmap" "models\weapons\v_models\mp5.10\hsight_norm"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+}

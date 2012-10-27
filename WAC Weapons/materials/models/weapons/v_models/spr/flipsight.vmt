@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\weapons\v_models\spr\flipsight"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\spr\flipsight_ref"
+	"$envmapcontrast" ".7"
+	"$envmapsaturation" "[.8 .8 .8]"
+}

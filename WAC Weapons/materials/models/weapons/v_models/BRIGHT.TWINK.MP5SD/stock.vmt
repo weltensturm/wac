@@ -1,0 +1,11 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\V_models\BRIGHT.TWINK.MP5SD\stock"
+	"$bumpmap" "models\weapons\v_models\BRIGHT.TWINK.MP5SD\stock_normal"
+	"$phong" 		"1"
+	"$phongexponent" 	"30"
+	"$phongboost" "0.2"
+	"$phongfresnelranges" "[1 1 0.5]"
+	"$phongalbedotint" "1"
+}
+	

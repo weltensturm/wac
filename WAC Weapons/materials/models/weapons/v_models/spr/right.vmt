@@ -1,0 +1,8 @@
+"VertexLitGeneric"
+{
+	"$basetexture"	"models\weapons\v_models\spr\right"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\spr\right_ref"
+	"$envmapcontrast" ".7"
+	"$envmapsaturation" "[.8 .8 .8]"
+}

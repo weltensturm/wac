@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/weapons/v_models/Kriss/glass"
+	"$additive" "1"
+}

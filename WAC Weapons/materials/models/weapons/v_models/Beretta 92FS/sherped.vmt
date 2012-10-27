@@ -1,0 +1,7 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\Beretta 92FS\sherped"
+	"$envmap" "env_cubemap"
+	"$bumpmap" "models\weapons\v_models\Beretta 92FS\sherped_normal"
+	"$normalmapalphaenvmapmask" "1"
+}

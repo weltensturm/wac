@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/weapons/v_models/hardballer.elite/mesh1"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models/weapons/v_models/hardballer.elite/mesh1_ref"
+}

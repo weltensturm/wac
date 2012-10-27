@@ -1,0 +1,9 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\ak47.snip\Lens"
+	"$bumpmap" "models\weapons\v_models\ak47.snip\Lens_Norm"
+	"$envmap" "env_cubemap"
+	"$envmaptint" "[ 183 97 14 ]"
+	"$normalmapalphaenvmapmask" "1"
+	"$nocull" "1"
+}

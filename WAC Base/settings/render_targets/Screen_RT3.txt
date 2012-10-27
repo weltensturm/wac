@@ -1,0 +1,6 @@
+"Screen_RT3"
+{
+	"Name"		"Screen_RT3"
+	"Width"		"512"
+	"Height"	"512"
+}

@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "models\weapons\v_models\FNScar\Mag"
+	"$bumpmap" "models\weapons\v_models\FNScar\Mag_norm"
+}

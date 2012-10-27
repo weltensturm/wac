@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\fn_fal_pete\TriluxScope"
+	"$envmapmask" "models\weapons\v_models\fn_fal_pete\TriluxScope_ref"
+	"$envmap" "env_cubemap"
+}

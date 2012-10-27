@@ -1,0 +1,7 @@
+VertexLitGeneric
+{
+	"$basetexture" "models\weapons\v_models\xm8\supressor"
+	"$bumpmap" "models\weapons\v_models\xm8\supressor_ref"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 1
+}

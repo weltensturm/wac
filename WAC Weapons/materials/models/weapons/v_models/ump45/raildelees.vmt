@@ -1,0 +1,15 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\ump45/raildelees"
+	"$bumpmap" "models\weapons\v_models\ump45\raildelees_normal"
+
+
+"$normalmapalphaenvmapmask" "1"
+"$phong" 		"1"
+"$phongexponent" 	"30"
+"$phongboost" "0.8"
+"$phongfresnelranges" "[2 5 9]"
+"$phongalbedotint" "1"
+}
+
+

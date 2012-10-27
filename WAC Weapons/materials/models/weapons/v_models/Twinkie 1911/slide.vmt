@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\Twinkie 1911\slide"
+	"$bumpmap" "models\weapons\v_models\Twinkie 1911\slide norm"
+    	"$envmap" "env_cubemap"
+    	"$normalmapalphaenvmapmask" 1
+
+	

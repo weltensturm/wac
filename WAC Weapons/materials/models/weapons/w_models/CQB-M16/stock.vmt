@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\CQB-M16\stock"
+        "$bumpmap" "models\weapons\v_models\CQB-M16\stock_normal"
+        "$envmap" "env_cubemap"
+        "$normalmapalphaenvmapmask" 1
+}
+

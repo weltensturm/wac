@@ -1,0 +1,9 @@
+"AddonInfo"
+{
+	"name"        "WAC"
+	"version"     "0"
+	"author_name" "weltensturm"
+	"author_url"  ""
+	"info"        "WeltEnSTurm's Addon Compilation"
+	"override"    "0"
+}

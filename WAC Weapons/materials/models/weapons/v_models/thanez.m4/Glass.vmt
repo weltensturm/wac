@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+	"$baseTexture" 	"models\weapons\v_models\thanez.m4\Glass"
+	"$additive" "1"
+	"$model" "1"	
+}

@@ -1,0 +1,12 @@
+"VertexlitGeneric"
+{
+	"$basetexture"	"weltensturm/BF2/SRAW/sraw_base"
+	"$model" "1"	
+	"$phong" "1"
+	"$phongexponent" 66
+	"$phongexponenttexture" "weltensturm/BF2/SRAW/sraw_phongexp"
+	"$phongboost" "6"
+	"$phongfresnelranges" "[1 1 1]"
+}
+
+

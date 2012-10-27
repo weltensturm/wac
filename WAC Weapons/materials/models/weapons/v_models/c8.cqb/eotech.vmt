@@ -1,0 +1,7 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\c8.cqb\EOTECH"
+        "$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\c8.cqb\EOTECH_ref"
+}
+	
