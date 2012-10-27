@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\Kriss\Main3"
+	"$bumpmap" "models\weapons\v_models\Kriss\Main3_normal"
+	 "$phong" "1"
+	"$phongboost" "1"
+	"$phongfresnelranges" "[1 1 1]"
+	"$phongexponent" "5"
+	"$phongalbedotint" "1"
+	"$halflambert" "1"
+
+
+}

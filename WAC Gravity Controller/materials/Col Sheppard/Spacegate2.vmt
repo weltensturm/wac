@@ -1,0 +1,9 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "Col Sheppard\Spacegate2"
+	"$surfaceprop" "metal" 
+	"$model" 1
+	//"$nocull" 1
+	//"$translucent" 1
+	//"$additive" 1
+}

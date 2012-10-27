@@ -1,0 +1,6 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\xm8\front"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\xm8\front_ref"
+}

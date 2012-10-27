@@ -1,0 +1,8 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\darkeh.twinke.g36.550\lens"
+        "$envmap" "env_cubemap"
+        "$envmaptint" "[.4 .4 .4]"
+        "$envmapcontrast" 0.8
+}
+

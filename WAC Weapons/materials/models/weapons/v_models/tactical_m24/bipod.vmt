@@ -1,0 +1,5 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\tactical_m24\Bipod"
+	"$bumpmap" "models\weapons\v_models\tactical_m24\Bipod_Norm"
+}

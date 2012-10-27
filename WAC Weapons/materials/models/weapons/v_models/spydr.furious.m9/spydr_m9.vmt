@@ -1,0 +1,7 @@
+"VertexLitGeneric"
+{
+
+	"$baseTexture" "models\weapons\v_models\spydr.furious.m9\two_tone_m9"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\spydr.furious.m9\two_tone_m9_ref"
+}

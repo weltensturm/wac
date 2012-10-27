@@ -1,0 +1,10 @@
+"Refract"
+{
+	"$model"			"1"
+	"$translucent" 		"1"
+	"$dudvmap"		"WeltEnSTurm/scoperefract"
+	"$normalmap"		"WeltEnSTurm/scoperefract"
+	"$bluramount"		"0"
+	"$refractamount"	"0.05"
+	"$nocull"			"1"
+}

@@ -1,0 +1,6 @@
+VertexLitGeneric
+{
+	"$baseTexture" "models\weapons\v_models\akmgp30\lense"
+	"$transparent" 1
+	"$additive" 1
+}

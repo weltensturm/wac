@@ -1,0 +1,7 @@
+VertexLitGeneric
+{
+	"$basetexture"	"models\weapons\v_models\shot_m3super90\stockmap"
+	"$envmap" "env_cubemap"
+	"$envmapmask" "models\weapons\v_models\shot_m3super90\stockmap_ref"
+
+}

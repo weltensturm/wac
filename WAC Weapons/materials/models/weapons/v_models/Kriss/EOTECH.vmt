@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\Kriss\EOTECH"
+	"$bumpmap" "models\weapons\v_models\Kriss\EOTECH_norm"
+	 "$phong" "1"
+	"$phongboost" "1"
+	"$phongfresnelranges" "[1 1 1]"
+	"$phongexponent" "5"
+	"$phongalbedotint" "1"
+	"$halflambert" "1"
+}

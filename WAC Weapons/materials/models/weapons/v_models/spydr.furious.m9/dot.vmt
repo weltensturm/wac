@@ -1,0 +1,5 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models\weapons\v_models\spydr.furious.m9\dot"
+	"$additive" "1"
+}
