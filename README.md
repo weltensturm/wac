@@ -1,4 +1,5 @@
-## WAC
+WAC
+===
 
 WeltEnSTurm's Addons Compilation for Garry's Mod.
 Contains:
@@ -9,6 +10,7 @@ Contains:
 * Weapons
 * Several Scripts
 
-### Installation
+Installation
+------------
 
 Download the .zip file and put the folders inside into your garrysmod/garrysmod/addons folder.
