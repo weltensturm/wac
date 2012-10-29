@@ -5,8 +5,8 @@ SWEP.AdminSpawnable		= true
 SWEP.HoldType			= "smg"
 
 SWEP.PrintName			= "MP5"
-SWEP.Category				= WAC.Names.WeaponCategory.CSS
-SWEP.Author				= WAC.Names.Author
+SWEP.Category				= wac.menu.category .. " Counter-Strike: Source"
+SWEP.Author				= wac.author
 SWEP.Instructions			="Shoot stuff with  LMB. Reload with R.\nUse Ironsights/Scope with RMB.\nHold R to holster weapon and grab stuff with E."
 SWEP.Slot					= 2
 
@@ -81,7 +81,7 @@ SWEP.VMAngMax			= Vector(0, 0, 0)
 SWEP.VMPosAdd 			= Vector(0,0,0)
 SWEP.VMAngAdd 			= Angle(0,0,0)
 SWEP.VMAngAddO		 	= Angle(0,0,0)
-SWEP.MuzzleFlashAdd		= WAC.WeaponLib.NormalMuzzle
+SWEP.MuzzleFlashAdd		= wac.weapons.muzzle.normal
 SWEP.NextRecoil			= 0
 SWEP.NextHolster			= 0
 SWEP.NextShoot			= 0
@@ -235,9 +235,24 @@ function SWEP:Holstered(s)
 	return self.Owner:GetNWBool("NDS_Holstered") or self.Owner:GetMoveType() == MOVETYPE_LADDER
 end
 
+function SWEP:Sprinting()
+	if IsValid(self.Owner) then
+		local b=(self.Owner:KeyDown(IN_SPEED) and (self.Owner:GetVelocity():Length()+10)>100)
+		if
+			b and (p:GetActiveWeapon().NDS_Allocated or p:GetActiveWeapon().wac_swep_alt)
+			and p:GetActiveWeapon():GetClass() != "weapon_physgun"
+		then
+			p:ConCommand("-attack")
+			p:ConCommand("-attack2")
+			return true
+		end
+		return false
+	end
+end
+
 function SWEP:Zoomed()
 	local CrT=CurTime()
-	if self.CanZoom and self.Owner:KeyDown(IN_ATTACK2) and !WAC.Sprinting(self.Owner) and !self:Holstered() and !self.Reloading and !(self.FakeZoomStart<CrT and self.FakeZoomEnd>CrT) then return true end
+	if self.CanZoom and self.Owner:KeyDown(IN_ATTACK2) and !wac.sprinting(self.Owner) and !self:Holstered() and !self.Reloading and !(self.FakeZoomStart<CrT and self.FakeZoomEnd>CrT) then return true end
 	return false
 end
 

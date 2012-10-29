@@ -4,7 +4,7 @@ if SERVER then
 	AddCSLuaFile ("shared.lua")	
 end
 
-SWEP.Category				=WAC.Names.WeaponCategory.CSS
+SWEP.Category				=wac.menu.category .. " Counter-Strike: Source"
 
 SWEP.PrintName			= "M3"
 

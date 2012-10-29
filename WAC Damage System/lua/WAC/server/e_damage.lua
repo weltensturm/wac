@@ -15,7 +15,7 @@ function WAC.ResetHitEffect(p)
 	umsg.Float(0)
 	umsg.End()
 end
-WAC.Hook("PlayerSpawn", "wac_dmgsys_resetblur", WAC.ResetHitEffect)
+wac.hook("PlayerSpawn", "wac_dmgsys_resetblur", WAC.ResetHitEffect)
 
 
 function WAC.Validate(e)
@@ -141,7 +141,7 @@ function WAC.Damage.WreckIt(ent, wep, att)
 	end)
 end
 
-function WAC.SimpleSplode(pos, rad, dmg, prc, igtr, wep, att)
+function WAC.SimpleSplode(pos, radius, amount, weapon, attacker)
 	if !att then att=wep end
 	util.BlastDamage(wep, att, pos, rad*2, dmg)
 	local targets = ents.FindInSphere(pos, rad)
@@ -168,8 +168,9 @@ end
 
 function WAC.Hit() end
 
-WAC.Hook("EntityTakeDamage", "wac_dmgsys_takedmg", 
-	function(ent, wep, att, amt, dmg)
+wac.hook("EntityTakeDamage", "wac_dmgsys_takedmg", 
+	function(ent, dmg)
+		local amt = dmg:GetDamage()
 		if !dmg:IsExplosionDamage() then
 			amt = amt*WAC.Damage.CVars.DMGByNW:GetFloat()
 		end

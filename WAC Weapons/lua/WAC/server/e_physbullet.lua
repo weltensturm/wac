@@ -113,4 +113,4 @@ function WAC.ThinkBullets()
 	end
 	lastth=crt
 end
-WAC.Hook("Think", "wac_physbullets_think", WAC.ThinkBullets)
+wac.hook("Think", "wac_physbullets_think", WAC.ThinkBullets)

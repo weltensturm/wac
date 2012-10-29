@@ -6,7 +6,7 @@ function EFFECT:Init( data )
 	
 	self.vEntity = data:GetEntity()
  	self.vOffset = data:GetOrigin()
- 	self.vAng = data:GetAngle()
+ 	self.vAng = data:GetAngles()
 	self.vScale = data:GetScale()
  	self.vFw = self.vAng:Forward()
  	self.vUp = self.vAng:Up()

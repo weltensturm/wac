@@ -71,18 +71,17 @@ function ENT:Explode()
 			Entity=self.Entity,
 			Material=MAT_GLASS,
 		}
-	end	
-	self.Owner = self.Owner or self.Entity
-	WAC.SimpleSplode(pos, self.ConTable["radius"][2], self.ConTable["damage"][2], 8, false, self.Entity, self.Owner)
-	util.Decal("Scorch",self.tr.HitPos + self.tr.HitNormal, self.tr.HitPos - self.tr.HitNormal)
+	end
+	wac.damageSystem.explosion(pos, self.ConTable.radius, self.ConTable.damage, self.Entity, self.Owner)
+	util.Decal("Scorch", self.tr.HitPos+self.tr.HitNormal, self.tr.HitPos-self.tr.HitNormal)
 	local ed = EffectData()
 	ed:SetEntity(self.Entity)
 	ed:SetOrigin(tr.HitPos)
 	ed:SetStart(tr.HitPos)
-	ed:SetScale(self.ConTable["radius"][2]/100)
+	ed:SetScale(self.ConTable.radius/100)
 	ed:SetRadius(tr.MatType)
 	ed:SetAngle(tr.HitNormal:Angle())
-	util.Effect(self.ConTable["effect"][2], ed)
+	util.Effect(self.ConTable.effect, ed)
 	self.Entity:Remove()
 end
 
@@ -142,7 +141,7 @@ function ENT:PhysicsUpdate()
 		x = Vector(1-AimVec.y/6,AimVec.p,AimVec.y)*self.AngSpeed
 	end
 	self.phys:AddAngleVelocity((self.phys:GetAngleVelocity()*-1)+x+Vector(self:GetAngles().r*-1,0,0))
-	self.phys:AddVelocity(self.Entity:GetForward()*self.ConTable["bulletspeed"][2])
+	self.phys:AddVelocity(self.Entity:GetForward()*self.ConTable.bulletSpeed)
 end
 
 function ENT:Think()
@@ -154,7 +153,7 @@ function ENT:Think()
 		self:Explode()
 		return
 	end
-	self.Sound:ChangePitch(100+math.sin(CurTime()))
+	self.Sound:ChangePitch(100+math.sin(CurTime()), 0)
 	self:NextThink(CurTime())
 	return true
 end

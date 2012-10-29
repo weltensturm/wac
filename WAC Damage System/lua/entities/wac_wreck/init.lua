@@ -1,7 +1,8 @@
 
-AddCSLuaFile( "cl_init.lua" )
-AddCSLuaFile( "shared.lua" )
-include('shared.lua')
+include 'shared.lua'
+
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("shared.lua")
 
 ENT.Explodesounds = {
 	Tankexplode = {
@@ -28,7 +29,7 @@ function ENT:Initialize()
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)
-	self.Entity:SetColor(120,120,120,255)
+	self.Entity:SetColor(Color(120,120,120,255))
 	self.Entity:SetCollisionGroup(COLLISION_GROUP_DEBRIS)
 	self.phys = self.Entity:GetPhysicsObject()
 	if !self.phys or !self.phys:IsValid() then self:Remove() return end
@@ -61,11 +62,11 @@ end
 function ENT:ExplodeFinal()
 	if !self.FinalExploded then
 		self.FinalExploded = true
-		if WAC.Damage.CVars.DdMode:GetInt()==1 then
+		if wac.damageSystem.settings.destroyMode:GetInt()==1 then
 			self.Entity:EmitSound(self.Explodesounds.Wreckexplode[math.random(1,5)], self.soundbr)
 			self:DrawEffect()
 			self:Remove()
-		elseif WAC.DMode:GetInt()==2 then
+		elseif wac.damageSystem.settings.destroyMode:GetInt()==2 then
 			umsg.Start("wac_wreck_kill_2")
 			umsg.Entity(self.Entity)
 			umsg.End()
@@ -83,17 +84,17 @@ end
 function ENT:DrawEffect()
 	local pos = self:LocalToWorld(self:OBBCenter())
 	local angle = self:GetAngles()
-	WAC.SimpleSplode(pos, self.br, self.br, 8, false, self.Entity, self.Entity)
-	local effectdata1 = EffectData()
-	effectdata1:SetOrigin(pos)
-	effectdata1:SetStart(pos)
-	effectdata1:SetAngle(angle)
-	effectdata1:SetScale(self.br)
-	util.Effect("PropSplode", effectdata1)		
+	wac.damageSystem.explosion(pos, self.br, self.br, self.Entity, self.Entity)
+	local effect = EffectData()
+	effect:SetOrigin(pos)
+	effect:SetStart(pos)
+	effect:SetAngles(angle)
+	effect:SetScale(self.br)
+	util.Effect("PropSplode", effect)		
 end
 
 function ENT:Think()
-	if WAC.Damage.CVars.DdMode:GetInt()!=1 then
+	if wac.damageSystem.settings.destroyMode:GetInt()!=1 then
 		self.fuseleft=self.fuseleft+FrameTime()+0.1
 	else
 		if (self.fuseleft < CurTime()) then
@@ -105,7 +106,7 @@ function ENT:Think()
 end
 
 function ENT:OnTakeDamage(dmg)
-	if WAC.Damage.CVars.DdMode:GetInt()!=1 then return end
+	if wac.damageSystem.settings.destroyMode:GetInt()!=1 then return end
 	self.Entity:TakePhysicsDamage(dmg)	
 	local damage=dmg:GetDamage()
 	local attacker=dmg:GetAttacker()

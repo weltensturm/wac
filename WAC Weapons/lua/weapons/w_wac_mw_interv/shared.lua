@@ -7,7 +7,7 @@ end
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.Category				= WAC.Names.WeaponCategory.MW
+SWEP.Category				= wac.menu.category .. " Modern Warfare"
 
 SWEP.PrintName			= "Cheytac Intervention"
 

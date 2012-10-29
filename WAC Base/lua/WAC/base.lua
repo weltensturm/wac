@@ -88,7 +88,8 @@ wac = wac or {
 		wac.menuPanels[tab][category][name] = wac.menuPanels[tab][category][name] or {}
 		
 		local t = wac.menuPanels[tab][category][name]
-		t.func = func
+		t.funcs = t.funcs or {}
+		table.insert(t.funcs, func)
 		
 		if t.triggers then
 			for k, v in pairs(t.triggers) do

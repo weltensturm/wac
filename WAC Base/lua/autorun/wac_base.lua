@@ -10,7 +10,6 @@ if SERVER then
 	table.sort(folderList)
 	for _, f in pairs(folderList) do
 		AddCSLuaFile("wac/" .. f)
-		MsgN("adding cs lua " .. "wac/" .. f)
 	end
 
 else
@@ -21,9 +20,11 @@ else
 			for category, t2 in pairs(t1) do
 				for name, hook in pairs(t2) do
 					spawnmenu.AddToolMenuOption(tab, category, name, name, "", "", function(panel)
-						wac.menuPanels[tab][category][name].panel = panel
 						panel:Clear()
-						hook.func(panel, {})
+						hook.panel = panel
+						for _, func in pairs(hook.funcs) do
+							func(panel, {})
+						end
 					end, {})
 				end
 			end
@@ -45,7 +46,9 @@ else
 									if old != new then
 										panel.triggers[name] = new
 										panel.panel:Clear()
-										panel.func(panel.panel, panel.triggers)
+										for _, func in pairs(panel.funcs) do
+											func(panel.panel, panel.triggers)
+										end
 									end
 								end
 							end

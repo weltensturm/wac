@@ -163,7 +163,7 @@ function ChangeZoom(ply, bind)
 		if WAC.Sprinting(ply) then return true end
 	end
 end
-WAC.Hook("PlayerBindPress", "wac_selfs_modifyzoom_alt", ChangeZoom)
+wac.hook("PlayerBindPress", "wac_selfs_modifyzoom_alt", ChangeZoom)
 
 local function AddRecoil(um)
 	if GetGlobalBool("WAC_DISABLE_AIM") then return end
@@ -180,7 +180,7 @@ end
 usermessage.Hook("wac_self_alt_addrecoil", AddRecoil)
 
 local lastzoom=0
-WAC.Hook("Think", "wac_cl_weapon_zoomthink", function()
+wac.hook("Think", "wac_cl_weapon_zoomthink", function()
 	local crt=CurTime()
 end)
 
@@ -189,7 +189,7 @@ local f_smSpr =0
 local v_smSway=Vector(0,0,0)
 local zoomrmb=false
 local lastzoom=0
-WAC.Hook("CreateMove", "wac_self_alt_recoil", function(user)
+wac.hook("CreateMove", "wac_self_alt_recoil", function(user)
 	local pl = LocalPlayer()
 	local self = pl:GetActiveWeapon()
 	if GetGlobalBool("WAC_DISABLE_AIM") or self.wac_weaponview_ignore then return end
@@ -244,7 +244,7 @@ WAC.Hook("CreateMove", "wac_self_alt_recoil", function(user)
 	OldAng=add
 	local m=(pl:KeyDown(IN_DUCK) and 0.5 or 1)
 	m=(zoomed(self) and m*0.8 or m*1)
-	--WAC.SmoothApproachVector(v_smSway,VectorRand()*0.5*m,10)
+	--wac.smoothApproachVector(v_smSway,VectorRand()*0.5*m,10)
 	add=add+Angle(v_smSway.x,v_smSway.y,0)*self.Sway
 	user:SetViewAngles(add)
 end)
@@ -268,8 +268,8 @@ local function SmoothVars(lvel, self, FrT, crt, tr, pvel, vang, ang, flp, del)
 	a_smAng.p=WAC.SmoothApproach(a_smAng.p, self.VMAngAdd.p, 150, 200)
 	a_smAng.y=WAC.SmoothApproach(a_smAng.y, self.VMAngAdd.y, 150, 200)
 	a_smAng.r=WAC.SmoothApproach(a_smAng.r, self.VMAngAdd.r, 150, 200)
-	--WAC.SmoothApproachVector(v_smWall, tr.StartPos+tr.Normal*23-tr.HitPos, 25)
-	--WAC.SmoothApproachVector(v_smSpd, pvel*0.6, 25)
+	--wac.smoothApproachVector(v_smWall, tr.StartPos+tr.Normal*23-tr.HitPos, 25)
+	--wac.smoothApproachVector(v_smSpd, pvel*0.6, 25)
 	v_smSpd.x=math.Clamp(v_smSpd.x,-700,700)
 	v_smSpd.y=math.Clamp(v_smSpd.y,-700,700)
 	v_smSpd.z=math.Clamp(v_smSpd.z,-700,700)
@@ -277,7 +277,7 @@ local function SmoothVars(lvel, self, FrT, crt, tr, pvel, vang, ang, flp, del)
 	a_smAngAdd.y=WAC.SmoothApproach(a_smAngAdd.y, math.AngleDifference(vang.y,ang.y)*flp, 50)
 end
 
-WAC.Hook("HUDPaint", "wac_cl_customcrosshair_paint", function()
+wac.hook("HUDPaint", "wac_cl_customcrosshair_paint", function()
 	local p=LocalPlayer()
 	local wep=p:GetActiveWeapon()
 	if !IsValid(p) or !p:Alive() or !IsValid(wep) then return end

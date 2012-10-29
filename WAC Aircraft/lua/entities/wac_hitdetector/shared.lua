@@ -3,7 +3,7 @@ ENT.Base 				= "base_anim"
 ENT.Type 				= "anim"
 
 ENT.PrintName			= "Hit Detector Entity"
-ENT.Author				= "WeltEnSTurm"
+ENT.Author				= wac.author
 ENT.Category			= ""
 ENT.Contact    			= ""
 ENT.Purpose 			= ""

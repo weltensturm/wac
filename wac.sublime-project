@@ -1,0 +1,20 @@
+{
+	"folders":
+	[
+		{
+			"path": "WAC Base/lua"
+		},
+		{
+			"path": "WAC Weapons/lua"
+		},
+		{
+			"path": "WAC Aircraft/lua"
+		},
+		{
+			"path": "WAC Damage System/lua"
+		},
+		{
+			"path": "WAC Gravity Controller/lua"
+		}
+	]
+}

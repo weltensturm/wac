@@ -1,15 +1,20 @@
 
+include "wac/base.lua"
 
 AddCSLuaFile("cl_init.lua");
 AddCSLuaFile("shared.lua");
-include('entities/base_wire_entity/init.lua'); 
+
 include("shared.lua");
+
+if wire then
+	include('entities/base_wire_entity/init.lua'); 
+end
 
 function ENT:Initialize()
 	math.randomseed(CurTime())
-	if !self.ConTable then self:Remove() return end
-	self.Entity:SetModel(self.ConTable["sModel"][2])
-	self.Entity.Sound=CreateSound(self.Entity, self.ConTable["sSound"][2])
+	if !self.vars then self:Remove() return end
+	self.Entity:SetModel(self.vars["model"][2])
+	self.Entity.Sound=CreateSound(self.Entity, self.vars["sound"][2])
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)
@@ -20,7 +25,9 @@ function ENT:Initialize()
 			self.phys:SetMass(math.Clamp(self.Weight, 1, 500))
 		end
 	end
-	self.Inputs = Wire_CreateInputs(self.Entity, {"ZPos", "Hovermode", "Add to Z", "Activate", "AirbrakeX" , "AirbrakeY" , "AirbrakeZ" , "GlobalBrake"})
+	if wire then
+		self.Inputs = Wire_CreateInputs(self.Entity, {"ZPos", "Hovermode", "Add to Z", "Activate", "AirbrakeX" , "AirbrakeY" , "AirbrakeZ" , "GlobalBrake"})
+	end
 	self.CanUse = true
 	self.IsGravcontroller = true
 	self.PitchStartup = 0
@@ -49,28 +56,16 @@ function ENT:TriggerInput(iname, value)
 		end
 	end
 	if(iname == "AirbrakeX") then
-		if value > 100 then 
-			value = 100
-		end
-		self.AirbrakeX = value
+		self.AirbrakeX = math.Clamp(value, 0, 100)
 	end
 	if(iname == "AirbrakeY") then
-		if value > 100 then 
-			value = 100
-		end
-		self.AirbrakeY = value
+		self.AirbrakeY = math.Clamp(value, 0, 100)
 	end
 	if(iname == "AirbrakeZ") then
-		if value > 100 then 
-			value = 100
-		end
-		self.AirbrakeZ = value
+		self.AirbrakeZ = math.Clamp(value, 0, 100)
 	end
 	if(iname == "GlobalBrake") then
-		if value > 100 then
-			value = 100
-		end
-		self.brakepercent = value
+		self.brakepercent = math.Clamp(value, 0, 100)
 	end	
 	if(iname == "ZPos") then
 		self.ZPos = value
@@ -89,15 +84,15 @@ function ENT:ActivateIt(bool)
 		self:SetNWBool("drawsprite", false)
 		self.Active = false
 	elseif bool and !self.Active then 		
-		if self.ConTable["bDrawSprite"][2] == 1 then self:SetNWBool("drawsprite",true) end
+		if self.vars["drawSprite"][2] == 1 then self:SetNWBool("drawsprite",true) end
 		self.Sound:Play()
 		self.SoundPlaying = true
-		self.Sound:ChangePitch(self.PitchStartup)
+		self.Sound:ChangePitch(self.PitchStartup,0)
 		self.Active = true
 	end
 	self.ConstrainedEntities=constraint.GetAllConstrainedEntities(self.Entity)
-	if self.ConTable["bBrakeOnly"][2] == 0 or self.ConTable["bSGAPowerNode"][2]==1 then
-		if self.ConTable["bSGAPowerNode"][2]==1 then
+	if self.vars["brakeOnly"][2] == 0 or self.vars["stargateNode"][2]==1 then
+		if self.vars["stargateNode"][2]==1 then
 			self.TargetPos=self.Entity:GetPos()
 		end
 		for _, e in pairs(self.ConstrainedEntities) do
@@ -127,8 +122,8 @@ function ENT:PhysicsUpdate(phys)
 	local actvel = phys:GetVelocity()
 	local vel = NULLVEC
 	local pos = self.Entity:GetPos()
-	if self.ConTable["bSGAPowerNode"][2] != 1 then
-		if self.ConTable["bRelativeToGrnd"][2] == 0 and self.HoverMode then
+	if self.vars["stargateNode"][2] != 1 then
+		if self.vars["relativeToGround"][2] == 0 and self.HoverMode then
 			if self.ZAddValue != 0 then
 				self.ZPos = self.ZPos + self.ZAddValue
 			end
@@ -139,43 +134,41 @@ function ENT:PhysicsUpdate(phys)
 		elseif self.HoverMode then
 			local trd={
 				start=pos,
-				endpos=self:LocalToWorld(self.StartVector*self.ConTable["fHeightAboveGrnd"][2]),
+				endpos=self:LocalToWorld(self.StartVector*self.vars["heightAboveGround"][2]),
 				filter=self.Entity,
 				mask=MASK_SHOT_HULL+MASK_WATER,
 			}
 			local tr = util.TraceLine(trd)
 			if tr.Hit then
-				vel = vel-(trd.endpos-tr.HitPos)*self.ConTable["fHoverSpeed"][2]
+				vel = vel-(trd.endpos-tr.HitPos)*self.vars["hoverSpeed"][2]
 			end
 		end
-		if(self.ConTable["bGlobalBrake"][2] == 0 and !self.ActiveSPC and (self.Active or self.ConTable["bAlwaysBrake"][2] == 1)) then
+		if(self.vars["brakeGlobal"][2] == 0 and !self.ActiveSPC and (self.Active or self.vars["brakeAlways"][2] == 1)) then
 			local veladd = self.Entity:WorldToLocal(self.Entity:GetVelocity()+pos)
-			veladd.x = veladd.x - veladd.x*self.ConTable["fAirbrakeX"][2]/100
-			veladd.y = veladd.y - veladd.y*self.ConTable["fAirbrakeY"][2]/100
-			veladd.z = veladd.z - veladd.z*self.ConTable["fAirbrakeZ"][2]/100
+			veladd.x = veladd.x - veladd.x*self.vars["brakeX"][2]/100
+			veladd.y = veladd.y - veladd.y*self.vars["brakeY"][2]/100
+			veladd.z = veladd.z - veladd.z*self.vars["brakeZ"][2]/100
 			vel = vel + self.Entity:LocalToWorld(veladd)-pos
-		elseif(self.ConTable["bGlobalBrake"][2] == 1 and (self.Active or self.ConTable["bAlwaysBrake"][2] == 1)) then	
-			vel = vel + actvel*((100.0 - self.ConTable["fBrakePercent"][2])/100.0)
+		elseif(self.vars["brakeGlobal"][2] == 1 and (self.Active or self.vars["brakeAlways"][2] == 1)) then	
+			vel = vel + actvel*((100.0 - self.vars["brakeMul"][2])/100.0)
 		end
-		if self.HoverMode and self.ConTable["bRelativeToGrnd"][2] == 0 then
+		if self.HoverMode and self.vars["relativeToGround"][2] == 0 then
 			if (self.ZPos and self.ZPos != 0) then
-				vel = vel + Vector(0,0, self.ZPos - pos.z)*self.ConTable["fHoverSpeed"][2]/3
+				vel = vel + Vector(0,0, self.ZPos - pos.z)*self.vars["hoverSpeed"][2]/3
 			end
 		end
-		if (self.ConTable["bAngularBrake"][2] == 1 and (self.Active or self.ConTable["bAlwaysBrake"][2] == 1)) then	
+		if (self.vars["brakeAng"][2] == 1 and (self.Active or self.vars["brakeAlways"][2] == 1)) then	
 			local avel = phys:GetAngleVelocity()
-			if self.ConTable["fAngBrakePerc"][2] > 100 then self.ConTable["fAngBrakePerc"][2] = 100 end
+			if self.vars["brakeAngMul"][2] > 100 then self.vars["brakeAngMul"][2] = 100 end
 			self.VeloC = (Angle(0,0,0) - avel)
-			phys:AddAngleVelocity((self.ConTable["fAngBrakePerc"][2]/100)*self.VeloC)		
+			phys:AddAngleVelocity((self.vars["brakeAngMul"][2]/100)*self.VeloC)		
 		end
 	elseif self.Active and self.TargetPos then
 		vel = self.TargetPos-pos-actvel/2
 	end
-	if self.PitchStartup == 100 then
-		local soundvel = self.Entity:GetVelocity():Length()
-		if soundvel > 900 then soundvel = 900  end
-		self.Sound:ChangePitch(100+(soundvel/6))
-	end	
+	local pitch = self.Entity:GetVelocity():Length()
+	if pitch > 900 then pitch = 900  end
+	self.Sound:ChangePitch(self.PitchStartup+(pitch/6)*self.vars["pitchMul"][2]*self.PitchStartup/100,0.01)	
 	if vel != NULLVEC then
 		phys:SetVelocity(vel)
 	end
@@ -229,7 +222,7 @@ end
 
 function ENT:Think()
 	local crt = CurTime()
-	if crt>self.NextCheckConstrained and self.ConTable["bLiveGravity"]==1 and self.ConTable["bBrakeOnly"][2] == 0 or self.ConTable["bSGAPowerNode"][2]==1 then
+	if crt>self.NextCheckConstrained and self.vars["bLiveGravity"]==1 and self.vars["brakeOnly"][2] == 0 or self.vars["stargateNode"][2]==1 then
 		for _,e in pairs(self.ConstrainedEntities) do
 			if e:GetGravity() == self.Active then
 				self:SetEntGravity(e, self.Active)
@@ -243,7 +236,7 @@ function ENT:Think()
 		self.SoundPlaying = false
 	end
 	if self.SoundPlaying then
-		self.Sound:ChangePitch(self.PitchStartup)
+		self.Sound:ChangePitch(self.PitchStartup,0.01)
 	end
 	if self.PitchStartup < 100 then
 		self:NextThink(crt)
@@ -253,13 +246,13 @@ end
 
 local function GoUp(p, e)
 	if !e or !e:IsValid() then return end
-	e.ZAddByKey = e.ConTable["fHoverSpeed"][2]
+	e.ZAddByKey = e.vars["hoverSpeed"][2]
 end
 numpad.Register("GoUp", GoUp)
 
 local function GoDown(p, e)
 	if !e or !e:IsValid() then return end
-	e.ZAddByKey = -e.ConTable["fHoverSpeed"][2]
+	e.ZAddByKey = -e.vars["hoverSpeed"][2]
 end
 numpad.Register("GoDown", GoDown)
 

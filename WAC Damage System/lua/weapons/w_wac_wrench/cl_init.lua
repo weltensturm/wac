@@ -24,7 +24,7 @@ function SWEP:DrawHUD()
 	local pl=LocalPlayer()
 	local tr=util.QuickTrace(pl:EyePos(), pl:GetAimVector()*100, pl)
 	local crt=CurTime()
-	if tr.Hit and ValidEntity(tr.Entity) then
+	if tr.Hit and IsValid(tr.Entity) then
 		trVal=tr.Entity:GetNWInt("wac_health")
 		trMaxVal=tr.Entity:GetNWInt("wac_maxhealth")
 		if trVal==0 or trVal==trMaxVal then

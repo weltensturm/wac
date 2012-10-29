@@ -7,7 +7,7 @@ end
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.Category				= WAC.Names.WeaponCategory.MW
+SWEP.Category				= wac.menu.category .. " Modern Warfare"
 
 SWEP.PrintName			= "FN FAL"
 
@@ -41,4 +41,4 @@ SWEP.Primary.DefaultClip	= 20
 SWEP.BackPushY			= -0.3
 SWEP.BackPushZ			= 0.05
 
-SWEP.MuzzleFlashAdd 		= WAC.WeaponLib.StarMuzzle
+SWEP.MuzzleFlashAdd 		= wac.weapons.muzzle.star

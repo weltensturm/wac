@@ -1,7 +1,7 @@
 
 local enable = CreateConVar("wac_spawnmod_enable", 1, {FCVAR_REPLICATED, FCVAR_ARCHIVE})
 
-if SERVER then--##Server
+if SERVER then
 
 	local function updateseats(p)
 		p.wac_spawns=p.wac_spawns or {}
@@ -86,7 +86,7 @@ if SERVER then--##Server
 			end
 		end
 	end
-	WAC.Hook("KeyPress", "wac_spawnmod_keypress", press)
+	wac.hook("KeyPress", "wac_spawnmod_keypress", press)
 	
 	lastthink=0
 	local function think()
@@ -105,16 +105,20 @@ if SERVER then--##Server
 			lastthink=CurTime()+0.1
 		end
 	end
-	WAC.Hook("Think", "wac_spawnmod_think", think)
+	wac.hook("Think", "wac_spawnmod_think", think)
 	
-else--##Client
+else
+
+	wac.addMenuPanel(wac.menu.tab, wac.menu.category, "Misc", function(panel)
+		panel:CheckBox("Enable Spawnpoints","wac_spawnmod_enable")
+	end)
 
 	local viewt={}
 	local pos=Vector(0,0,0)
 	local AddVector=Vector(0,0,30)
 	wac.hook("CalcView", "wac_spawnmod_view", function(p, lpos, lang, fov)
 		if p:GetNWBool("wac_spawnmod_pending") and enable:GetInt()==1 and IsValid(p:GetNWEntity("wac_spawnmod_spawnplatform")) then
-			WAC.SmoothApproachVector(pos,p:GetNWEntity("wac_spawnmod_spawnplatform"):GetPos(),60)
+			wac.smoothApproachVector(pos,p:GetNWEntity("wac_spawnmod_spawnplatform"):GetPos(),60)
 			local trd={}
 			trd.start=pos+AddVector
 			trd.endpos=trd.start-lang:Forward()*90
@@ -137,6 +141,6 @@ else--##Client
 			draw.SimpleTextOutlined("PRESS SPACE TO SPAWN", "TargetID", SW/2, SH-140, col_Text,1,0,1,col_Bg)
 		end
 	end
-	WAC.Hook("HUDPaint", "wac_spawnmod_draw", ldraw)
+	wac.hook("HUDPaint", "wac_spawnmod_draw", ldraw)
 	
 end

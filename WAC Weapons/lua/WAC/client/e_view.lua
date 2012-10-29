@@ -80,7 +80,7 @@ vt.canview=function(p,w)
 	return true
 end
 
-WAC.Hook("CalcView", "wac_cl_view_cview",function(p,pos,ang,fov)
+wac.hook("CalcView", "wac_cl_view_cview",function(p,pos,ang,fov)
 	local p=LocalPlayer()
 	local w=p:GetActiveWeapon()
 	if vt.canview(p,w) then

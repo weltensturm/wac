@@ -17,6 +17,6 @@ function ENT:SpawnFunction(ply, tr)
 	ent:SetPos(tr.HitPos+tr.HitNormal*5)
 	ent:Spawn()
 	ent.Owner=ply
-	ent:SetOwner(ply)
+	ent:SetNWEntity("owner", ply)
 	return ent
 end

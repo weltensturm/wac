@@ -407,7 +407,7 @@ function ENT:Use(act, cal)
 			end
 		end
 		if v then
-			act.HeliKeysDown={}
+			act.HelkeysDown={}
 			act:EnterVehicle(v)
 			act.LastVehicleEntered=crt+0.5		
 		end
@@ -421,7 +421,7 @@ function ENT:UpdateSeats()
 		local p = veh:GetPassenger(0)
 		if self.Passenger[k] != p then
 			if IsValid(self.Passenger[k]) then
-				self.Passenger[k].HeliKeysDown={}
+				self.Passenger[k].HelkeysDown={}
 				self.Passenger[k]:SetNWEntity("wac_aircraft", NULL)
 				local t=self.SeatsT[k].wep[self.SeatsT[k].wep_act]
 				if t and t.DeSelect then
@@ -575,7 +575,7 @@ function ENT:receiveInput(player, key, pressed)
 		self:EjectPassenger(player)
 		return
 	end
-	player.HeliKeysDown[key] = pressed
+	player.HelkeysDown[key] = pressed
 end
 
 function ENT:GetPLControl(pl, id, cur, static, nopilot)
@@ -590,7 +590,7 @@ function ENT:GetPLControl(pl, id, cur, static, nopilot)
 	else
 		local swap=pl:GetInfo("wac_cl_air_mouse_swap")
 		if (id==WAC_AIR_LEANP or (swap=="1"and id==WAC_AIR_LEANR) or (swap=="0" and id==WAC_AIR_LEANY)) and tonumber(pl:GetInfo("wac_cl_air_mouse"))==1 then
-			if self.Passenger[1].HeliKeysDown[keyids[WAC_AIR_FREEAIM][1]] then return 0 end
+			if self.Passenger[1].HelkeysDown[keyids[WAC_AIR_FREEAIM][1]] then return 0 end
 			local v=self:WorldToLocal(self:GetPos()+pl:GetAimVector())
 			if id==WAC_AIR_LEANP then
 				local m=(pl:GetInfo("wac_cl_air_mouse_invert_pitch")=="1" and -1 or 1)
@@ -601,9 +601,9 @@ function ENT:GetPLControl(pl, id, cur, static, nopilot)
 				return math.Clamp(v.y*mul*m*10,-1,1)
 			end
 		else
-			if pl.HeliKeysDown and keyids[id] and pl.HeliKeysDown[keyids[id][1]] then
+			if pl.HelkeysDown and keyids[id] and pl.HelkeysDown[keyids[id][1]] then
 				return math.Clamp(cur+0.03*mul, -1, 1)
-			elseif pl.HeliKeysDown and keyids[id] and pl.HeliKeysDown[keyids[id][2]] then
+			elseif pl.HelkeysDown and keyids[id] and pl.HelkeysDown[keyids[id][2]] then
 				return math.Clamp(cur-0.03*mul, -1, 1)
 			end
 			if static then

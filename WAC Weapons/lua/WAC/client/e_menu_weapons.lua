@@ -1,5 +1,5 @@
 
-local c="WAC"
+local c=wac.menu.category
 local n="SWEPs"
 
 CreateClientConVar("wac_cl_wep_help",0,false,false)

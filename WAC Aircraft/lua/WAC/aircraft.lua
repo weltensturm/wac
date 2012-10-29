@@ -4,6 +4,19 @@ include("wac/keyboard.lua")
 
 wac.menu.aircraft = "Aircraft"
 
+WAC_AIR_LEANP = 1
+WAC_AIR_LEANY = 2
+WAC_AIR_LEANR = 3
+WAC_AIR_UPDOWN = 4
+WAC_AIR_START = 5
+WAC_AIR_FIRE = 6
+WAC_AIR_CAM = 7
+WAC_AIR_NEXTWEP = 8
+WAC_AIR_HOVER = 9
+WAC_AIR_EXIT = 10
+WAC_AIR_FREEAIM = 11
+WAC_AIR_THIRDP = 12
+
 local currentKey = 1
 local function key(name)
 	local t = {}

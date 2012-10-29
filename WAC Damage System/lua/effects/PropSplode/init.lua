@@ -3,7 +3,7 @@
  	self.Time = 1
  	self.LifeTime = CurTime() + self.Time 
  	self.vOffset = data:GetOrigin()
- 	self.vAng = data:GetAngle()
+ 	self.vAng = data:GetAngles()
 	self.vScale = data:GetScale()
  	self.vUp = self.vAng:Forward()
  	self.vFw = self.vAng:Up()

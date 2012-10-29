@@ -1,4 +1,4 @@
-TOOL.Category = WAC and WAC.Names.ToolCategory or "Render"
+TOOL.Category = WAC and wac.menu.category or "Render"
 TOOL.Name = "RT7"
 TOOL.Command=nil
 TOOL.ConfigName = ""

@@ -1,8 +1,8 @@
 ENT.Type 			= "anim"
 ENT.Base 			= "base_gmodentity"
 ENT.PrintName		= "Private Spawnpoint"
-ENT.Category		= "WAC"
-ENT.Author			= "WeltEnSTurm"
+ENT.Category		= wac.menu.category
+ENT.Author			= wac.author
  
 ENT.Spawnable		= true
 ENT.AdminSpawnable	= true

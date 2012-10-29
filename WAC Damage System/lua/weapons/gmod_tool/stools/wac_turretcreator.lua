@@ -1,4 +1,5 @@
-TOOL.Category = WAC and WAC.Names.ToolCategory or "Construction"
+
+TOOL.Category = wac.menu.category
 TOOL.Name = "Turret Creator"
 TOOL.Command=nil
 TOOL.ConfigName = ""
@@ -134,11 +135,14 @@ function TOOL:RightClick(tr)
 end
 
 if CLIENT then
+
+	local panel
+
 	function TOOL.BuildCPanel(CPanel)
-		CPanel:AddControl("Label", {Text = "Please Wait..\nEither GMod is loading tools, or you don't have your toolgun pulled out."})
+		panel:AddControl("Label", {Text = "Please Wait..\nEither GMod is loading tools, or you don't have your toolgun pulled out."})
 	end
+
 	local function updatepanel()
-		local CPanel=GetControlPanel("wac_turretcreator")
 		CPanel:Clear()
 		CPanel:AddHeader()
 		CPanel:AddDefaultControls()
@@ -193,8 +197,12 @@ if CLIENT then
 	usermessage.Hook("UpdateNDSTurretPanel", updatepanel)
 end
 
-function TOOL:UpdateSpawnGhost(ent, ply)
-	local tr = util.TraceLine(utilx.GetPlayerTrace(ply, ply:GetCursorAimVector()))
+function TOOL:UpdateSpawnGhost(ent, player)
+	local tr = util.TraceLine({
+		start = player:EyePos(),
+		endpos = player:GetAimVector()*1000,
+		filter = {player}
+	})
 	if (!tr.Hit) then return end
 	local Ang
 	if tr.Entity:GetClass()=="wac_v_turret_11" then

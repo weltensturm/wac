@@ -4,7 +4,7 @@ if SERVER then
 	AddCSLuaFile ("shared.lua")	
 end
 
-SWEP.Category				=WAC.Names.WeaponCategory.TW
+SWEP.Category				=wac.menu.category .. " Tactical Weapons"
 
 SWEP.PrintName			= "M14"
 
@@ -38,4 +38,4 @@ SWEP.Primary.DefaultClip	= 20
 SWEP.BackPushY			= -0.5
 SWEP.BackPushZ			= 0.01
 
-SWEP.MuzzleFlashAdd 		= WAC.WeaponLib.StarMuzzle
+SWEP.MuzzleFlashAdd 		= wac.weapons.muzzle.star

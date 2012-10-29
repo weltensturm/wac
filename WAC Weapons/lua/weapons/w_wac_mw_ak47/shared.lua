@@ -9,7 +9,7 @@ SWEP.AdminSpawnable		= true
 
 SWEP.PrintName			= "AK47"
 
-SWEP.Category				= WAC.Names.WeaponCategory.MW
+SWEP.Category				= wac.menu.category .. " Modern Warfare"
 
 SWEP.AimAng				= Angle(0,0.21,0)
 SWEP.AimPos				= Vector(4.4,-7,1.17)
@@ -44,4 +44,4 @@ SWEP.Secondary.Ammo		= "none"
 
 SWEP.AngMz		=0.0001
 
-SWEP.MuzzleFlashAdd 		= WAC.WeaponLib.StarMuzzle
+SWEP.MuzzleFlashAdd 		= wac.weapons.muzzle.star

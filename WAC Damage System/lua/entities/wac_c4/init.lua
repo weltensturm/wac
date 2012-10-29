@@ -13,14 +13,16 @@ ENT.Explodesounds = {
 function ENT:Initialize()
 
 	self.Entity:SetModel("models/WeltEnSTurm/BF2/C4.mdl")
-	self.Entity:PhysicsInit( SOLID_VPHYSICS )
-	self.Entity:SetMoveType( MOVETYPE_VPHYSICS )
-	self.Entity:SetSolid( SOLID_VPHYSICS )
+	self.Entity:PhysicsInit(SOLID_VPHYSICS)
+	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
+	self.Entity:SetSolid(SOLID_VPHYSICS)
 	self.phys = self.Entity:GetPhysicsObject()
 	if (self.phys:IsValid()) then
 		self.phys:Wake();
 	end
-	self.Inputs = Wire_CreateInputs( self.Entity, {"Detonate"} )
+	if wire then
+		self.Inputs = Wire_CreateInputs(self.Entity, {"Detonate"})
+	end
 	self.hlth = 20
 
 	self.cbt = {}
@@ -28,19 +30,6 @@ function ENT:Initialize()
 	self.cbt.armor = 500
 	self.cbt.maxhealth = 5000
 	self.IsBullet=true
-end
-
-function ENT:SpawnFunction( ply, tr )
-
-	if ( !tr.Hit ) then return end
-	local SpawnPos = tr.HitPos + tr.HitNormal * 20
-	local ent = ents.Create( "bf2_C4" )
-	ent:SetPos( SpawnPos )
-	ent:Spawn()
-	ent:Activate()
-	ent.Owner = ply	
-	return ent
-	
 end
 
 function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
@@ -65,13 +54,14 @@ function ENT:Explode()
 		local ent = self.Entity
 		if !self.Owner then self.Owner = self.Entity end
 		self.Entity:EmitSound(self.Explodesounds[math.random(1,3)], 500)
-		util.Decal("Scorch",pos + up, pos + up*-1 )
+		util.Decal("Scorch",pos + up, pos + up*-1)
 		local effectdata1 = EffectData()
 		effectdata1:SetOrigin(pos)
 		effectdata1:SetStart(pos)
-		effectdata1:SetAngle(ang)
+		effectdata1:SetAngles(ang)
 		effectdata1:SetScale(200)
-		util.Effect( "bf2_c4splode", effectdata1 )		
+		util.Effect("bf2_c4splode", effectdata1)		
+		wac.damageSystem.explosion(pos, 300, 1000, self.Entity, self.Owner)
 		if WAC then
 			WAC.SimpleSplode(pos, 300, 1000, 60, true, self.Entity, self.Owner)
 		end			
@@ -97,14 +87,14 @@ function ENT:WeldMeLol()
 		trace.start = pos
 		trace.endpos = pos + self:GetUp()*-20
 		trace.filter = {self.Entity}
-		local tr = util.TraceLine( trace )
+		local tr = util.TraceLine(trace)
 		if tr.Hit then
 			if tr.Entity:IsPlayer() then return end
 			if tr.HitSky then self:Remove() return end
 			--self:SetParent(tr.Entity)
 			self:SetPos(tr.HitPos)
 			local ang = tr.HitNormal:Angle()
-			ang:RotateAroundAxis( ang:Right(), -90 )
+			ang:RotateAroundAxis(ang:Right(), -90)
 			self:SetAngles(ang)
 			timer.Simple(0.01, function()
 				constraint.Weld(self.Entity, tr.Entity, tr.PhysicsBone, 0, 0, true)
@@ -116,11 +106,11 @@ function ENT:WeldMeLol()
 	
 end
 
-function ENT:OnTakeDamage( dmginfo )
+function ENT:OnTakeDamage(dmginfo)
 
 	if self.Exploded then return false end
 
-	self.Entity:TakePhysicsDamage( dmginfo )
+	self.Entity:TakePhysicsDamage(dmginfo)
 	
 	dmg = dmginfo:GetDamage()
 	

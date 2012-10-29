@@ -1,4 +1,4 @@
-TOOL.Category = WAC and WAC.Names.ToolCategory or "Construction"
+TOOL.Category = WAC and wac.menu.category or "Construction"
 TOOL.Name = "Pod Camera"
 TOOL.Command=nil
 TOOL.ConfigName = ""

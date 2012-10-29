@@ -1,6 +1,6 @@
 
-include("wac/aircraft.lua")
-include("wac/servertag.lua")
+include "wac/aircraft.lua"
+include "wac/servertag.lua"
 
 AddCSLuaFile("autorun/client/wac_aircraft.lua");
 AddCSLuaFile("autorun/client/wac_aircraft_dev.lua");
@@ -35,3 +35,37 @@ for k,t in pairs(wac.aircraft.keys) do
 		end
 	end)
 end
+
+
+wac.hook("JoystickInitialize", "wac_air_jcon_init", function()
+
+	local tbl={
+		[WAC_AIR_LEANP]	= "Lean Forward/Back",
+		[WAC_AIR_LEANY]	= "Turn Left/Right",
+		[WAC_AIR_LEANR]	= "Roll Left/Right",
+		[WAC_AIR_UPDOWN] ="Thrust",
+		[WAC_AIR_START] = "Turn On/Off",
+		[WAC_AIR_FIRE] ="Shoot",
+		[WAC_AIR_CAM] = "Toggle Camera",
+		[WAC_AIR_NEXTWEP] = "Next Weapon",
+		[WAC_AIR_HOVER] = "Auto Hover Toggle",
+		[WAC_AIR_EXIT] = "Exit Helicopter",
+		[WAC_AIR_FREEAIM] = "Free Aim",
+	}
+
+	for k, v in pairs(tbl) do
+		jcon.register({
+			uid = "wac_air_"..k,
+			type = "analog",
+			description = v[2],
+			category = "WAC Helicopter"
+		})
+	end
+	jcon.register({
+		uid="wac_air_"..WAC_AIR_THIRDP,
+		type="analog",
+		description="Third Person",
+		category="WAC Helicopter"
+	})
+	
+end)

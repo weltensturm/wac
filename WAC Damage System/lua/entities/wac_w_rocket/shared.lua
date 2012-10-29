@@ -1,8 +1,8 @@
  ENT.Type = "anim"
  ENT.Base = "base_gmodentity" 
  ENT.PrintName = ""
- ENT.Author = "WeltEnSTurm"
- ENT.Category = "WAC"
+ ENT.Author = wac.author
+ ENT.Category = wac.menu.category
  ENT.IsWire = true
 
  ENT.Spawnable = false

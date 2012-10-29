@@ -10,7 +10,7 @@ function ENT:Draw()
 	self.scale3=self.scale1*1.5
 	local startpos = self.Entity:GetPos()
 	render.SetMaterial(self.Glow)
-	local col=Color(self:GetColor())
+	local col = self:GetColor()
 	render.DrawSprite(startpos, self.scale1, self.scale1, col)
 	render.DrawSprite(startpos, self.scale2, self.scale2, col)
 	render.DrawSprite(startpos, self.scale3*self:GetNWFloat("width"), self.scale3, col)

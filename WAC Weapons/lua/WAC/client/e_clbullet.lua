@@ -20,7 +20,7 @@ local function main()
 		end
 	end
 end
-WAC.Hook("Think", "wac_physbullet_cl", main)
+wac.hook("Think", "wac_physbullet_cl", main)
 
 local function addbullet(um)
 	local b={}

@@ -1,7 +1,7 @@
  ENT.Type = "anim"
  ENT.Base = "base_gmodentity" 
  ENT.PrintName = "Gravity Controller"
- ENT.Author = "WeltEnSTurm"
+ ENT.Author = wac.author
  ENT.Category = "Stargate"
  ENT.IsWire = true
 

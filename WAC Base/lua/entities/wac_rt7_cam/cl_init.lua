@@ -58,7 +58,7 @@ local function Draw()
 end
 hook.Add("HUDPaint", "wac_rt7_draw", Draw)
 
-WAC.Hook("HUDShouldDraw", "wac_cl_rt7_shoulddraw", function(n)
+wac.hook("HUDShouldDraw", "wac_cl_rt7_shoulddraw", function(n)
 	if VIEW_DRAW then
 		return false
 	end

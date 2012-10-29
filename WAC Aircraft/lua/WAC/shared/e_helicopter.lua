@@ -66,7 +66,7 @@ if CLIENT then
 
 	mat=Material("pp/blurscreen")
 
-	WAC.Hook("PlayerBindPress", "wac_cl_air_exit", function(p,bind)
+	wac.hook("PlayerBindPress", "wac_cl_air_exit", function(p,bind)
 		if bind=="+use" then
 			local heli=p:GetVehicle():GetNWEntity("wac_aircraft")
 			if IsValid(heli) then
@@ -75,7 +75,7 @@ if CLIENT then
 		end
 	end)
 
-	WAC.Hook("RenderScreenspaceEffects", "wac_air_weaponcam",function()
+	wac.hook("RenderScreenspaceEffects", "wac_air_weaponcam",function()
 		local p=LocalPlayer()
 		local e=p:GetVehicle():GetNWEntity("wac_aircraft")
 		if IsValid(e) then
@@ -83,7 +83,7 @@ if CLIENT then
 		end
 	end)
 
-	WAC.Hook("HUDPaint", "wac_air_weaponhud", function()
+	wac.hook("HUDPaint", "wac_air_weaponhud", function()
 		local p=LocalPlayer()
 		local e=p:GetVehicle():GetNWEntity("wac_aircraft")
 		if IsValid(e) then
@@ -91,7 +91,7 @@ if CLIENT then
 		end
 	end)
 
-	WAC.Hook("CreateMove", "wac_cl_air_mouseinput", function(md)
+	wac.hook("CreateMove", "wac_cl_air_mouseinput", function(md)
 		local p=LocalPlayer()
 		local e=p:GetVehicle():GetNWEntity("wac_aircraft")
 		if IsValid(e) then

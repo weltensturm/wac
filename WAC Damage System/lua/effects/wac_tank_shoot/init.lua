@@ -1,7 +1,7 @@
 
 function EFFECT:Init(data)
  	self.Offset=data:GetOrigin()
- 	self.Ang=data:GetAngle()
+ 	self.Ang=data:GetAngles()
 	self.vUp=self.Ang:Up()
 	self.vFw=self.Ang:Forward()
 	self.vRi=self.Ang:Right()

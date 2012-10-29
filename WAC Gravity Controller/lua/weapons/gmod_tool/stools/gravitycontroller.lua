@@ -48,29 +48,30 @@ loopsounds = {
 }
 
 local convtable={
-	["iActivateKey"]		= {0, 0},
-	["fAirbrakeX"]		= {0, 15},
-	["fAirbrakeY"]		= {0, 15},
-	["fAirbrakeZ"]		= {0, 15},
-	["fBrakePercent"]		= {0, 10},
-	["sModel"]			= {1, "models/props_c17/utilityconducter001.mdl"},
-	["sSound"]			= {1, "ambient/atmosphere/underground_hall_loop1.wav"},
-	["bAngularBrake"]		= {2, 0},
-	["bGlobalBrake"]		= {2, 1},
-	["bDrawSprite"]		= {0, 1},
-	["bAlwaysBrake"]		= {0, 0},
-	["bBrakeOnly"]		= {0, 0},
-	["iKeyUp"]			= {0, 7},
-	["iKeyDown"]			= {0, 4},
-	["iKeyHover"]		= {0, 1},
-	["fHoverSpeed"]		= {0, 1},
-	["bSHHoverDesc"]	= {2, 1},
-	["bSHLocalDesc"]		= {2, 1},
-	["fAngBrakePerc"]		= {0, 20},
-	["fWeight"]			= {0, 0},
-	["bRelativeToGrnd"]	= {2, 0},
-	["fHeightAboveGrnd"]	= {0, 30},
-	["bSGAPowerNode"]	= {2, 0},
+	["keyActivate"]		= {0, 0},
+	["brakeX"]		= {0, 15},
+	["brakeY"]		= {0, 15},
+	["brakeZ"]		= {0, 15},
+	["brakeMul"]		= {0, 10},
+	["model"]			= {1, "models/props_c17/utilityconducter001.mdl"},
+	["sound"]			= {1, "ambient/atmosphere/underground_hall_loop1.wav"},
+	["pitchMul"] = {0, 1},
+	["brakeAng"]		= {2, 0},
+	["brakeGlobal"]		= {2, 1},
+	["drawSprite"]		= {0, 1},
+	["brakeAlways"]		= {0, 0},
+	["brakeOnly"]		= {0, 0},
+	["keyUp"]			= {0, 7},
+	["keyDown"]			= {0, 4},
+	["keyHover"]		= {0, 1},
+	["hoverSpeed"]		= {0, 1},
+	["descHover"]	= {2, 1},
+	["descLocal"]		= {2, 1},
+	["brakeAngMul"]		= {0, 20},
+	["weight"]			= {0, 0},
+	["relativeToGround"]	= {2, 0},
+	["heightAboveGround"]	= {0, 30},
+	["stargateNode"]	= {2, 0},
 	["bLiveGravity"]		={0,0},
 }
 
@@ -80,13 +81,13 @@ end
 
 if (CLIENT) then
 	language.Add('gravitycontroller', 'Gravity Controller')
-	language.Add('Tool_gravitycontroller_name', "Gravity Controller Creator")
-	language.Add('Tool_gravitycontroller_desc', 'Build Starships without hoverballs, or simply use it for stabilizing your stuff')
-	language.Add('Tool_gravitycontroller_0', 'Click where you would like to create a Gravity Controller, click on one to update it.')
-	language.Add('Undone_gravitycontroller', 'Gravity Controller Undone')
-	language.Add('Cleanup_gravitycontroller', 'Gravity Controller')
-	language.Add('Cleaned_gravitycontroller', 'Cleaned up all Gravity Controllers')
-	language.Add('SBoxLimit_gravitycontroller', 'Maximum amount of Gravity Controllers reached')
+	language.Add('tool.gravitycontroller.name', "Gravity Controller Creator")
+	language.Add('tool.gravitycontroller.desc', 'Build Starships without hoverballs, or simply use it for stabilizing your stuff')
+	language.Add('tool.gravitycontroller.0', 'Click where you would like to create a Gravity Controller, click on one to update it.')
+	language.Add('undone.gravitycontroller', 'Gravity Controller Undone')
+	language.Add('cleanup.gravitycontroller', 'Gravity Controller')
+	language.Add('cleaned.gravitycontroller', 'Cleaned up all Gravity Controllers')
+	language.Add('SBoxLimit.gravitycontroller', 'Maximum amount of Gravity Controllers reached')
 end
 
 local sgapowernd={
@@ -106,7 +107,7 @@ function TOOL:LeftClick(trace)
 	local Ang = trace.HitNormal:Angle()
 	Ang.pitch = Ang.pitch+90
 	undo.Create('gravitycontroller')
-	if trace.Entity and trace.Entity:IsValid() and convtable["bSGAPowerNode"][2]==1 and trace.Entity.IsStargate then
+	if trace.Entity and trace.Entity:IsValid() and convtable["stargateNode"][2]==1 and trace.Entity.IsStargate then
 		trace.Entity.GCTable=trace.Entity.GCTable or {}
 		for i=1,3 do
 			if !trace.Entity.GCTable[i] or !trace.Entity.GCTable[i]:IsValid() then
@@ -130,12 +131,12 @@ function TOOL:LeftClick(trace)
 			if !trace.Entity.phys then
 				trace.Entity.phys = trace.Entity:GetPhysicsObject()
 			end
-			if trace.Entity.phys:IsValid() and convtable["fWeight"][2] != 0 then
-				trace.Entity.phys:SetMass(math.Clamp(convtable["fWeight"][2], 1, 500))
+			if trace.Entity.phys:IsValid() and convtable["weight"][2] != 0 then
+				trace.Entity.phys:SetMass(math.Clamp(convtable["weight"][2], 1, 500))
 			end
 			if trace.Entity.Sound then
 				trace.Entity.Sound:Stop()
-				trace.Entity.Sound=CreateSound(trace.Entity, convtable["sSound"][2])
+				trace.Entity.Sound=CreateSound(trace.Entity, convtable["sound"][2])
 				if trace.Entity.Active then
 					trace.Entity.Sound:Play()
 				end
@@ -165,19 +166,19 @@ if SERVER then
 		if !ent:IsValid() then return false end
 		ent:SetAngles(Ang)
 		ent:SetPos(Pos)
-		ent.ConTable=table.Copy(tbl)
+		ent.vars = table.Copy(tbl)
 		ent:Spawn()
 		ent:SetVar('Owner',ply)
-		numpad.OnDown(ply, tbl["iActivateKey"][2], 'FireGravitycontroller', ent)
-		if tbl["bSGAPowerNode"][2]!=1 then
-			if tbl["fWeight"][2] > 1 then
-				ent:GetPhysicsObject():SetMass(tbl["fWeight"][2])
+		numpad.OnDown(ply, tbl["keyActivate"][2], 'FireGravitycontroller', ent)
+		if tbl["stargateNode"][2]!=1 then
+			if tbl["weight"][2] > 1 then
+				ent:GetPhysicsObject():SetMass(tbl["weight"][2])
 			end
-			numpad.OnDown(ply, tbl["iKeyHover"][2], 'ToggleHoverMode', ent)
-			numpad.OnDown(ply, tbl["iKeyUp"][2], 'GoUp', ent)
-			numpad.OnDown(ply, tbl["iKeyDown"][2], 'GoDown', ent)
-			numpad.OnUp(ply, tbl["iKeyUp"][2], 'GoStop', ent)
-			numpad.OnUp(ply, tbl["iKeyDown"][2], 'GoStop', ent)
+			numpad.OnDown(ply, tbl["keyHover"][2], 'ToggleHoverMode', ent)
+			numpad.OnDown(ply, tbl["keyUp"][2], 'GoUp', ent)
+			numpad.OnDown(ply, tbl["keyDown"][2], 'GoDown', ent)
+			numpad.OnUp(ply, tbl["keyUp"][2], 'GoStop', ent)
+			numpad.OnUp(ply, tbl["keyDown"][2], 'GoStop', ent)
 			ent.StartVector=ent:WorldToLocal(Pos-Vector(0,0,1))
 			ent:SetNWVector("startvector", ent.StartVector)
 		else
@@ -197,151 +198,159 @@ if SERVER then
 end
 
 if CLIENT then
-	function TOOL.BuildCPanel(CPanel)
-		CPanel:AddControl("Label", {Text = "Please wait...."})
+	local panel = nil
+	function TOOL.BuildCPanel(p)
+		panel = p
+		panel:AddControl("Label", {Text = "Please wait...."})
 	end
 	local updatetime = 0
 	local function UpdatePanel()
-		local CPanel = GetControlPanel("gravitycontroller")
-		CPanel:Clear()
-		CPanel:AddHeader()
-		CPanel:AddDefaultControls()
-		CPanel:AddControl( "PropSelect", {
+		panel:Clear()
+		panel:AddControl("PropSelect", {
 			Label = "Model",
-			ConVar = "gravitycontroller_sModel",
+			ConVar = "gravitycontroller_model",
 			Category = "",
 			Models = list.Get("GravControllerModels")
 		})
-		CPanel:AddControl("TextBox", {
+		panel:AddControl("TextBox", {
 			Label = "Modelpath",
 			MaxLength = 300,
 			Text = "path_of_model.mdl",
-			Command = "gravitycontroller_sModel",
+			Command = "gravitycontroller_model",
 		})
-		combo = {}
-		combo.Label = 'Sound'
-		combo.MenuButton = 0
-		combo.Folder = "settings/gravitycontroller/"
-		combo.Options = {}
+		combo = {
+			Label = 'Sound',
+			MenuButton = 0,
+			Folder = "settings/gravitycontroller/",
+			Options = {}
+		}
 		for k, v in pairs(loopsounds) do
-			combo.Options[v[1]] = {gravitycontroller_sSound = v[2]}
+			combo.Options[v[1]] = {gravitycontroller_sound = v[2]}
 		end	
-		CPanel:AddControl("Label", {Text = ""})
-		CPanel:AddControl("Label", {Text = "Sound"})
-		CPanel:AddControl('ComboBox', combo)
-		CPanel:AddControl("TextBox", {
+		panel:AddControl("Label", {Text = ""})
+		panel:AddControl("Label", {Text = "Sound"})
+		panel:AddControl('ComboBox', combo)
+		panel:AddControl('Slider', {
+			Label = 'Sound Pitch',
+			Type = "Float", 
+			Min = 0,
+			Max = 1, 
+			Command = 'gravitycontroller_pitchMul'
+		})
+
+		panel:AddControl("TextBox", {
 			Label = "Soundpath",
 			MaxLength = 300,
 			Text = "path_of_sound",
-			Command = "gravitycontroller_sSound",
+			Command = "gravitycontroller_sound",
 		})
-		CPanel:AddControl("Label", {Text = ""})
-		CPanel:CheckBox("Draw sprite","gravitycontroller_bDrawSprite")
-		if convtable["bSGAPowerNode"][2] != 1 then
-			CPanel:AddControl('Slider', {
+		panel:AddControl("Label", {Text = ""})
+		panel:CheckBox("Glow","gravitycontroller_drawSprite")
+		if convtable["stargateNode"][2] != 1 then
+			panel:AddControl('Slider', {
 				Label = 'Weight (0: Model Default)',
 				Type = "Float", 
 				Min = 0,
 				Max = 500, 
-				Command = 'gravitycontroller_fWeight'
+				Command = 'gravitycontroller_weight'
 			})
-			CPanel:AddControl("Label", {Text = ""})
-			CPanel:CheckBox("Brake Only (Don't change gravity)","gravitycontroller_bBrakeOnly")
-			CPanel:CheckBox("Always Brake","gravitycontroller_bAlwaysBrake")
-			CPanel:CheckBox("Global Airbrake","gravitycontroller_bGlobalBrake")
-			if convtable["bGlobalBrake"][2] == 0 then
-				CPanel:AddControl('Slider', { 
+			panel:AddControl("Label", {Text = ""})
+			panel:CheckBox("Brake Only (Don't change gravity)","gravitycontroller_brakeOnly")
+			panel:CheckBox("Always Brake","gravitycontroller_brakeAlways")
+			panel:CheckBox("Global Airbrake","gravitycontroller_brakeGlobal")
+			if convtable["brakeGlobal"][2] == 0 then
+				panel:AddControl('Slider', { 
 					Label = 'Brake X', 
 					Type = "Float", 
 					Min = 0, 
 					Max = 100, 
-					Command = 'gravitycontroller_fAirbrakeX' 
+					Command = 'gravitycontroller_brakeX' 
 				})
-				CPanel:AddControl('Slider', { 
+				panel:AddControl('Slider', { 
 					Label = 'Brake Y', 
 					Type = "Float", 
 					Min = 0, 
 					Max = 100, 
-					Command = 'gravitycontroller_fAirbrakeY' 
+					Command = 'gravitycontroller_brakeY' 
 				})
-				CPanel:AddControl('Slider', { 
+				panel:AddControl('Slider', { 
 					Label = 'Brake Z', 
 					Type = "Float", 
 					Min = 0, 
 					Max = 100, 
-					Command = 'gravitycontroller_fAirbrakeZ' 
+					Command = 'gravitycontroller_brakeZ' 
 				})
 			else
-				CPanel:AddControl('Slider', { 
+				panel:AddControl('Slider', { 
 					Label = 'Global Brake', 
 					Type = "Float", 
 					Min = 0, 
 					Max = 100, 
-					Command = "gravitycontroller_fBrakePercent" 
+					Command = "gravitycontroller_brakeMul" 
 				})
 			end	
-			CPanel:CheckBox("Angle Brake (buggy sometimes)","gravitycontroller_bAngularBrake")
-			if convtable["bAngularBrake"][2] == 1 then
-				CPanel:AddControl('Slider', { 
+			panel:CheckBox("Angle Brake (buggy sometimes)","gravitycontroller_brakeAng")
+			if convtable["brakeAng"][2] == 1 then
+				panel:AddControl('Slider', { 
 					Label = 'Angle Brake', 
 					Type = "Float", 
 					Min = 0, 
 					Max = 100, 
-					Command = "gravitycontroller_fAngBrakePerc" 
+					Command = "gravitycontroller_brakeAngMul" 
 				})		
 			end
-			CPanel:AddControl("Label", {Text = ""})
-			CPanel:AddControl("Numpad", { 
+			panel:AddControl("Label", {Text = ""})
+			panel:AddControl("Numpad", { 
 				ButtonSize = "22", 
 				Label = "Activate", 
-				Command = "gravitycontroller_iActivateKey",
+				Command = "gravitycontroller_keyActivate",
 				Label2 = 'Hovermode',
-				Command2 = "gravitycontroller_iKeyHover",
+				Command2 = "gravitycontroller_keyHover",
 			})
-			if convtable["bRelativeToGrnd"][2]==0 then
-				CPanel:AddControl('Numpad', { 
+			if convtable["relativeToGround"][2]==0 then
+				panel:AddControl('Numpad', { 
 					ButtonSize = '22', 
 					Label = 'Hover Up', 
-					Command = "gravitycontroller_iKeyUp",
+					Command = "gravitycontroller_keyUp",
 					Label2 = 'Hover Down',
-					Command2 = "gravitycontroller_iKeyDown",
+					Command2 = "gravitycontroller_keyDown",
 				})
 			end
-			CPanel:AddControl("Slider", { 
+			panel:AddControl("Slider", { 
 				Label = "Hover Speed",
 				Type = "Float", 
 				Min = 0.01, 
 				Max = 10,
-				Command = "gravitycontroller_fHoverSpeed"
+				Command = "gravitycontroller_hoverSpeed"
 			})
-			CPanel:CheckBox("Hover relative to ground","gravitycontroller_bRelativeToGrnd")
-			if convtable["bRelativeToGrnd"][2] == 1 then		
-				CPanel:AddControl("Slider", { 
+			panel:CheckBox("Hover relative to ground","gravitycontroller_relativeToGround")
+			if convtable["relativeToGround"][2] == 1 then		
+				panel:AddControl("Slider", { 
 					Label = "Height above ground",
 					Type = "Float", 
 					Min = 1, 
 					Max = 100,
-					Command = "gravitycontroller_fHeightAboveGrnd"
+					Command = "gravitycontroller_heightAboveGround"
 				})
 			end
-			CPanel:AddControl("Label", {Text = ""})
-			CPanel:CheckBox("Hovermode Description","gravitycontroller_bSHHoverDesc")
-			if convtable["bSHHoverDesc"][2] == 1 then
-				CPanel:AddControl("Label", {Text = "The GC will act like a hoverball. It will automatically balance all GC's from a contrapion. That means, once activated, everyone of them will have the same target height. So be sure they are all on the same height when you add them to your ship!"})
+			panel:AddControl("Label", {Text = ""})
+			panel:CheckBox("Hovermode Description","gravitycontroller_descHover")
+			if convtable["descHover"][2] == 1 then
+				panel:AddControl("Label", {Text = "The GC will act like a hoverball. It will automatically balance all GC's from a contrapion. That means, once activated, everyone of them will have the same target height. So be sure they are all on the same height when you add them to your ship!"})
 			end
-			CPanel:CheckBox("Local Brake Description","gravitycontroller_bSHLocalDesc")
-			if convtable["bSHLocalDesc"][2] == 1 then
-				CPanel:AddControl("Label", {Text = "If you enable that, the GC will brake seperate on every axis. If you set every but one axis to 100, it will 'slide' along that axis. So if you want your ship not to brake as hard forward as it should sideways or upwards, this is for you!"})
+			panel:CheckBox("Local Brake Description","gravitycontroller_descLocal")
+			if convtable["descLocal"][2] == 1 then
+				panel:AddControl("Label", {Text = "If you enable that, the GC will brake seperate on every axis. If you set every but one axis to 100, it will 'slide' along that axis. So if you want your ship not to brake as hard forward as it should sideways or upwards, this is for you!"})
 			end
 		else
-			CPanel:AddControl("Label", {Text = ""})
-			CPanel:AddControl("Numpad", {
+			panel:AddControl("Label", {Text = ""})
+			panel:AddControl("Numpad", {
 				ButtonSize = "22",
 				Label = "Activate",
-				Command = "gravitycontroller_iActivateKey",
+				Command = "gravitycontroller_keyActivate",
 			})			
 		end
-		CPanel:CheckBox("SGA Powernode Mode","gravitycontroller_bSGAPowerNode")
+		panel:CheckBox("SGA Powernode Mode","gravitycontroller_stargateNode")
 	end
 	--usermessage.Hook("UpdateGravControllerPanel", updatepanel)
 	local lastupdate=0
@@ -370,8 +379,8 @@ if CLIENT then
 				break
 			end
 		end
-		if (!self:GetClientInfo("sModel")) then return end
-		local model = self:GetClientInfo("sModel")	
+		if (!self:GetClientInfo("model")) then return end
+		local model = self:GetClientInfo("model")	
 		if (!self.GhostEntity || !self.GhostEntity:IsValid() || self.GhostEntity:GetModel() != model) then
 			self:MakeGhostEntity(model, Vector(0,0,0), Angle(0,0,0))
 		end	
@@ -382,8 +391,11 @@ end
 function TOOL:UpdateSpawnGhost(ent, player)
 	if (!ent) then return end
 	if (!ent:IsValid()) then return end
-	local tr = utilx.GetPlayerTrace(player, player:GetCursorAimVector())
-	local trace = util.TraceLine(tr)
+	local trace = util.TraceLine({
+		start = player:EyePos(),
+		endpos = player:EyePos() + player:GetAimVector()*1000,
+		filter = {player}
+	})
 	if (!trace.Hit) then return end	
 	if (trace.Entity && trace.Entity:GetClass() == "gravitycontroller" || trace.Entity:IsPlayer()) then	
 		ent:SetNoDraw(true)
@@ -397,8 +409,8 @@ function TOOL:UpdateSpawnGhost(ent, player)
 	ent:SetNoDraw(false)
 end
 
-local lastupdate=0
 if SERVER then
+	local lastupdate=0
 	function TOOL:Think()
 		local crt=CurTime()
 		if lastupdate<crt+0.3 then
@@ -411,8 +423,8 @@ if SERVER then
 				end
 			end
 		end
-		if (!self:GetClientInfo("sModel")) then return end
-		local model = self:GetClientInfo("sModel")	
+		if (!self:GetClientInfo("model")) then return end
+		local model = self:GetClientInfo("model")	
 		if (!self.GhostEntity || !self.GhostEntity:IsValid() || self.GhostEntity:GetModel() != model) then
 			self:MakeGhostEntity(model, Vector(0,0,0), Angle(0,0,0))
 		end	

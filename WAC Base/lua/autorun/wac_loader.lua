@@ -1,4 +1,5 @@
 
+--[[
 WAC_Version=95
 
 MsgN("[WAC] Loading autorun/wac_loader.lua, Version "..WAC_Version)
@@ -55,3 +56,4 @@ end
 concommand.Add("wac_unload"..(SERVER and "" or "_cl"), WAC.Unload)
 
 WAC.Reload()
+]]

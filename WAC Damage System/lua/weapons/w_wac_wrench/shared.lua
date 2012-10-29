@@ -1,6 +1,7 @@
+
 SWEP.Base = "w_wac_base"
 
-SWEP.Category				= WAC.Names.WeaponCategory.Main
+SWEP.Category				= wac.menu.category .. " Weapons"
 
 SWEP.Spawnable = true
 SWEP.AdminSpawnable = true

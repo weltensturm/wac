@@ -1,5 +1,5 @@
 
-local c="WAC"
+local c=wac.menu.category
 local n="Damage System"
 
 local DrawVar = 0
@@ -7,13 +7,13 @@ local DrawHit = false
 local mat = Material("pp/blurscreen")
 
 
-WAC.Hook("Think", "wac_cl_blur_think",function()
+wac.hook("Think", "wac_cl_blur_think",function()
 	if !DrawHit then return end
 	if (LocalPlayer() == NULL) then return end	
 	DrawVar = math.max(DrawVar - FrameTime(), 0)
 end)
 
-WAC.Hook("RenderScreenspaceEffects", "wac_cl_blur_rse",function()
+wac.hook("RenderScreenspaceEffects", "wac_cl_blur_rse",function()
 	if !DrawHit then return end
 	mat:SetMaterialFloat("$blur", DrawVar*5+1)
 	render.UpdateScreenEffectTexture()

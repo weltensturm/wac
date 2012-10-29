@@ -4,7 +4,7 @@ if SERVER then
 	AddCSLuaFile ("shared.lua")	
 end
 
-SWEP.Category				=WAC.Names.WeaponCategory.TW
+SWEP.Category				=wac.menu.category .. " Tactical Weapons"
 
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
