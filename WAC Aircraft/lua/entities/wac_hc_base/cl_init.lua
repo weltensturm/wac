@@ -50,6 +50,11 @@ function ENT:Think()
 			self.Sound.Blades:ChangePitch(0,0.1)
 			self.Sound.Blades:Play()
 		end
+		if self.IsOn and self.Sound.Radio and not self.Sound.Radio:IsPlaying() then
+			self.Sound.Radio:Play()
+		elseif not self.IsOn and self.Sound.Radio and self.Sound.Radio:IsPlaying() then
+			self.Sound.Radio:Stop()
+		end
 		local frt=CurTime()-self.LastThink
 		local e=LocalPlayer():GetViewEntity()
 		if !IsValid(e) then e=LocalPlayer() end
