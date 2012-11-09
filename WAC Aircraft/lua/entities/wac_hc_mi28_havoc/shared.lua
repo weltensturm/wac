@@ -29,7 +29,7 @@ function ENT:AddSeatTable()
 			Pos=Vector(54.74,0,85.22),
 			ExitPos=Vector(54.74,80,5),
 			wep={
-				WAC.Helicopter.GetWeapon("Hydra 70",{
+				wac.aircraft.getWeapon("Hydra 70",{
 					Name="S-8",
 					Ammo=40,
 					MaxAmmo=40,
@@ -46,9 +46,9 @@ function ENT:AddSeatTable()
 			Pos=Vector(115.3,0,61),
 			ExitPos=Vector(115.3,60,5),
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
-				WAC.Helicopter.GetWeapon("2A42"),
-				WAC.Helicopter.GetWeapon("Hellfire",{
+				wac.aircraft.getWeapon("No Weapon"),
+				wac.aircraft.getWeapon("2A42"),
+				wac.aircraft.getWeapon("Hellfire",{
 					Name="9M120",
 					ShootPos={
 						Vector(3.22,102.38,59.59),

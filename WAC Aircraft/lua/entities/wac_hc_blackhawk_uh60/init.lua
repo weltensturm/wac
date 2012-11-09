@@ -17,6 +17,7 @@ ENT.BrakeMul		= 1
 ENT.AngBrakeMul	= 0.01
 ENT.Weight		= 8000
 
+
 ENT.WheelInfo={
 	{
 		mdl="models/BF2/helicopters/Mil Mi-28/mil mi-28_tailwheel.mdl",

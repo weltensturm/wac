@@ -5,7 +5,7 @@ wac.damageSystem = wac.damageSystem or {
 	
 	settings = {
 		enable = CreateConVar("wac_damagesystem_enable", 1, FCVAR),
-		damageExplosion = CreateConVar("wac_damagesystem_explosiondamage", 1, FCVAR),
+		damageExplosion = CreateConVar("wac_damagesystem_explosiondamage", 5, FCVAR),
 		damageContraption = CreateConVar("wac_damagesystem_contraptiondamage", 0.5, FCVAR),
 		damageEntity = CreateConVar("wac_damagesystem_entitydamage", 0.1, FCVAR),
 		destroyMode = CreateConVar("wac_damagesystem_destroymode", 1, FCVAR),

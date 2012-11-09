@@ -24,7 +24,7 @@ if SERVER then
 			end)
 		end
 	end
-	wac.hook("PlayerunSpeedpawn", "wac_playerunSpeedpeed_spawn", update)
+	wac.hook("PlayerSpawn", "wac_player_spawn", update)
 	concommand.Add("wac_player_update", update)
 
 else

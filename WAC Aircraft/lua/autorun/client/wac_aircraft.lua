@@ -1,6 +1,6 @@
 
-include("wac/aircraft.lua")
-include("wac/keyboard.lua")
+include "wac/aircraft.lua"
+include "wac/keyboard.lua"
 
 CreateClientConVar("wac_cl_air_realism", 3, true, true)
 CreateClientConVar("wac_cl_air_sensitivity", 1, true, true)
@@ -49,8 +49,11 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 	p.wac.air = p.wac.air or {}
 
 	local aircraft = p:GetVehicle():GetNWEntity("wac_aircraft")
+	if !IsValid(aircraft) then return false end
 
-	if p.wac.thirdPerson != GetConVar("gmod_vehicle_viewmode"):GetBool() then
+	local thirdPerson = p:GetVehicle():GetThirdPersonMode()
+
+	if p.wac.thirdPerson != thirdPerson then
 		p.wac.thirdPerson = !p.wac.thirdPerson
 		if IsValid(aircraft) then
 			aircraft:onViewSwitch(p, p.wac.thirdPerson)
@@ -85,7 +88,7 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 	else
 		if p.wac.inAircraft then
 			p.wac.inAircraft = false
-			if !GetConVar("gmod_vehicle_viewmode"):GetBool() then
+			if !thirdPerson then
 				p.wac.localView = {
 					origin = p.wac.lastView.origin - pos,
 					angles = p.wac.lastView.angles - ang,
@@ -337,7 +340,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	panel:AddControl("Label", {Text = ""})
 	panel:AddControl("Label", {Text = "Admin Settings"})
 
-	panel:CheckBox("Server Tickrate is 66","wac_air_doubletick")
+	panel:CheckBox("Double Force","wac_air_doubletick")
 
 	panel:AddControl("Slider", {
 		Label="Start Speed",

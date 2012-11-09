@@ -23,7 +23,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(140,-100,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 		[2]={
@@ -31,7 +31,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(140,100,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 		[3]={
@@ -40,7 +40,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(33,-100,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 		[4]={
@@ -49,7 +49,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(33,101.04,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 		[5]={
@@ -58,7 +58,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(33,100,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 		[6]={
@@ -66,7 +66,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(-20,100,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 		[7]={
@@ -74,7 +74,7 @@ function ENT:AddSeatTable()
 			ExitPos=Vector(-20,-100,3),
 			NoHud=true,
 			wep={
-				WAC.Helicopter.GetWeapon("No Weapon"),
+				wac.aircraft.getWeapon("No Weapon"),
 			},
 		},
 	}
@@ -90,5 +90,6 @@ function ENT:AddSounds()
 		MinorAlarm=CreateSound(self.Entity,"HelicopterVehicle/MinorAlarm.mp3"),
 		LowHealth=CreateSound(self.Entity,"HelicopterVehicle/LowHealth.mp3"),
 		CrashAlarm=CreateSound(self.Entity,"HelicopterVehicle/CrashAlarm.mp3"),
+		Radio=CreateSound(self.Entity, "HelicopterVehicle/MissileNearby.mp3"),
 	}
 end

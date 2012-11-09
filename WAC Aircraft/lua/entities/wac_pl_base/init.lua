@@ -165,7 +165,7 @@ function ENT:PhysicsUpdate(ph)
 		end
 	end
 	
-	local angbrake=((self.TopRotor) and ph:GetAngleVelocity()*self.AngBrakeMul/math.pow(realism,2)*9 or NULLVEC)
+	local angbrake=((self.TopRotor) and ph:GetAngleVelocity()*self.AngBrakeMul/math.pow(realism,2)*9 or Vector(0,0,0))
 
 	local targetVelocity = 
 		fwd * (self.upMul * self.rotorRpm + self.rotorRpm/10) * self.EngineForce / 35

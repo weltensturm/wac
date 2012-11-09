@@ -39,7 +39,7 @@ function ENT:Think()
 
 		local vehicle = LocalPlayer():GetVehicle()
 		local inVehicle = false
-		if GetConVar("gmod_vehicle_viewmode"):GetInt() == 0 and vehicle and vehicle:IsValid() and vehicle:GetNetworkedEntity("wac_aircraft") == self then
+		if --[[GetConVar("gmod_vehicle_viewmode"):GetInt() == 0 and]] vehicle and vehicle:IsValid() and vehicle:GetNetworkedEntity("wac_aircraft") == self then
 			inVehicle = true
 		end
 		self.Sound.Engine:ChangePitch(engineVal,0.1)

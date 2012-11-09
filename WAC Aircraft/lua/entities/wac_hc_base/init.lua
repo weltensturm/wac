@@ -218,7 +218,7 @@ function ENT:AddBackRotor()
 	e:SetModel(self.BackRotorModel)
 	e:SetAngles(self:GetAngles())
 	e:SetPos(self:LocalToWorld(self.BackRotorPos))
-	e:SetOwner(self.Owner)
+	e.Owner = self.Owner
 	e:SetNWFloat("rotorhealth", 100)
 	e.wac_ignore=true
 	e.TouchFunc = function(touchedEnt, pos)
@@ -250,12 +250,11 @@ function ENT:AddBackRotor()
 	end
 	e.OnTakeDamage = function(e, dmg)
 		if !dmg:IsExplosionDamage() then
-			dmg:ScaleDamage(0.10)
+			dmg:ScaleDamage(0.2)
 		end
-		local rdmg = dmg:GetDamage()
 		self.LastAttacker = dmg:GetAttacker()
 		self.LastDamageTaken = CurTime()
-		self:DamageSmallRotor(rdmg)
+		self:DamageSmallRotor(dmg:GetDamage())
 		e:TakePhysicsDamage(dmg)
 	end
 	e.Think = function(self) end
@@ -276,7 +275,7 @@ function ENT:AddStuff() end
 
 function ENT:AddSeats()
 	self.Seats={}
-	local e=self:addEntity("wac_v_connector")
+	local e=self:addEntity("wac_seat_connector")
 	e:SetPos(self:LocalToWorld(self.SeatSwitcherPos))
 	e:SetNoDraw(true)
 	e:Spawn()
@@ -827,7 +826,7 @@ function ENT:DamageSmallRotor(amt)
 	self.Entity:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,20,200))
 	if self.BackRotor and self.BackRotor:IsValid() then
 		self.BackRotor.fHealth = self.BackRotor.fHealth - amt
-		self.BackRotor.Phys:AddAngleVelocity(Vector(0,-amt*40,0))
+		self.BackRotor.Phys:AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity()*-amt/50)
 		if self.BackRotor.fHealth < 0 then
 			self:KillBackRotor()
 			if !self.Sound.CrashAlarm:IsPlaying() and !self.disabled then
@@ -851,7 +850,8 @@ function ENT:KillBackRotor()
 	e:SetModel(self.BackRotor:GetModel())
 	e:Spawn()
 	e:SetVelocity(self.BackRotor:GetVelocity())
-	e:GetPhysicsObject():AddAngleVelocity(self.BackRotor:GetPhysicsObject():GetAngleVelocity())
+	e:GetPhysicsObject():AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity())
+	e:GetPhysicsObject():SetMass(self.BackRotor.Phys:GetMass())
 	self.BackRotor:Remove()
 	self.BackRotor=nil
 	timer.Simple(10, function()

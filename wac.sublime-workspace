@@ -79,112 +79,8 @@
 	},
 	"buffers":
 	[
-		{
-			"file": "WAC Damage System/lua/entities/wac_w_base_bullet/shared.lua",
-			"settings":
-			{
-				"buffer_size": 106,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/weapons/gmod_tool/stools/wac_turretcreator.lua",
-			"settings":
-			{
-				"buffer_size": 7744,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/weapons/gmod_tool/stools/wac_podcamera.lua",
-			"settings":
-			{
-				"buffer_size": 1918,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/weapons/gmod_tool/stools/wac_weaponcreator.lua",
-			"settings":
-			{
-				"buffer_size": 14152,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/entities/wac_w_base_bullet/init.lua",
-			"settings":
-			{
-				"buffer_size": 2766,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/WAC/wac_damagesystem.lua",
-			"settings":
-			{
-				"buffer_size": 0,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/autorun/wac_damagesystem.lua",
-			"settings":
-			{
-				"buffer_size": 4455,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/entities/wac_w_base/init.lua",
-			"settings":
-			{
-				"buffer_size": 4928,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/effects/wac_25mm_impact/init.lua",
-			"settings":
-			{
-				"buffer_size": 3432,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/entities/wac_c4/shared.lua",
-			"settings":
-			{
-				"buffer_size": 195,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/entities/wac_c4/cl_init.lua",
-			"settings":
-			{
-				"buffer_size": 73,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/entities/wac_c4/init.lua",
-			"settings":
-			{
-				"buffer_size": 2707,
-				"line_ending": "Windows"
-			}
-		},
-		{
-			"file": "WAC Damage System/lua/WAC/server/e_damage.lua",
-			"settings":
-			{
-				"buffer_size": 5375,
-				"line_ending": "Windows"
-			}
-		}
 	],
-	"build_system": "Packages/User/pi.sublime-build",
+	"build_system": "Packages/User/D engine.sublime-build",
 	"command_palette":
 	{
 		"height": 60.0,
@@ -256,6 +152,81 @@
 	},
 	"file_history":
 	[
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gl/material.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/math/vector.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/math/angle.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gui/base.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/engine/engine.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gl/texture.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/list.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/decode.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/engine/gui/console.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gui/textBox.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/math/math.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/engine/gui/world.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gui/osWindow.d",
+		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_ah1z_viper/cl_init.lua",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gl/gl.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/time.d",
+		"/C/Users/weltensturm/ownCloud/test.txt",
+		"/C/Users/weltensturm/Downloads/test.txt",
+		"/C/Users/weltensturm/AppData/Roaming/Sublime Text 2/Packages/User/D engine.sublime-build",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/file/obj.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/ws/gui/keyboard.d",
+		"/C/D/dmd2/src/druntime/import/object.di",
+		"/E/Projects/wac/WAC Base/lua/wac/base.lua",
+		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_ah1z_viper/init.lua",
+		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_mi28_havoc/init.lua",
+		"/C/D/dm/include/win32/oleauto.h",
+		"/C/D/dm/include/win32/RPCDCE.H",
+		"/C/D/dm/include/win32/SETUPAPI.H",
+		"/C/D/dm/include/win32/wingdi.h",
+		"/C/D/dmd2/html/d/changelog.html",
+		"/C/D/dmd2/html/d/simd.html",
+		"/C/D/dmd2/html/d/version.html",
+		"/C/D/dmd2/src/dmd/cast.c",
+		"/C/D/dmd2/src/dmd/expression.c",
+		"/C/D/dmd2/src/dmd/expression.h",
+		"/C/D/dmd2/src/dmd/glue.c",
+		"/C/D/dmd2/src/dmd/init.c",
+		"/C/D/dmd2/src/dmd/mtype.c",
+		"/C/D/dmd2/src/dmd/mtype.h",
+		"/C/D/dmd2/src/dmd/template.c",
+		"/C/D/dmd2/src/dmd/todt.c",
+		"/C/D/dmd2/src/dmd/typinf.c",
+		"/C/D/dmd2/src/dmd/backend/gloop.c",
+		"/C/D/dmd2/src/druntime/import/core/stdc/stdarg.d",
+		"/C/D/dmd2/src/druntime/src/object.di",
+		"/C/D/dmd2/src/druntime/src/object_.d",
+		"/C/D/dmd2/src/druntime/src/core/stdc/stdarg.d",
+		"/C/D/libraries/derelict/import/derelict/freetype/functions.d",
+		"/C/D/libraries/derelict/import/derelict/freetype/types.d",
+		"/C/D/libraries/derelict/import/derelict/ode/functions.d",
+		"/C/D/libraries/win32/oleauto.d",
+		"/C/D/libraries/win32/wingdi.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/engine/entity/base.d",
+		"/C/Users/weltensturm/Dropbox/Projects/d/engine/test.d",
+		"/C/Users/weltensturm/AppData/Roaming/Sublime Text 2/Packages/C++/C++.sublime-build",
+		"/C/Users/weltensturm/AppData/Roaming/Sublime Text 2/Packages/User/pi.sublime-build",
+		"/C/Users/weltensturm/AppData/Roaming/Sublime Text 2/Packages/D/D.sublime-build",
+		"/C/D/dmd2/src/phobos/std/stdio.d",
+		"/E/Downloads/Games/Black and White 2/README.txt",
+		"/E/Projects/wac/WAC Damage System/lua/WAC/wac_damagesystem.lua",
+		"/E/Projects/wac/WAC Damage System/lua/entities/wac_w_base_bullet/init.lua",
+		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/wac_weaponcreator.lua",
+		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/wac_podcamera.lua",
+		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/wac_turretcreator.lua",
+		"/E/Projects/wac/WAC Damage System/lua/entities/wac_w_base_bullet/shared.lua",
+		"/E/Projects/wac/WAC Damage System/lua/autorun/wac_damagesystem.lua",
+		"/E/Projects/wac/WAC Damage System/lua/entities/wac_c4/cl_init.lua",
+		"/E/Projects/wac/WAC Damage System/lua/entities/wac_c4/shared.lua",
+		"/E/Projects/wac/WAC Damage System/lua/effects/wac_25mm_impact/init.lua",
+		"/E/Projects/wac/WAC Damage System/lua/entities/wac_w_base/init.lua",
+		"/E/Projects/wac/WAC Damage System/lua/entities/wac_c4/init.lua",
+		"/C/Users/weltensturm/Desktop 4/KSP/readme.txt",
+		"/C/Users/weltensturm/AppData/Local/Temp/Rar$DIa0.660/README.txt",
+		"/E/Projects/wac/WAC Damage System/lua/WAC/server/e_damage.lua",
+		"/C/Users/weltensturm/AppData/Local/Temp/Rar$DIa0.271/info.txt",
 		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/Joystick Module/documentation.txt",
 		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/Joystick Module/documentation_unformatted.txt",
 		"/E/Projects/wac/WAC Damage System/lua/effects/bf2_c4splode/init.lua",
@@ -268,7 +239,6 @@
 		"/E/Projects/wac/WAC Gravity Controller/lua/autorun/server/wac_gravitycontroller.lua",
 		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_base/init.lua",
 		"/E/Projects/wac/WAC Aircraft/lua/autorun/server/wac_aircraft.lua",
-		"/E/Projects/wac/WAC Base/lua/wac/base.lua",
 		"/E/Projects/wac/WAC Base/lua/weapons/gmod_tool/stools/wac_linker.lua",
 		"/E/Projects/wac/WAC Base/lua/entities/wac_seat_connector/init.lua",
 		"/E/Projects/wac/WAC Base/lua/entities/wac_seat_connector/shared.lua",
@@ -282,7 +252,6 @@
 		"/E/Projects/wac/WAC Base/lua/entities/wac_rt7_cam/shared.lua",
 		"/E/Projects/wac/WAC Base/lua/entities/wac_rt7_screen/shared.lua",
 		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hitdetector/shared.lua",
-		"/E/Projects/wac/WAC Damage System/lua/entities/wac_w_base_bullet/shared.lua",
 		"/E/Projects/wac/WAC Damage System/lua/entities/wac_w_grenade/shared.lua",
 		"/E/Projects/wac/WAC Gravity Controller/lua/entities/GravityController/shared.lua",
 		"/E/Projects/wac/WAC Base/lua/entities/wac_playerspawn/shared.lua",
@@ -292,7 +261,6 @@
 		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_rocket/shared.lua",
 		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_v_connector/shared.lua",
 		"/E/Projects/wac/WAC Aircraft/lua/wac/shared/d_lib.lua",
-		"/E/Projects/wac/WAC Damage System/lua/entities/wac_c4/shared.lua",
 		"/E/Projects/wac/WAC Damage System/lua/entities/wac_v_turret_00/shared.lua",
 		"/E/Projects/wac/WAC Damage System/lua/entities/wac_v_turret_01/shared.lua",
 		"/E/Projects/wac/WAC Damage System/lua/entities/wac_v_turret_10/shared.lua",
@@ -311,79 +279,7 @@
 		"/E/Projects/wac/WAC Weapons/lua/autorun/wac_weapons.lua",
 		"/E/Projects/wac/WAC Damage System/lua/entities/wac_wreck/shared.lua",
 		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_mw_ak47/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_mw_fal/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_mw_m4/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_fn2000/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_g36/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_m14/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_m4aim/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_coltm1911/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_m24/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_tw_m3/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_mw_interv/shared.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/w_wac_c4/shared.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/w_wac_sraw/shared.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/w_wac_wrench/shared.lua",
-		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_css_m3/shared.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/client/wac_seatswitcher.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_spawnmod.lua",
-		"/E/Projects/wac/WAC Aircraft/lua/wac/shared/e_helicopter.lua",
-		"/E/Projects/wac/WAC Aircraft/lua/autorun/wac_helicopter.lua",
-		"/E/Projects/wac/WAC Weapons/lua/WAC/shared/e_weapons.lua",
-		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_ah1z_viper/shared.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_playerhealth.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/client/wac_speedblur.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_playerspeed.lua",
-		"/E/Projects/wac/WAC Base/lua/weapons/gmod_tool/stools/entity_linker.lua",
-		"/E/Projects/wac/WAC Aircraft/lua/entities/wac_hc_base/cl_init.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_base.lua",
-		"/E/Projects/wac/WAC Base/lua/weapons/gmod_tool/stools/wac_podcamera.lua",
-		"/E/Projects/wac/WAC Base/lua/weapons/gmod_tool/stools/wac_rt7_tool.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/entity_linker.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/wac_podcamera.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/wac_turretcreator.lua",
-		"/E/Projects/wac/WAC Damage System/lua/weapons/gmod_tool/stools/wac_weaponcreator.lua",
-		"/E/Projects/wac/WAC Base/lua/entities/wac_rt7_cam/cl_init.lua",
-		"/E/Projects/wac/WAC Weapons/lua/WAC/client/e_clbullet.lua",
-		"/E/Projects/wac/WAC Weapons/lua/WAC/client/e_view.lua",
-		"/E/Projects/wac/WAC Weapons/lua/WAC/server/e_headshotfix.lua",
-		"/E/Projects/wac/WAC Weapons/lua/WAC/server/e_physbullet.lua",
-		"/E/Projects/wac/WAC Damage System/lua/WAC/server/e_damage.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/client/wac_deathview.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/client/wac_autosave.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/addons.txt",
-		"/E/Projects/wac/WAC Base/lua/wac/shared/e_walkmod.lua",
-		"/E/Projects/wac/WAC Base/lua/wac/client/e_menu_misc.lua",
-		"/E/Projects/wac/WAC Base/lua/wac/client/e_menu_walkmod.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_loader.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_autosave.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_deathview.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_downloadlua.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_keypanel.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/autorun/wac_deathview.lua",
-		"/E/Projects/wac/WAC Base/lua/wac/client/e_menu_healthmod.lua",
-		"/E/Projects/wac/README.md",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_npc_headshotfix.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_podcam.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_seatswitcher.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_servertag.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_speedblur.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/autorun/wac_ammo.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Sweps/lua/WAC/shared/e_weapons.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/autorun/wac_loader.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/autorun/wac_downloadlua.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Aircraft/lua/autorun/client/wac_aircraft.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/wac/shared/e_healthmod.lua",
-		"/E/Projects/wac/WAC Base/lua/autorun/wac_headshotfix.lua",
-		"/E/Projects/wac/WAC Base/lua/wac/server/e_headshotfix.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/wac/shared/d_lib.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/autorun/wac_base.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/wac/base.lua",
-		"/C/Users/weltensturm/AppData/Local/Temp/srcC1A0.txt",
-		"/C/Users/weltensturm/AppData/Local/Temp/src9208.txt",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/wac/server/e_ammomod.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/autorun/wac_spawnmod.lua",
-		"/E/Program Files (x86)/Steam/steamapps/kleinlui/garrysmod/garrysmod/addons/WAC Base/lua/effects/wac_rocket_trail/init.lua"
+		"/E/Projects/wac/WAC Weapons/lua/weapons/w_wac_mw_fal/shared.lua"
 	],
 	"find":
 	{
@@ -402,6 +298,19 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"size()",
+			"Vector!3",
+			"Vector ",
+			"VectorBase",
+			"},",
+			"o.",
+			" function(string content, OBJ o){",
+			"function(string content, OBJ o){",
+			"memcpy",
+			"GL_WRAP_BORDER",
+			"glTexParameter",
+			"GL_WRAP_BORDER",
+			"GL_TEXTURE_2D",
 			"Validate",
 			"dmg",
 			"rad",
@@ -516,27 +425,20 @@
 			"CPanel",
 			"CrT",
 			"autosavetime",
-			"CPanel",
-			"b",
-			"jp",
-			"rs",
-			"ws",
-			"wac_walkm",
-			"WAC.ScaleMod",
-			"WAC.WalkMod",
-			"WAC.Hook",
-			"healthMod",
-			"WAC.HealthMod",
-			"gvar",
-			"wac_NextArmorGive",
-			"wac_NextHealthGive"
+			"CPanel"
 		],
 		"highlight": true,
 		"in_selection": false,
-		"preserve_case": false,
+		"preserve_case": true,
 		"regex": false,
 		"replace_history":
 		[
+			"length",
+			"Vector",
+			"Vector!3 ",
+			"Vector",
+			"break;",
+			"",
 			"amount",
 			"radius",
 			"attacker",
@@ -658,380 +560,24 @@
 			"p:KeyDown",
 			"	",
 			"float",
-			"keyboard::backspace",
-			"keyboard::escape",
-			"keyboard::down",
-			"keyboard::up",
-			"key",
-			"keyboard::key",
-			"mouse::wheelDown"
+			"keyboard::backspace"
 		],
 		"reverse": true,
 		"show_context": true,
 		"use_buffer2": true,
-		"whole_word": true,
+		"whole_word": false,
 		"wrap": true
 	},
 	"groups":
 	[
 		{
-			"selected": 6,
 			"sheets":
 			[
-				{
-					"buffer": 0,
-					"file": "WAC Damage System/lua/entities/wac_w_base_bullet/shared.lua",
-					"settings":
-					{
-						"buffer_size": 106,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								53,
-								53
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "WAC Damage System/lua/weapons/gmod_tool/stools/wac_turretcreator.lua",
-					"settings":
-					{
-						"buffer_size": 7744,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								6108,
-								5989
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2310.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "WAC Damage System/lua/weapons/gmod_tool/stools/wac_podcamera.lua",
-					"settings":
-					{
-						"buffer_size": 1918,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								34,
-								34
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "WAC Damage System/lua/weapons/gmod_tool/stools/wac_weaponcreator.lua",
-					"settings":
-					{
-						"buffer_size": 14152,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 3754.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 4,
-					"file": "WAC Damage System/lua/entities/wac_w_base_bullet/init.lua",
-					"settings":
-					{
-						"buffer_size": 2766,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1937,
-								1937
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 312.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "WAC Damage System/lua/WAC/wac_damagesystem.lua",
-					"settings":
-					{
-						"buffer_size": 0,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"auto_name": "",
-							"syntax": "Packages/Lua/Lua.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 6,
-					"file": "WAC Damage System/lua/autorun/wac_damagesystem.lua",
-					"settings":
-					{
-						"buffer_size": 4455,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								0,
-								0
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		},
 		{
-			"selected": 4,
 			"sheets":
 			[
-				{
-					"buffer": 7,
-					"file": "WAC Damage System/lua/entities/wac_w_base/init.lua",
-					"settings":
-					{
-						"buffer_size": 4928,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2592,
-								2592
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 495.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 8,
-					"file": "WAC Damage System/lua/effects/wac_25mm_impact/init.lua",
-					"settings":
-					{
-						"buffer_size": 3432,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1064,
-								1064
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 9,
-					"file": "WAC Damage System/lua/entities/wac_c4/shared.lua",
-					"settings":
-					{
-						"buffer_size": 195,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								146,
-								146
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 10,
-					"file": "WAC Damage System/lua/entities/wac_c4/cl_init.lua",
-					"settings":
-					{
-						"buffer_size": 73,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1,
-								1
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage"
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 11,
-					"file": "WAC Damage System/lua/entities/wac_c4/init.lua",
-					"settings":
-					{
-						"buffer_size": 2707,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								858,
-								858
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 39.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				},
-				{
-					"buffer": 12,
-					"file": "WAC Damage System/lua/WAC/server/e_damage.lua",
-					"settings":
-					{
-						"buffer_size": 5375,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1344,
-								1344
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/Lua/Lua.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 74.0,
-						"zoom_level": 1.0
-					},
-					"type": "text"
-				}
 			]
 		}
 	],
@@ -1063,7 +609,7 @@
 		"cols":
 		[
 			0.0,
-			0.5,
+			0.495818399044,
 			1.0
 		],
 		"rows":
@@ -1075,7 +621,7 @@
 	"menu_visible": false,
 	"output.exec":
 	{
-		"height": 87.0
+		"height": 137.0
 	},
 	"replace":
 	{
@@ -1087,6 +633,30 @@
 		"height": 0.0,
 		"selected_items":
 		[
+			[
+				"base.d",
+				"d/ws/gui/base.d"
+			],
+			[
+				"oswindow",
+				"d/ws/gui/osWindow.d"
+			],
+			[
+				"time.d",
+				"d/ws/time.d"
+			],
+			[
+				"list.d",
+				"d/ws/list.d"
+			],
+			[
+				"list",
+				"d/ws/list.d"
+			],
+			[
+				"oswindow.d",
+				"d/ws/gui/osWindow.d"
+			],
 			[
 				"d_lib",
 				"lua/wac/shared/d_lib.lua"
@@ -1386,10 +956,6 @@
 			[
 				"batch",
 				"engine/ws/ws/graphics/batch.cpp"
-			],
-			[
-				"oswindow",
-				"engine/ws/ws/gui/osWindow.cpp"
 			],
 			[
 				"path",

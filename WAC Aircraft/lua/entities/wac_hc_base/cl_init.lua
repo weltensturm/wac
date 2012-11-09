@@ -24,9 +24,6 @@ function ENT:Initialize()
 		self.BlurCModel:SetNoDraw(true)
 	end
 	self.RotorTime = 0
-	if self.ThirdPDist then
-		self.thirdPerson.distance = self.ThirdPDist
-	end
 end
 
 function ENT:Think()
@@ -67,9 +64,9 @@ function ENT:Think()
 		local vehicle = LocalPlayer():GetVehicle()
 		local inVehicle = false
 		if 
-				(GetConVar("gmod_vehicle_viewmode"):GetInt() == 0)
-				and IsValid(vehicle)
-				and vehicle:GetNetworkedEntity("wac_aircraft") == self
+			IsValid(vehicle)
+			and not vehicle:GetThirdPersonMode()
+			and vehicle:GetNetworkedEntity("wac_aircraft") == self
 		then
 			inVehicle = true
 		end
@@ -289,11 +286,12 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	elseif seat.CalcView then
 		view = seat.CalcView(self,weapon,p,pos,ang,view)
 	else
-		if GetConVar("gmod_vehicle_viewmode"):GetInt() == 0 then
+		if !p:GetVehicle():GetThirdPersonMode() then
 			view = self:viewCalcFirstPerson(k, p, view)
 		else
 			view = self:viewCalcThirdPerson(k, p, view)
 		end
+		view = self:viewCalcFirstPerson(k, p, view)
 	end
 	if p.wac.air.localTarget then
 		p.wac.air.localActual = p.wac.air.localActual or table.Copy(p.wac.air.localTarget)
