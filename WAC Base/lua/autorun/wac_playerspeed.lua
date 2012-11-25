@@ -39,7 +39,15 @@ else
 	wac.hook("RenderScreenspaceEffects", "wac_cl_speedblur", function()
 		local p = LocalPlayer()
 		local doll = p:GetRagdollEntity()
-		vel=((p:GetMoveType()!=MOVETYPE_NOCLIP or blur.inNoclip:GetInt()==1) and !p:InVehicle() and p:GetViewEntity()==p and blur.enable:GetInt()==1) and p:GetVelocity():Length()-200 or 0
+		if
+			p:GetViewEntity() == p and blur.enable:GetBool()
+			and (p:GetMoveType() != MOVETYPE_NOCLIP or blur.inNoclip:GetBool())
+			and !p:InVehicle() and (!p:Alive() or IsValid(p:GetRagdollEntity()))
+		then
+			vel = p:Alive() and p:GetVelocity():Length()-200 or p:GetRagdollEntity():GetVelocity():Length()-200
+		else
+			vel = 0
+		end
 		blur.smooth = blur.smooth-(blur.smooth-vel)*FrameTime()*4
 		if blur.smooth > 0 then
 			if !blur.sound then

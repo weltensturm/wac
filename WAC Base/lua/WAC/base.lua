@@ -31,8 +31,8 @@ wac = wac or {
 	end,
 
 	smoothApproach = function(x,y,s,c)
-		if !x then error("first argument nil", 2) end
-		if !y then error("second argument nil", 2) end
+		if not x then error("first argument nil", 2) end
+		if not y then error("second argument nil", 2) end
 		local FrT=math.Clamp(FrameTime(), 0.001, 0.035)*0.3
 		c=(c and c*FrT)or(99999)
 		return x-math.Clamp((x-y)*s*FrT,-c,c)
@@ -45,7 +45,7 @@ wac = wac or {
 	end,
 
 	smoothApproachAngles = function(a1,a2,s,c)
-		if !a1 or !a2 then error("one argument is nil", 2) end
+		if not a1 or not a2 then error("one argument is nil", 2) end
 		a1.p = wac.smoothApproachAngle(a1.p, a2.p, s,c)
 		a1.y = wac.smoothApproachAngle(a1.y, a2.y, s,c)
 		a1.r = wac.smoothApproachAngle(a1.r, a2.r, s,c)
@@ -53,9 +53,9 @@ wac = wac or {
 	end,
 
 	smoothApproachVector = function(begin, target, s, c)
-		if !begin then error("first argument is nil", 2) end
-		if !target then error("second argument is nil", 2) end
-		if !s then error("third argument is nil", 2) end
+		if not begin then error("first argument is nil", 2) end
+		if not target then error("second argument is nil", 2) end
+		if not s then error("third argument is nil", 2) end
 		local dir = (begin-target):GetNormal()
 		local dist = begin:Distance(target)
 		local var = wac.smoothApproach(0,dist,s,c)

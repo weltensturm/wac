@@ -1,5 +1,5 @@
 
-if !game.SinglePlayer() then return end
+if not game.SinglePlayer() then return end
 
 local cms={
 	x=CreateClientConVar("wac_cl_air_clmodel_line_x",0,true,false),

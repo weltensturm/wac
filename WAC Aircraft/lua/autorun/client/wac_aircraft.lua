@@ -40,95 +40,34 @@ wac.key.addHook("wac_cl_air_keyboard", function(key, pressed)
 	end
 end)
 
---[[
-Plays enter and exit animations, calls entity viewCalc
-]]
+
+
 wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 
 	p.wac = p.wac or {}
 	p.wac.air = p.wac.air or {}
 
-	local aircraft = p:GetVehicle():GetNWEntity("wac_aircraft")
-	if !IsValid(aircraft) then return false end
-
-	local thirdPerson = p:GetVehicle():GetThirdPersonMode()
-
-	if p.wac.thirdPerson != thirdPerson then
-		p.wac.thirdPerson = !p.wac.thirdPerson
-		if IsValid(aircraft) then
-			aircraft:onViewSwitch(p, p.wac.thirdPerson)
-		end
-	end
-
-	local targetView;
-	if IsValid(aircraft) and GetViewEntity() == p and aircraft.SeatsT then
-		local pid = p:GetNWInt("wac_passenger_id")
-		if pid == 0 then pid = 1 end
-
-		if !p.wac.inAircraft then
-			aircraft:onEnter(p)
-		end
-		targetView = aircraft:viewCalc(pid, p, pos, ang, fov)
-
-		if !p.wac.inAircraft then
-			p.wac.inAircraft = true
-			p.wac.localView = {
-					--[[origin = p.wac.lastView.origin - pos,
-					angles = Angle(
-							math.AngleDifference(p.wac.lastView.angles.p, ang.p),
-							math.AngleDifference(p.wac.lastView.angles.y, ang.y),
-							math.AngleDifference(p.wac.lastView.angles.r, ang.r)
-					),
-				fov = fov - targetView.fov]]
-				origin = Vector(0,0,0),
-				angles = Angle(0,0,0),
-				fov = 0
+	local aircraft = p.wac.air.vehicle --p:GetVehicle():GetNWEntity("wac_aircraft")
+	if !IsValid(aircraft) then
+		if IsValid(p:GetVehicle():GetNWEntity("wac_aircraft")) then
+			aircraft = p:GetVehicle():GetNWEntity("wac_aircraft")
+			aircraft.viewPos = {
+				origin = p.wac.air.lastView.origin - pos,
+				angles = p.wac.air.lastView.angles - ang,
+				fov = fov
 			}
-		end
-	else
-		if p.wac.inAircraft then
-			p.wac.inAircraft = false
-			if !thirdPerson then
-				p.wac.localView = {
-					origin = p.wac.lastView.origin - pos,
-					angles = p.wac.lastView.angles - ang,
-					fov = p.wac.lastView.fov - fov
-				}
-			end
+			aircraft:onEnter(p)
+		else
+			p.wac.air.vehicle = nil
+			p.wac.air.lastView = {origin=pos, angles=ang, fov=fov}
+			return false
 		end
 	end
 	
-	if p:GetVehicle():IsValid() then
-		if !p.wac.inVehicle then
-			p.wac.inVehicle = true
-		end
-	else
-		p.wac.inVehicle = false
+	local i = p:GetNWInt("wac_passenger_id")
+	if p.wac.air.vehicle and GetViewEntity() == p and aircraft.SeatsT then
+		return aircraft:viewCalc((i==0 and 1 or i), p, pos, ang, fov)
 	end
-
-	if p.wac.localView then
-		wac.smoothApproachVector(p.wac.localView.origin, Vector(0,0,0), 20)
-		p.wac.localView.angles = wac.smoothApproachAngles(p.wac.localView.angles, Angle(0,0,0), 20)
-		p.wac.localView.fov = wac.smoothApproach(p.wac.localView.fov, 0, 20)
-
-		if p.wac.localView.fov < 0.01 and p.wac.localView.origin:Distance(Vector(0,0,0)) < 0.01 and !targetView then
-			p.wac.localView = nil
-			return
-		end
-
-		targetView = targetView or {origin = pos, angles = ang, fov = fov}
-
-		return {
-			origin = targetView.origin + p.wac.localView.origin,
-			angles = targetView.angles + p.wac.localView.angles,
-			fov = targetView.fov + p.wac.localView.fov
-		}
-	end
-	--[[
-	if IsValid(aircraft) and aircraft.SeatsT and p:GetNWInt("wac_passenger_id") != 0 then
-		return aircraft:viewCalc(p:GetNWInt("wac_passenger_id"), p, pos, ang, fov)
-	end
-	]]
 
 end)
 

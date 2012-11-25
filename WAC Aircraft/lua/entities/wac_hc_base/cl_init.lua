@@ -65,7 +65,7 @@ function ENT:Think()
 		local inVehicle = false
 		if 
 			IsValid(vehicle)
-			and not vehicle:GetThirdPersonMode()
+			and !vehicle:GetThirdPersonMode()
 			and vehicle:GetNetworkedEntity("wac_aircraft") == self
 		then
 			inVehicle = true
@@ -75,8 +75,8 @@ function ENT:Think()
 		self.Sound.Blades:ChangePitch(math.Clamp(val, 10, 150), 0.1)
 		self.Sound.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5), 0.1)
 		if self.Sound.Start then
-			self.Sound.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*150, 0, 100)/100, 0.1)
-			self.Sound.Start:ChangePitch(100 - self.engineRpm*30, 0.1)
+			self.Sound.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*110, 0, 100)/100, 0.1)
+			self.Sound.Start:ChangePitch(100 - self.engineRpm*20, 0.1)
 		end
 		self.LastThink=CurTime()
 	else
@@ -199,7 +199,7 @@ function ENT:DrawHUD(k,p)
 end
 
 function ENT:onViewSwitch(p, thirdPerson)
-	p.wac.air.localActual = nil
+	self.viewPos = nil
 end
 
 function ENT:onEnter(p)
@@ -208,7 +208,7 @@ function ENT:onEnter(p)
 	p.wac.lagSpeed = Vector(0, 0, 0)
 	p.wac.lagAccel = Vector(0, 0, 0)
 	p.wac.lagAccelDelta = Vector(0, 0, 0)
-	p.wac.air.localActual = nil
+	p.wac.air.vehicle = self
 end
 
 function ENT:viewCalcThirdPerson(k, p, view)
@@ -231,7 +231,7 @@ function ENT:viewCalcThirdPerson(k, p, view)
 			ang:Forward()*-self.thirdPerson.distance,
 			{self.Entity, self:GetNWEntity("wac_air_rotor_rear"), self:GetNWEntity("wac_air_rotor_main")}
 	)
-	p.wac.air.localTarget = {
+	self.viewTarget = {
 		origin = (tr.HitPos - tr.Normal*5) - view.origin,
 		angles = ang - self:GetAngles()
 	}
@@ -240,30 +240,39 @@ end
 
 function ENT:viewCalcFirstPerson(k, p, view)
 	if
-			k == 1
-			and p:GetInfo("wac_cl_air_mouse") == "1"
-			and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15")))
-			and p:GetInfo("wac_cl_air_usejoystick") == "0"
+		k == 1
+		and p:GetInfo("wac_cl_air_mouse") == "1"
+		and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15")))
+		and p:GetInfo("wac_cl_air_usejoystick") == "0"
 	then
-		p.wac.air.localTarget = {
+		self.viewTarget = {
 			origin = Vector(0,0,0),
 			angles = Angle(0,0,0),
 			fov = view.fov
 		}
 	else
-		p.wac.air.localTarget = {
+		self.viewTarget = {
 			origin = Vector(0,0,0),
-			angles = p:GetAimVector():Angle() - self:GetAngles(),
+			angles = view.angles - self:GetAngles(),
 			fov = view.fov
 		}
-		p.wac.air.localTarget.angles.r = p.wac.air.localTarget.angles.r + view.angles.r
+		--self.viewTarget.angles.r = self.viewTarget.angles.r + view.angles.r
 	end
 	return view
+end
+
+function ENT:viewCalcExit(p, view)
+	p.wac.air.vehicle = nil
 end
 
 local lastWeapon=0
 function ENT:viewCalc(k, p, pos, ang, fov)
 	local view = {origin = pos, angles = ang, fov = fov}
+
+	if p:GetVehicle():GetNWEntity("wac_aircraft") != self then
+		--p.wac.air.vehicle = nil
+		return self:viewCalcExit(p, view)
+	end
 
 	wac.smoothApproachAngles(p.wac.lagAngles, self:GetAngles(), 20)
 	local shakeEnabled = p:GetInfo("wac_cl_air_shakeview") == "1"
@@ -286,29 +295,27 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	elseif seat.CalcView then
 		view = seat.CalcView(self,weapon,p,pos,ang,view)
 	else
-		if !p:GetVehicle():GetThirdPersonMode() then
-			view = self:viewCalcFirstPerson(k, p, view)
-		else
+		if p:GetVehicle():GetThirdPersonMode() then
 			view = self:viewCalcThirdPerson(k, p, view)
+		else
+			view = self:viewCalcFirstPerson(k, p, view)
 		end
-		view = self:viewCalcFirstPerson(k, p, view)
 	end
-	if p.wac.air.localTarget then
-		p.wac.air.localActual = p.wac.air.localActual or table.Copy(p.wac.air.localTarget)
-		wac.smoothApproachVector(p.wac.air.localActual.origin, p.wac.air.localTarget.origin, 30)
-		wac.smoothApproachAngles(p.wac.air.localActual.angles, p.wac.air.localTarget.angles, 30)
-		view.origin = view.origin + p.wac.air.localActual.origin
+	if self.viewTarget then
+		self.viewPos = self.viewPos or table.Copy(self.viewTarget)
+		wac.smoothApproachVector(self.viewPos.origin, self.viewTarget.origin, 30)
+		wac.smoothApproachAngles(self.viewPos.angles, self.viewTarget.angles, 30)
+		view.origin = view.origin + self.viewPos.origin
 		if p:GetInfo("wac_cl_air_smoothview") == "1" then
-			view.angles = self:GetAngles()*2 + p.wac.air.localActual.angles - p.wac.lagAngles
+			view.angles = self:GetAngles()*2 + self.viewPos.angles - p.wac.lagAngles
 			if shakeEnabled then
 				view.origin = view.origin + (p.wac.lagAccel - p.wac.lagAccelDelta)/4
 			end
 		else
-			view.angles = self:GetAngles() + p.wac.air.localActual.angles
+			view.angles = self:GetAngles() + self.viewPos.angles
 		end
-		p.wac.air.localTarget = nil
+		self.viewTarget = nil
 	end
-	view.fov = 75
 	return view
 end
 

@@ -156,7 +156,7 @@ function SWEP:DoHolster(b)
 end
 
 function SWEP:CanAct()
-	if self:Holstered() or WAC.Sprinting(self.Owner) or (SERVER and self.NextHolster>CurTime()) then return false end
+	if self:Holstered() or wac.sprinting(self.Owner) or (SERVER and self.NextHolster>CurTime()) then return false end
 	return true
 end
 

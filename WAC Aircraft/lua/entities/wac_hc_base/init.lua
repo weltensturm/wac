@@ -267,7 +267,7 @@ function ENT:AddBackRotor()
 		e.Phys:SetMass(10)
 	end
 	e.fHealth = 40
-	self:SetNWEntity("wac_air_rotor_rear")
+	self:SetNWEntity("wac_air_rotor_rear", e)
 	return e
 end
 
@@ -442,17 +442,17 @@ function ENT:StopAllSounds()
 end
 
 local keyids={
-	[WAC_AIR_LEANP]	={7,8},
-	[WAC_AIR_LEANY]	={9,10},
-	[WAC_AIR_LEANR]	={6,5},
-	[WAC_AIR_UPDOWN]	={3,4},
-	[WAC_AIR_START]	={2,0},
-	[WAC_AIR_FIRE]		={12,0},
-	[WAC_AIR_CAM]		={11,0},
-	[WAC_AIR_NEXTWEP]	={13,0},
-	[WAC_AIR_HOVER]	={14,0},
-	[WAC_AIR_EXIT]		={1,0},
-	[WAC_AIR_FREEAIM]	={15,0},
+	[WAC_AIR_LEANP] ={7,8},
+	[WAC_AIR_LEANY] ={9,10},
+	[WAC_AIR_LEANR] ={6,5},
+	[WAC_AIR_UPDOWN] ={3,4},
+	[WAC_AIR_START] ={2,0},
+	[WAC_AIR_FIRE] ={12,0},
+	[WAC_AIR_CAM] ={11,0},
+	[WAC_AIR_NEXTWEP] ={13,0},
+	[WAC_AIR_HOVER]	= {14,0},
+	[WAC_AIR_EXIT] = {1,0},
+	[WAC_AIR_FREEAIM] = {15,0},
 }
 
 function ENT:RocketAlert()

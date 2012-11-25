@@ -1,5 +1,6 @@
 
-include("wac/servertag.lua")
+--[[
+include "wac/servertag.lua"
 
 concommand.Add("wac_tag_add", function(player, command, args)
 	if player:IsAdmin() then
@@ -33,3 +34,4 @@ end)
 
 wac.tag.add("wac")
 wac.tag.add("wac" .. wac.version)
+]]

@@ -14,6 +14,6 @@ function VEHICLE:GetPassenger()
 	end
 end
 
-function VEHICLE:GetThirdPersonMode()
+--[[function VEHICLE:GetThirdPersonMode()
 	return self:GetNWBool("wac_thirdperson")
-end
+end]]

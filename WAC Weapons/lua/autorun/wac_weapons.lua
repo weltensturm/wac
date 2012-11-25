@@ -1,5 +1,12 @@
 
-require "wac/weapons.lua"
+include "wac/weapons.lua"
+
+local cvars = {
+	allow = CreateClientConVar("wac_weapon_freeview", 1, true, true),
+	offset = CreateClientConVar("wac_weapon_offset", 0, true, false),
+	fov = CreateClientConVar("wac_weapon_fovmod", 0, true, false),
+	bounce = CreateClientConVar("wac_weapon_bounce", 0.6, true, false),
+}
 
 local authors = {
 	[wac.author] = {
@@ -35,7 +42,13 @@ local function checkZoom(w)
 end
 
 local function checkWeapon(w)
-
+	local model = {
+		max = Vector(3, 5, 0),
+		mul = Vector(8, 5, 5)*0.0035,
+		mulZoom = Vector(8, 5, 5)*0.002,
+		offset = Vector(0, 0, 0),
+		
+	}
 end
 
 local function checkOn(p)

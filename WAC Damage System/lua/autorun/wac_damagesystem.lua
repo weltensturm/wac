@@ -59,8 +59,8 @@ wac.damageSystem = wac.damageSystem or {
 			wreck:Activate()
 			wreck:SetMaterial(e:GetMaterial())
 			wreck:Explode()
-			if e:IsVehicle() and e:GetPassenger():IsValid() then
-				ewa:GetPassenger():TakeDamage(9999, inflictor, attacker)
+			if e:IsVehicle() and e:GetPassenger(0):IsValid() then
+				e:GetPassenger():TakeDamage(9999, inflictor, attacker)
 			end
 			e:Remove()
 		end)

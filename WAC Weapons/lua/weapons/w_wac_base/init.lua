@@ -21,7 +21,8 @@ if SERVER then
 		if !self:CanPrimaryAttack() or !self:CanAct() then return end
 		self.NextShoot=CurTime()+self.Primary.Delay
 		self.Owner:EmitSound(self.Primary.Sound or "")
-		WAC.CreatePhysBullet(self.Owner:GetShootPos(), self.Owner:GetAimVector(), self.Primary.Damage, 400, self.Primary.Cone, self.Owner, self.Primary.NumShots, self.BulletTable)
+		--WAC.CreatePhysBullet(self.Owner:GetShootPos(), self.Owner:GetAimVector(), self.Primary.Damage, 400, self.Primary.Cone, self.Owner, self.Primary.NumShots, self.BulletTable)
+		wac.createBullet(self.Owner, self.Primary.Damage, 400, self.Primary.Cone, 1, self.BulletTable)
 		self:CallOnClient("AddRecoil", "")
 		self:Muzzle()
 		self.Owner:ViewPunch(Angle((self:Zoomed() and -self.ViewPunch/10 or -self.ViewPunch), 0, 0))
