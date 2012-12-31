@@ -26,10 +26,8 @@ function TOOL:LeftClick(tr)
 			return true
 		else
 			if self.entity.wacLink then
-				MsgN("a")
 				return self:reload(self.entity:wacLink(tr.Entity))
 			elseif tr.Entity.wacLink then
-				MsgN("b")
 				return self:reload(tr.Entity:wacLink(self.entity))
 			else
 				return self:reload(false)

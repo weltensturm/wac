@@ -1,11 +1,11 @@
 
 include "wac/aircraft.lua"
-include "wac/servertag.lua"
+--include "wac/servertag.lua"
 
 AddCSLuaFile("autorun/client/wac_aircraft.lua");
 AddCSLuaFile("autorun/client/wac_aircraft_dev.lua");
 
-wac.tag.add("wacAir")
+--wac.tag.add("wacAir")
 
 wac.aircraft.cvars = {
 	startSpeed = CreateConVar("wac_air_startspeed", 1, {FCVAR_ARCHIVE}),

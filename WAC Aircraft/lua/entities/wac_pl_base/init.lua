@@ -4,18 +4,18 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
 ENT.IgnoreDamage = true
-ENT.UsePhysRotor	= true
+ENT.UsePhysRotor = true
 ENT.Submersible	= false
 ENT.CrRotorWash	= true
-ENT.RotorWidth	= 200
+ENT.RotorWidth = 200
 ENT.TopRotorDir	= 1
-ENT.BackRotorDir	= 1
+ENT.BackRotorDir = 1
 ENT.TopRotorPos	= Vector(83, 0, 0.5)
-ENT.BackRotorPos	= Vector(-400,5,137)
+ENT.BackRotorPos = Vector(-400,5,137)
 ENT.EngineForce	= 140
-ENT.BrakeMul		= 1
+ENT.BrakeMul = 1
 ENT.AngBrakeMul	= 0.01
-ENT.Weight		= 800
+ENT.Weight = 800
 ENT.CrRotorWash = false
 
 --[[
@@ -26,7 +26,7 @@ ENT.CrRotorWash = false
 ]]
 ENT.Aerodynamics = {
 	Rotation = {
-		Front = Vector(0, 5, 0),
+		Front = Vector(0, 4, 0),
 		Right = Vector(0, 0, 70), -- Rotate towards flying direction
 		Top = Vector(0, -70, 0)
 	},
@@ -190,7 +190,8 @@ function ENT:PhysicsUpdate(ph)
 					lpos.y*(self.rotateX*1.5+t.r)/math.pow(realism,1.3) -
 					lpos.x*(self.rotateY+t.p)/math.pow(realism,1.3) -
 					lpos.y*angbrake.x
-			)/4)-pos + up*ang.r*lpos.y/self.WheelStabilize + targetVelocity)*phm)
+			)/4)-pos --+ up*ang.r*lpos.y/self.WheelStabilize
+			+ targetVelocity)*phm)
 
 			if self.upMul < 0.5 then
 				ph:AddAngleVelocity(ph:GetAngleVelocity()*(self.upMul-0.5)*phm)
