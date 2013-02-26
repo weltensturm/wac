@@ -8,3 +8,12 @@
  ENT.Spawnable = false
  ENT.AdminSpawnable = false
  ENT.WireDebugName = "BF2 Tankgun"
+
+function ENT:wacLink(e)
+	if type(e) == "Vehicle" then
+		if SERVER then
+			self.vehicle = e
+		end
+		return true
+	end
+end

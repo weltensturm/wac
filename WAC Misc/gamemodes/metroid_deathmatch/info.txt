@@ -1,0 +1,22 @@
+"Gamemode"
+{
+	"name"		"Metroid Prime Deathmatch"
+	"version"	"1"
+
+	"author_name"	"WeltEnSTurm"
+	"author_email"	""
+	"author_url"	""
+	
+	"icon"		""
+	"info"		""
+	"hide"		"0"
+
+	"fretta_maps"
+	{
+		"1"	"^gm_"
+		"2"	"^dm_"
+	}
+
+	"selectable"	"1"
+	"description"	"Shooting powerful lasers at the other team"
+}

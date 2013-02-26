@@ -1,0 +1,187 @@
+[ents]
+cname=prop_iw_static
+pos=544.1240234375 -5912.5698242188 44.956199645996
+ang=-78.458297729492 133.31201171875 -127.30001831055
+range=0
+model=models/props_wasteland/prison_sinkchunk001b.mdl
+
+[ents]
+cname=prop_iw_static
+pos=337.63430786133 -5976.9555664063 151.05029296875
+ang=-67.141693115234 105.08709716797 -99.581604003906
+range=0
+model=models/props_buildings/watertower_001c.mdl
+
+[ents]
+cname=prop_iw_static
+pos=513.998046875 -5962.5947265625 151.72329711914
+ang=11.886002540588 -82.718002319336 94.254302978516
+range=0
+model=models/props_wasteland/buoy01.mdl
+
+[ents]
+cname=prop_iw_static
+pos=528.99499511719 -5927.8720703125 236.81829833984
+ang=-3.150050163269 5.0516109466553 -18.561004638672
+range=0
+model=models/props_pipes/pipe02_connector01.mdl
+
+[ents]
+cname=prop_iw_static
+pos=529.11303710938 -5854.8818359375 194.00430297852
+ang=-85.829299926758 124.55001831055 -121.77403259277
+range=0
+model=models/props_wasteland/prison_sinkchunk001b.mdl
+
+[ents]
+cname=prop_iw_static
+pos=662.28100585938 -6143.8959960938 63.259899139404
+ang=0.0034728576429188 81.790298461914 -6.9140014648438
+range=0
+model=models/cranes/crane_frame.mdl
+
+[ents]
+cname=prop_iw_static
+pos=465.21099853516 -6325.29296875 74.227203369141
+ang=-0.37540599703789 51.547298431396 -0.26300048828125
+range=0
+model=models/props_vehicles/van001a_physics.mdl
+
+[ents]
+cname=prop_iw_static
+pos=295.89761352539 -6112.232421875 55.068901062012
+ang=2.0234200954437 95.64769744873 -0.001007080078125
+range=0
+model=models/props_vehicles/car005a_physics.mdl
+
+[ents]
+cname=prop_iw_static
+pos=-74.218994140625 -6586.9331054688 77.32740020752
+ang=19.907604217529 69.894096374512 -0.42001342773438
+range=0
+model=models/props_vehicles/car001a_hatchback.mdl
+
+[ents]
+cname=prop_iw_static
+pos=-65.742980957031 -6697.3950195313 56.011199951172
+ang=1.7158298492432 135.8090057373 -0.02301025390625
+range=0
+model=models/props_vehicles/car005b.mdl
+
+[ents]
+cname=prop_iw_static
+pos=-35.600006103516 -3840.9499511719 104.86860656738
+ang=1.4223803281784 -61.298400878906 -4.5759887695313
+range=0
+model=models/props_vehicles/tanker001a.mdl
+
+[ents]
+cname=prop_iw_static
+pos=121.56100463867 -2391.4099121094 107.13749694824
+ang=-2.5602998733521 -140.77900695801 5.8738032748806e-006
+range=0
+model=models/props_vehicles/trailer001a.mdl
+
+[ents]
+cname=prop_iw_static
+pos=-608.38293457031 -6110.4287109375 61.772598266602
+ang=-1.7332600355148 -113.93299865723 -7.9660034179688
+range=0
+model=models/props_vehicles/car002a_physics.mdl
+
+[ents]
+cname=prop_iw_static
+pos=717.02294921875 -6142.8173828125 116.62328338623
+ang=86.318717956543 -24.686004638672 -77.066314697266
+range=0
+model=models/props_pipes/destroyedpipes01d.mdl
+
+[ents]
+cname=prop_iw_shield
+pos=-312.91058349609 -11535.825195313 125.57811737061
+ang=90 -89.999900817871 180
+range=0
+model=models/hunter/plates/plate3x6.mdl
+team=2
+
+[ents]
+cname=prop_iw_shield
+pos=670.68957519531 -11637.508789063 -134.69557189941
+ang=2.481804983745e-007 179.99449157715 90
+range=0
+model=models/hunter/plates/plate2x3.mdl
+team=2
+
+[ents]
+cname=prop_iw_shield
+pos=2842.5922851563 -11701.76953125 -37.776123046875
+ang=90 90.015342712402 180
+range=0
+model=models/hunter/plates/plate3x6.mdl
+team=2
+
+[ents]
+cname=prop_iw_shield
+pos=-103.01515197754 3045.7895507813 122.21230316162
+ang=3.3183465575348e-007 -0.00015947529755067 89.991409301758
+range=0
+model=models/hunter/plates/plate7x16.mdl
+team=1
+
+[ents]
+cname=prop_iw_shield
+pos=229.63487243652 3045.7885742188 122.21230316162
+ang=3.318334904634e-007 -0.00015947529755067 89.991409301758
+range=0
+model=models/hunter/plates/plate7x16.mdl
+team=1
+
+[map_camera]
+cname=map_camera
+pos=-1128.3438720703 -7034.3637695313 966.79986572266
+ang=27.060110092163 46.2506980896 0
+
+[ents]
+cname=team_spawn
+pos=-905.21636962891 -12163.962890625 64.03125
+ang=0 0 0
+range=0
+model=models/props_combine/combine_mine01.mdl
+team=2
+
+[ents]
+cname=team_spawn
+pos=1473.3857421875 -12381.486328125 -191.96875
+ang=0 0 0
+range=0
+model=models/props_combine/combine_mine01.mdl
+team=2
+
+[ents]
+cname=team_spawn
+pos=3053.5102539063 -12314.134765625 -63.96875
+ang=0 0 0
+range=0
+model=models/props_combine/combine_mine01.mdl
+team=2
+
+[ents]
+cname=team_spawn
+pos=-211.73899841309 4733.9428710938 -95.96875
+ang=0 0 0
+range=0
+model=models/props_combine/combine_mine01.mdl
+team=1
+
+[ents]
+cname=team_spawn
+pos=292.3923034668 4734.8891601563 -95.96875
+ang=0 0 0
+range=0
+model=models/props_combine/combine_mine01.mdl
+team=1
+
+[map_settings]
+startres=0
+endres=0
+maxpoints=2000

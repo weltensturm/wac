@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mp3variasuit/face"
+	"$model" "1"
+
+	"$phong" "1"
+	"$phongboost" "5"
+	"$phongexponent" "33"							
+	"$phongfresnelranges"	"[0 .5 1]"
+	"$model" "1"
+	"$halflambert" 1
+}

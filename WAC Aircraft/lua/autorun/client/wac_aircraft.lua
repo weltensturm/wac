@@ -81,16 +81,18 @@ wac.hook("PlayerBindPress", "wac_cl_air_exit", function(p,bind)
 end)
 
 wac.hook("RenderScreenspaceEffects", "wac_air_weaponcam",function()
-	local p=LocalPlayer()
-	local e=p:GetVehicle():GetNWEntity("wac_aircraft")
+	local p = LocalPlayer()
+	if !IsValid(p) then return end
+	local e = p:GetVehicle():GetNWEntity("wac_aircraft")
 	if IsValid(e) then
 		e:DrawScreenSpaceEffects(p:GetNWInt("wac_passenger_id"),p)
 	end
 end)
 
 wac.hook("HUDPaint", "wac_air_weaponhud", function()
-	local p=LocalPlayer()
-	local e=p:GetVehicle():GetNWEntity("wac_aircraft")
+	local p = LocalPlayer()
+	if !IsValid(p) then return end
+	local e = p:GetVehicle():GetNWEntity("wac_aircraft")
 	if IsValid(e) then
 		e:DrawHUD(p:GetNWInt("wac_passenger_id"),p)
 	end

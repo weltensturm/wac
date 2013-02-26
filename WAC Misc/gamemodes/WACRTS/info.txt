@@ -1,0 +1,13 @@
+"Gamemode"
+{
+	"name"		"WACRTS"
+	"version"	"1"
+
+	"author_name"	"WeltEnSTurm"
+	"author_email"	"kleinlui@tele2.at"
+	"author_url"	""
+	
+	"icon"		""
+	"info"		""
+	"hide"		""
+}

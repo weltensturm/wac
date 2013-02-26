@@ -1,0 +1,6 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mp3variasuit/lashes"
+//	"$alphatest" "1"
+	"$model" "1"
+}

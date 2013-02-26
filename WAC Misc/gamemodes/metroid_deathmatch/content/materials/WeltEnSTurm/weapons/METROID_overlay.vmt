@@ -1,0 +1,8 @@
+"Modulate"
+{
+	"$znearer" 1
+	"$basetexture" "WeltEnSTurm/weapons/METROID_overlay"
+	"$translucent" "1"
+	"$additive" "1"
+	"$mod2x" "1"
+}

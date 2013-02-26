@@ -1,0 +1,12 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "gun"
+	"$envmap" "env_cubemap"
+	"$normalmapalphaenvmapmask" 0.2
+	"$envmapcontrast" 1
+	"$envmapsaturation" ".1 .1 .1"
+	"$envmaptint" .2
+	"$halflambert" 1
+
+
+}

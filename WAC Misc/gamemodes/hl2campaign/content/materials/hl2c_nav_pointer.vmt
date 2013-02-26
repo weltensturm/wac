@@ -1,0 +1,6 @@
+"UnlitGeneric"
+{
+    "$basetexture" "hl2c_nav_pointer"
+	"$translucent" 1
+	"alpha" 0.5
+}

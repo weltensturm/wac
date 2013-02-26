@@ -1,0 +1,16 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mp3variasuit/gungreen"
+	"$envmap" "env_cubemap"
+//	"$normalmapalphaenvmapmask" "1"
+	"$envmapcontrast" "1"
+	"$envmapsaturation" "0"
+	"$envmaptint" ".1 .1 .1"
+
+	"$phong" "1"
+	"$phongboost" "5"
+	"$phongexponent" "33"							
+	"$phongfresnelranges"	"[0 .5 1]"
+	"$model" "1"
+	"$halflambert" 1
+}

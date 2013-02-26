@@ -4,6 +4,7 @@ function PLAYER:GetViewEntity()
 	return GetViewEntity()
 end
 
+/*
 local VEHICLE = FindMetaTable("Vehicle")
 
 function VEHICLE:GetPassenger()
@@ -13,7 +14,4 @@ function VEHICLE:GetPassenger()
 		end
 	end
 end
-
---[[function VEHICLE:GetThirdPersonMode()
-	return self:GetNWBool("wac_thirdperson")
-end]]
+*/

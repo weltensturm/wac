@@ -1,0 +1,11 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/ohashi1/2e9fb20d"
+	"$bumpmap" "models/ohashi1/e2fa1536"
+	"$envmap" "models/ohashi1/SimpleSpec"
+	"$normalmapalphaenvmapmask" 1
+	"$envmapcontrast" 1
+	"$envmapsaturation" ".1 .1 .1"
+	"$envmaptint" .2
+	"$halflambert" 1
+}

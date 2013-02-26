@@ -1,0 +1,111 @@
+[ents]
+cname=stor_mass
+pos=0 13676 -12253
+ang=0 0 0
+model=models/props_wasteland/laundry_washer001a.mdl
+team=1
+vulnerable=1
+
+[ents]
+cname=wac_playerspawn
+pos=0 13856 -12287
+ang=0 0 0
+model=models/props_junk/sawblade001a.mdl
+team=1
+
+[ents]
+cname=wac_playerspawn
+pos=490 13856 -12287
+ang=0 0 0
+model=models/props_junk/sawblade001a.mdl
+team=1
+
+[ents]
+cname=wac_playerspawn
+pos=-490 13856 -12287
+ang=0 0 0
+model=models/props_junk/sawblade001a.mdl
+team=1
+
+[ents]
+cname=stor_mass
+pos=0 -13676 -12253
+ang=0 0 0
+model=models/props_wasteland/laundry_washer001a.mdl
+team=2
+vulnerable=1
+
+[ents]
+cname=wac_playerspawn
+pos=0 -13856 -12287
+ang=0 0 0
+model=models/props_junk/sawblade001a.mdl
+team=2
+
+[ents]
+cname=wac_playerspawn
+pos=-490 -13856 -12287
+ang=0 0 0
+model=models/props_junk/sawblade001a.mdl
+team=2
+
+[ents]
+cname=wac_playerspawn
+pos=490 -13856 -12287
+ang=0 0 0
+model=models/props_junk/sawblade001a.mdl
+team=2
+
+[ents]
+cname=iw_masspoint
+pos=-4991 7553 -12414
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=4991 -7553 -12414
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=-8890 -1539 -12351
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=8890 1539 -12351
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=199 812 -12800
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=-1661 1919 -12800
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=-199 -812 -12800
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=1661 -1919 -12800
+ang=0 0 90
+model=models/props_wasteland/wheel03b.mdl
+
+[map_camera]
+cname=map_camera
+pos=-2797 3789 -11463
+ang=16 306 0
+

@@ -1,0 +1,9 @@
+"VertexLitGeneric"
+{
+	"$baseTexture" "models/mp3variasuit/eye"
+	"$envmap" "env_cubemap"
+	"$envmapcontrast" "1"
+	"$envmapsaturation" ".5"
+	"$envmaptint" ".2 .2 .2"	
+	"$model" "1"
+}

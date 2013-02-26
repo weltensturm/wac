@@ -1,0 +1,99 @@
+[runstring]
+s=for _,e in pairs(ents.FindByClass("func_door")) do e:Fire("Open",1) e:Fire("lock",1) end for _,e in pairs(ents.FindByClass("func_tracktrain")) do e:Remove() end
+
+[map_camera]
+cname=map_camera
+pos=-1658.0133056641 -895.03985595703 522.87683105469
+ang=12.848376274109 45.428764343262 -0.20428988337517
+
+[ents]
+cname=wac_playerspawn
+pos=3710.0827636719 -1244.7924804688 128.9091796875
+ang=-3.0338921988005e-006 83.344078063965 0
+model=models/props_junk/sawblade001a.mdl
+
+[ents]
+cname=wac_playerspawn
+pos=738.732421875 178.8824005127 128.83819580078
+ang=-0.22986754775047 2.2745232582092 0.22972802817822
+model=models/props_junk/sawblade001a.mdl
+
+[ents]
+cname=wac_playerspawn
+pos=741.06005859375 -20.014577865601 128.9091796875
+ang=-2.008061755987e-006 -12.039112091064 0
+model=models/props_junk/sawblade001a.mdl
+
+[ents]
+cname=wac_playerspawn
+pos=3321.6479492188 -1494.0753173828 128.87747192383
+ang=-0.20548778772354 -74.683853149414 8.95256162039e-005
+model=models/props_junk/sawblade001a.mdl
+team=1
+
+[ents]
+cname=wac_playerspawn
+pos=3710.0827636719 -1244.7924804688 128.9091796875
+ang=-3.0338921988005e-006 83.344078063965 0
+model=models/props_junk/sawblade001a.mdl
+team=1
+
+[ents]
+cname=wac_playerspawn
+pos=738.732421875 178.8824005127 128.83819580078
+ang=-0.22986754775047 2.2745232582092 0.22972802817822
+model=models/props_junk/sawblade001a.mdl
+team=2
+
+[ents]
+cname=wac_playerspawn
+pos=741.06005859375 -20.014577865601 128.9091796875
+ang=-2.008061755987e-006 -12.039112091064 0
+model=models/props_junk/sawblade001a.mdl
+team=2
+
+[ents]
+cname=stor_mass
+pos=3677.787109375 -1630.0266113281 162.90605163574
+ang=0.0038452616427094 134.89839172363 -0.033294677734375
+model=models/props_wasteland/laundry_washer001a.mdl
+team=1
+vulnerable=1
+
+[ents]
+cname=stor_mass
+pos=-861.57000732422 54.603412628174 162.94752502441
+ang=-0.084012851119041 -2.0914630889893 0.051969688385725
+model=models/props_wasteland/laundry_washer001a.mdl
+team=2
+vulnerable=1
+
+[ents]
+cname=prop_iw_static
+pos=95.750900268555 864.2392578125 -134.37719726563
+ang=-0.24023580551147 179.93751525879 -0.14382934570313
+model=models/props_phx/construct/metal_plate4x4.mdl
+
+[ents]
+cname=prop_iw_static
+pos=-1079.9857177734 64.199882507324 217.84449768066
+ang=90 -0.00047428638208658 180
+model=models/props_phx/construct/metal_plate4x4.mdl
+
+[ents]
+cname=iw_masspoint
+pos=44.384525299072 -1233.6474609375 142.59403991699
+ang=4.3961773599221e-007 45.007907867432 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=-1217.6997070313 -907.42169189453 143.65390014648
+ang=3.4143137535997e-012 -0.0020382548682392 90
+model=models/props_wasteland/wheel03b.mdl
+
+[ents]
+cname=iw_masspoint
+pos=-1669.5682373047 1966.3168945313 143.25866699219
+ang=-1.1092765161286e-012 -0.00035228850902058 90
+model=models/props_wasteland/wheel03b.mdl

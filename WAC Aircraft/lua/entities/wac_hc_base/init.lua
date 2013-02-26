@@ -727,7 +727,7 @@ function ENT:PhysicsUpdate(ph)
 					self.Sound.CrashAlarm:Play()
 				end
 			end
-			local temp=vel+up*(self.upMul*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9)*phm
+			local temp=vel+up*(self.upMul*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
 			temp=temp-self:LocalToWorld(lvel*self.AirResistanceMods[4]*dvel*dvel/500000)+pos
 			ph:SetVelocity(temp)
 			

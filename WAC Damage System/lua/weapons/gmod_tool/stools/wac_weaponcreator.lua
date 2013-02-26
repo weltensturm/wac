@@ -1,4 +1,6 @@
 
+include "wac/tool.lua"
+
 TOOL.Category = wac.menu.category
 TOOL.Name = "Weapon Creator"
 TOOL.Command=nil
@@ -62,7 +64,7 @@ local decals={
 	{"None", 0},
 }
 
-local data = {
+local vars = {
 		adminmode = 0,
 		model = WeaponModels[1],
 		weight = 50,
@@ -90,39 +92,12 @@ local data = {
 		width = 1
 }
 
-local Data = {
-
-	triggers = {
-		adminmode = true
-	},
-
-	think = function(self, tool)
-		local crt = CurTime()
-		local updated = false
-		if !self.lastupdate or self.lastupdate < crt + 0.5 then
-			self.lastupdate = crt
-			for k, v in pairs(data) do
-				local value = tool:GetClientInfo(k)
-				if tonumber(value) then
-					value = tonumber(value)
-				end
-				if value != v then
-					data[k] = value
-					if self.triggers[k] then updated = true end
-				end
-			end
-		end
-		return updated
-	end,
-
-}
-
-for k, v in pairs(data) do
+for k, v in pairs(vars) do
 	TOOL.ClientConVar[k] = v
 end
 
 --[[
-local data={
+local vars={
 	["adminmode"]		={2,0},
 	["model"]			={1,WeaponModels[1]},
 	["weight"]			={0,50},
@@ -282,19 +257,20 @@ if SERVER then
 	duplicator.RegisterEntityClass("wac_w_base", MakeNDSWeapon, "dup_ang", "dup_pos", "dup_data")
 end
 
+
 function TOOL:LeftClick(tr)
 	if IsValid(tr.Entity) and tr.Entity:GetClass()=="wac_w_base" then
 		if SERVER then
-			tr.Entity.ConTable=table.Copy(data)
+			tr.Entity.ConTable=table.Copy(vars)
 			if tr.Entity.Sound then
 				tr.Entity.Sound:Stop()
 			end
-			tr.Entity.Sound=CreateSound(tr.Entity, data.soundShoot)
+			tr.Entity.Sound=CreateSound(tr.Entity, vars.soundShoot)
 		end
 		return true
 	elseif IsValid(self.GhostEntity) then
 		if SERVER then
-			local e = MakeNDSWeapon(self:GetOwner(), self.GhostEntity:GetAngles(), self.GhostEntity:GetPos(), data)
+			local e = MakeNDSWeapon(self:GetOwner(), self.GhostEntity:GetAngles(), self.GhostEntity:GetPos(), vars)
 			undo.Create("wac_w_base")
 			if tr.Entity:IsValid() then
 				local const=constraint.Weld(e, tr.Entity,0, tr.PhysicsBone, 0, systemmanager)
@@ -311,12 +287,13 @@ function TOOL:LeftClick(tr)
 	end
 end
 
+
 function TOOL:RightClick(tr)
 	if tr.Hit and IsValid(tr.Entity) then
 		if tr.Entity:GetClass()=="wac_w_base" then
-			for k,v in pairs(data) do
+			for k,v in pairs(vars) do
 				if tr.Entity.ConTable[k] then
-					data[k]=tr.Entity.ConTable[k]
+					vars[k]=tr.Entity.ConTable[k]
 				end
 			end
 			return true
@@ -324,75 +301,72 @@ function TOOL:RightClick(tr)
 	end
 end
 
-function TOOL:UpdateSpawnGhost(player)
-	if !IsValid(self.GhostEntity) then return end
-	local trace = util.QuickTrace(player:EyePos(), player:GetAimVector()*10000, {player});
-	if !trace.Hit or trace.Entity:GetClass() == "wac_w_base" then
-		self.GhostEntity:Remove()
+
+function TOOL:updateGhost(player)
+	if CLIENT then return end
+	local tr = util.QuickTrace(player:EyePos(), player:GetAimVector()*1000, player)
+	if !tr.Hit then
+		if IsValid(self.GhostEntity) then
+			self.GhostEntity:Remove()
+		end
 		return
 	end
-	local Ang = trace.HitNormal:Angle()
-	Ang.pitch = Ang.pitch + 90
-	self.GhostEntity:SetAngles(Ang)
+	if !IsValid(self.GhostEntity) or self.GhostEntity:GetModel() != vars.model then
+		self:MakeGhostEntity(vars.model, Vector(0,0,0), Angle(0,0,0))
+	end	
+	local Ang = tr.HitNormal:Angle()
+	Ang.pitch = Ang.pitch+90
+	if tr.Entity:GetClass()=="wac_w_base" then self.GhostEntity:Remove() return end
 	local min = self.GhostEntity:OBBMins()
-	self.GhostEntity:SetPos(trace.HitPos-trace.HitNormal*min.z)
+	self.GhostEntity:SetAngles(Ang)
+	self.GhostEntity:SetPos(tr.HitPos+tr.HitNormal*-min.z)
 	self.GhostEntity:SetNoDraw(false)
 end
 
+
 function TOOL:Think()
-	if Data:think(self) and CLIENT then
-		self:updatePanel()
-	end
-	if CLIENT then
-		local power = (data.damage + data.radius)/(data.shootdelay+data.reloadtime)
-		RunConsoleCommand("wac_weaponcreator_weight", power)
-	end
-	if !IsValid(self.GhostEntity) or self.GhostEntity:GetModel() != data.model then
-		self:MakeGhostEntity(data.model, Vector(0,0,0), Angle(0,0,0))
-	end	
-	self:UpdateSpawnGhost(self:GetOwner())
+	self.settings:think(self)
+	self:updateGhost(self:GetOwner())
 end
 
 
-if CLIENT then
-
-	local panel
-
-	function TOOL.BuildCPanel(p)
-		panel = p
-		panel:AddControl("Label", {Text = "Please wait...."})
-	end
-
-	function TOOL:updatePanel()
-		panel:Clear()
-		panel:AddControl("Label", {Text = "Presets"})
-		panel:AddControl("ComboBox", {
+TOOL.settings = wac.toolSettings({
+	updateSetting = function(self, name, var)
+		MsgN(name)
+		if name == "adminmode" and self.panel then
+			self:buildPanel()
+		end
+	end,
+	buildPanel = function(self)
+		self.panel:Clear()
+		self.panel:AddControl("Label", {Text = "Presets"})
+		self.panel:AddControl("ComboBox", {
 			Label = "Presets",
 			MenuButton = 0,
 			Options = presets
 		})
-		panel:AddControl("Label", {Text = ""})
-		panel:AddControl("PropSelect", {
+		self.panel:AddControl("Label", {Text = ""})
+		self.panel:AddControl("PropSelect", {
 			Label = "Weapon Model",
 			ConVar = "wac_weaponcreator_model",
 			Category = "",
 			Models = list.Get("wac_wep_models")
 		})
-		panel:AddControl("Slider", { 
+		self.panel:AddControl("Slider", { 
 			Label = "Weight",
 			Type = "Float", 
 			Min = 10, 
 			Max = 500,
 			Command = "wac_weaponcreator_weight"
 		})
-		panel:AddControl("Numpad", { 
+		self.panel:AddControl("Numpad", { 
 			ButtonSize = "22", 
 			Label = "Fire Key",
 			Command = "wac_weaponcreator_keyFire",
 		})
-		panel:AddControl("Label", {Text = ""})
-		panel:CheckBox("Admin Mode", "wac_weaponcreator_adminmode")
-		if data.adminmode==1 then
+		self.panel:AddControl("Label", {Text = ""})
+		self.panel:CheckBox("Admin Mode", "wac_weaponcreator_adminmode")
+		if vars.adminmode==1 then
 			if adminmode:GetInt()==1 then
 				local combo={}
 				combo.Label="Shootsound"
@@ -402,10 +376,10 @@ if CLIENT then
 				for k, v in pairs(shootsounds) do
 					combo.Options[v[1]] = {wac_weaponcreator_soundShoot = v[2]}
 				end	
-				panel:AddControl("Label", {Text = ""})
-				panel:AddControl("Label", {Text = "Shootsound"})
-				panel:AddControl('ComboBox', combo)
-				panel:AddControl("TextBox", {
+				self.panel:AddControl("Label", {Text = ""})
+				self.panel:AddControl("Label", {Text = "Shootsound"})
+				self.panel:AddControl('ComboBox', combo)
+				self.panel:AddControl("TextBox", {
 					Label = "path",
 					MaxLength = 300,
 					Text = "path_of_sound",
@@ -419,10 +393,10 @@ if CLIENT then
 				for k, v in pairs(reloadsounds) do
 					combo.Options[v[1]] = {wac_weaponcreator_soundReload = v[2]}
 				end
-				panel:AddControl("Label", {Text = ""})
-				panel:AddControl("Label", {Text = "Reloadsound"})
-				panel:AddControl('ComboBox', combo)
-				panel:AddControl("TextBox", {
+				self.panel:AddControl("Label", {Text = ""})
+				self.panel:AddControl("Label", {Text = "Reloadsound"})
+				self.panel:AddControl('ComboBox', combo)
+				self.panel:AddControl("TextBox", {
 					Label = "path",
 					MaxLength = 300,
 					Text = "path_of_sound",
@@ -436,17 +410,17 @@ if CLIENT then
 				for k, v in pairs(effects) do
 					combo.Options[v[1]] = {wac_weaponcreator_effect = v[2]}
 				end	
-				panel:AddControl("Label", {Text = ""})
-				panel:AddControl("Label", {Text = "Impact Effect"})
-				panel:AddControl('ComboBox', combo)
-				panel:AddControl("TextBox", {
+				self.panel:AddControl("Label", {Text = ""})
+				self.panel:AddControl("Label", {Text = "Impact Effect"})
+				self.panel:AddControl('ComboBox', combo)
+				self.panel:AddControl("TextBox", {
 					Label = "path",
 					MaxLength = 300,
 					Text = "effectpath",
 					Command = "wac_weaponcreator_effect",
 				})
-				panel:AddControl("Label", {Text = ""})
-				panel:AddControl("Label", {Text = "Decal"})
+				self.panel:AddControl("Label", {Text = ""})
+				self.panel:AddControl("Label", {Text = "Decal"})
 				combo={}
 				combo.Label="Decal"
 				combo.MenuButton = 0
@@ -455,42 +429,42 @@ if CLIENT then
 				for k, v in pairs(decals) do
 					combo.Options[v[1]] = {wac_weaponcreator_decal = v[2]}
 				end
-				panel:AddControl('ComboBox', combo)
-				panel:AddControl("TextBox", {
+				self.panel:AddControl('ComboBox', combo)
+				self.panel:AddControl("TextBox", {
 					Label = "Decal",
 					MaxLength = 300,
 					Text = "name",
 					Command = "wac_weaponcreator_decal",
 				})
-				panel:AddControl("Slider", { 
+				self.panel:AddControl("Slider", { 
 					Label = "Explosion Radius",
 					Type = "Float", 
 					Min = 10, 
 					Max = 200,
 					Command = "wac_weaponcreator_radius"
 				})
-				panel:AddControl("Slider", { 
+				self.panel:AddControl("Slider", { 
 					Label = "Bullet Speed",
 					Type = "Float", 
 					Min = 10, 
 					Max = 200,
 					Command = "wac_weaponcreator_bulletspeed"
 				})
-				panel:AddControl("Slider", { 
+				self.panel:AddControl("Slider", { 
 					Label = "Damage",
 					Type = "Float", 
 					Min = 10, 
 					Max = 500,
 					Command = "wac_weaponcreator_damage"
 				})
-				panel:AddControl("Slider", { 
+				self.panel:AddControl("Slider", { 
 					Label = "Size",
 					Type = "Float", 
 					Min = 1, 
 					Max = 50,
 					Command = "wac_weaponcreator_size"
 				})
-				panel:AddControl("Slider", { 
+				self.panel:AddControl("Slider", { 
 					Label = "Reloadtime",
 					Type = "Float", 
 					Min = 1, 
@@ -498,7 +472,7 @@ if CLIENT then
 					Command = "wac_weaponcreator_reloadtime"
 				})
 				
-				panel:AddControl("Slider", { 
+				self.panel:AddControl("Slider", { 
 					Label = "Magazine Size",
 					Type = "number", 
 					Min = 1,
@@ -506,8 +480,10 @@ if CLIENT then
 					Command = "wac_weaponcreator_msize"
 				})
 			else
-				panel:AddControl("Label", {Text = "Adminmode must be serverside first."})				
+				self.panel:AddControl("Label", {Text = "Adminmode must be serverside first."})				
 			end
 		end
 	end
-end
+}, vars)
+
+TOOL.BuildCPanel = TOOL.settings.BuildCPanel

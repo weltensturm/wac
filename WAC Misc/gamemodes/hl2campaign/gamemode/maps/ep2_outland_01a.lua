@@ -1,0 +1,1 @@
+NEXT_MAP = "ep2_outland_02"

@@ -44,7 +44,11 @@ else
 			and (p:GetMoveType() != MOVETYPE_NOCLIP or blur.inNoclip:GetBool())
 			and !p:InVehicle() and (!p:Alive() or IsValid(p:GetRagdollEntity()))
 		then
-			vel = p:Alive() and p:GetVelocity():Length()-200 or p:GetRagdollEntity():GetVelocity():Length()-200
+			if p:Alive() then
+				vel = p:GetVelocity():Length()-200
+			elseif IsValid(p:GetRagdollEntity()) then
+				vel = p:GetRagdollEntity():GetVelocity():Length()-200
+			end
 		else
 			vel = 0
 		end

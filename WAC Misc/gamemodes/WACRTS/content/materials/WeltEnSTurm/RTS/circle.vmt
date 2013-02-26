@@ -1,0 +1,5 @@
+"UnlitGeneric"
+{
+	"$baseTexture"		"WeltEnSTurm/RTS/circle"
+	"$translucent" 		"1"
+}

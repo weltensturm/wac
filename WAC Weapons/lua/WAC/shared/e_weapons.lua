@@ -340,7 +340,6 @@ wac.hook("HUDShouldDraw", "wac_weapons_hidehud", function(name)
 end)
 
 wac.hook("CalcView", "wac_weapons_cview", function(p, pos, ang, fov)
-	return
 	local pl=LocalPlayer()
 	if pl:InVehicle() or !pl:Alive() then return end
 	local self=p:GetActiveWeapon()

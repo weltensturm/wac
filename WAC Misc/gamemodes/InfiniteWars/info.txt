@@ -1,0 +1,13 @@
+"Gamemode"
+{
+	"name"		"Infinite Wars"
+	"version"		"1"
+
+	"author_name"	"WeltEnSTurm"
+	"author_email"	"pdkm931@gmail.com"
+	"author_url"	""
+	
+	"icon"		""
+	"info"		""
+	"hide"		""
+}

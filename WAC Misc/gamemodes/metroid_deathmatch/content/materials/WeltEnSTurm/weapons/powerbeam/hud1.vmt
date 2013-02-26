@@ -1,0 +1,6 @@
+UnlitGeneric
+{
+	$basetexture WeltEnSTurm/weapons/powerbeam/hud1
+	$translucent 1
+	$additive 1
+}

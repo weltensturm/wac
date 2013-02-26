@@ -35,9 +35,9 @@ end
 
 wac.aircraft = wac.aircraft or {
 	
-	version = "327",
+	version = "328",
 	
-	spawnCategory = "WAC Air",
+	spawnCategory = "WAC Aircraft",
 
 	keys = {
 		{k=KEY_E,n="Exit Helicopter"},

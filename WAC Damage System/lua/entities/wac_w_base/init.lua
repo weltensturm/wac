@@ -31,10 +31,6 @@ function ENT:TriggerInput(name, value)
 	end
 end
 
-function ENT:AddVehicle(e)
-	self.Vehicle=e
-end
-
 function ENT:FireGun(act)
 	local crt=CurTime()
 	if self.NextShoot<=crt and self.MagazineLoad>0 then
@@ -117,11 +113,11 @@ function ENT:Think()
 		self.NextShoot=CurTime()+self.ConTable.reloadtime
 	end
 	if
-		IsValid(self.Vehicle) and self.Vehicle:GetPassenger():IsValid()
-		and self.Vehicle:GetPassenger():KeyDown(IN_ATTACK)
+		IsValid(self.vehicle) and self.vehicle:GetPassenger(0):IsValid()
+		and self.vehicle:GetPassenger(0):KeyDown(IN_ATTACK)
 	then
 		self.firing = false
-		self:FireGun(self.Vehicle:GetPassenger())
+		self:FireGun(self.vehicle:GetPassenger(0))
 	end
 	if self.firing then
 		self:FireGun()
@@ -136,8 +132,8 @@ end
 
 function ENT:BuildDupeInfo()
 	local info = WireLib.BuildDupeInfo(self.Entity) or {}
-	if (self.Vehicle) and (self.Vehicle:IsValid()) then
-		info.v = self.Vehicle:EntIndex()
+	if (self.vehicle) and (self.vehicle:IsValid()) then
+		info.v = self.vehicle:EntIndex()
 	end
 	return info
 end
@@ -145,9 +141,9 @@ end
 function ENT:ApplyDupeInfo(ply, ent, info, GetEntByID)
 	WireLib.ApplyDupeInfo(ply, ent, info, GetEntByID)
 	if (info.v) then
-		self.Vehicle = GetEntByID(info.v)
-		if (!self.Vehicle) or self.Vehicle != GetEntByID(info.v) then
-			self.Vehicle = ents.GetByIndex(info.v)
+		self.vehicle = GetEntByID(info.v)
+		if (!self.vehicle) or self.vehicle != GetEntByID(info.v) then
+			self.vehicle = ents.GetByIndex(info.v)
 		end
 	end
 end

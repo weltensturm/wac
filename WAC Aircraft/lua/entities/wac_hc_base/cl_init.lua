@@ -239,10 +239,22 @@ function ENT:viewCalcThirdPerson(k, p, view)
 end
 
 function ENT:viewCalcFirstPerson(k, p, view)
+	p.wac = p.wac or {}
+	if wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15"))) then
+		if !p.wac.viewFree then
+			p.wac.viewFree = true
+		end
+	else
+		if p.wac.viewFree then
+			p.wac.viewFree = false
+			p.wac_air_resetview = true
+			MsgN("reset view")
+		end
+	end
 	if
 		k == 1
 		and p:GetInfo("wac_cl_air_mouse") == "1"
-		and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15")))
+		and !p.wac.viewFree
 		and p:GetInfo("wac_cl_air_usejoystick") == "0"
 	then
 		self.viewTarget = {
@@ -267,6 +279,7 @@ end
 
 local lastWeapon=0
 function ENT:viewCalc(k, p, pos, ang, fov)
+	if !self.SeatsT[k] then return end
 	local view = {origin = pos, angles = ang, fov = fov}
 
 	if p:GetVehicle():GetNWEntity("wac_aircraft") != self then
@@ -450,9 +463,22 @@ function ENT:Draw()
 	self:DrawPilotHud()
 	self:DrawWeaponSelection()
 	if self.engineRpm > 0.2 and self.SmokePos then
-		if type(self.SmokePos) == "table" then
-			for _, v in self.SmokePos do
-				local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(v))
+		if !self.lastHeatDrawn or self.lastHeatDrawn < CurTime()+1 then
+			if type(self.SmokePos) == "table" then
+				for _, v in self.SmokePos do
+					local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(v))
+					particle:SetVelocity(self:GetVelocity()+self:GetForward()*-100)
+					particle:SetDieTime(0.1)
+					particle:SetStartAlpha(255)
+					particle:SetEndAlpha(255)
+					particle:SetStartSize(40)
+					particle:SetEndSize(20)
+					particle:SetColor(255,255,255)
+					particle:SetRoll(math.Rand(-50,50))
+					self.Emitter:Finish()
+				end
+			else
+				local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(self.SmokePos))
 				particle:SetVelocity(self:GetVelocity()+self:GetForward()*-100)
 				particle:SetDieTime(0.1)
 				particle:SetStartAlpha(255)
@@ -463,17 +489,7 @@ function ENT:Draw()
 				particle:SetRoll(math.Rand(-50,50))
 				self.Emitter:Finish()
 			end
-		else
-			local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(self.SmokePos))
-			particle:SetVelocity(self:GetVelocity()+self:GetForward()*-100)
-			particle:SetDieTime(0.1)
-			particle:SetStartAlpha(255)
-			particle:SetEndAlpha(255)
-			particle:SetStartSize(40)
-			particle:SetEndSize(20)
-			particle:SetColor(255,255,255)
-			particle:SetRoll(math.Rand(-50,50))
-			self.Emitter:Finish()
+			self.lastHeatDrawn = CurTime()
 		end
 	end
 end
