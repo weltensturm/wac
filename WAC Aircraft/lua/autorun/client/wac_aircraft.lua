@@ -40,6 +40,15 @@ wac.key.addHook("wac_cl_air_keyboard", function(key, pressed)
 	end
 end)
 
+wac.key.addHook("wac_cl_aircraft_keyboard", function(key, pressed)
+	if !LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft"):IsValid() or vgui.CursorVisible() then return end
+	local k = 0
+	for name, type in pairs(wac.aircraft.controls) do
+		if GetConVar("wac_cl_air_key_" .. name):GetInt() == key then
+			RunConsoleCommand("wac_air_key_" .. i, (pressed and "1" or "0"))
+		end
+	end
+end)
 
 
 wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)

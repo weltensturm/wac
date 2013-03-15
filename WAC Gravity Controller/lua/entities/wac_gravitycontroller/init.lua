@@ -154,11 +154,9 @@ function ENT:PhysicsUpdate(phys)
 				vel = vel + Vector(0,0, self.ZPos - pos.z)*self.vars.hoverSpeed/3
 			end
 		end
-		if (self.vars.brakeAng == 1 and (self.Active or self.vars.brakeAlways == 1)) then	
-			local avel = phys:GetAngleVelocity()
+		if (self.vars.brakeAng == 1 and (self.Active or self.vars.brakeAlways == 1)) then
 			if self.vars.brakeAngMul > 100 then self.vars.brakeAngMul = 100 end
-			self.VeloC = (Angle(0,0,0) - avel)
-			phys:AddAngleVelocity((self.vars.brakeAngMul/100)*self.VeloC)		
+			phys:AddAngleVelocity((self.vars.brakeAngMul/100)*-phys:GetAngleVelocity())
 		end
 	elseif self.Active and self.TargetPos then
 		vel = self.TargetPos-pos-actvel/2

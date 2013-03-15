@@ -25,12 +25,25 @@ wac.hook("SetPlayerAnimation", "wac_cl_heliseat_animation", function(pl, anim)
 	end
 end)
 
+
 for k,t in pairs(wac.aircraft.keys) do
 	concommand.Add("wac_air_key_" .. k, function(p, c, a)
 		if IsValid(p) and p:Alive() then
 			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
+			if IsValid(e) and !e.new then
+				e:receiveInput(p, k, tonumber(a[1])==1)
+			end
+		end
+	end)
+end
+
+
+for name, type in pairs(wac.aircraft.controls) do
+	concommand.Add("wac_aircraft_input_" .. name, function(p, c, a)
+		if IsValid(p) and p:Alive() then
+			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
 			if IsValid(e) then
-				e:receiveInput(p,k,tonumber(a[1])==1)
+				e:receiveInput(p, name, tonumber(a))
 			end
 		end
 	end)

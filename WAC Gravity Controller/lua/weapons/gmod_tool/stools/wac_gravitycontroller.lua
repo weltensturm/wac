@@ -111,7 +111,7 @@ function TOOL:LeftClick(trace)
 		trace.Entity.GCTable=trace.Entity.GCTable or {}
 		for i=1,3 do
 			if !trace.Entity.GCTable[i] or !trace.Entity.GCTable[i]:IsValid() then
-				local ent=MakeGravitycontroller(ply, Ang, Pos, convtable)
+				local ent=MakeGravitycontroller(ply, ang, pos, convtable)
 				ent:SetPos(trace.Entity:GetPos()+trace.Entity:GetUp()*(sgapowernd[i][1]) - trace.Entity:GetRight()*(sgapowernd[i][2]))
 				local ang=trace.Entity:GetAngles()
 				ang:RotateAroundAxis(trace.Entity:GetUp(), 90)
