@@ -1,5 +1,7 @@
 
-include("wac/aircraft.lua")
+if !wac or !wac.aircraft then
+	error("WAC scripts not loaded.")
+end
 
 ENT.Base = "base_anim"
 ENT.Type = "anim"

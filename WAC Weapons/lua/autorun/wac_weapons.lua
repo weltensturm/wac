@@ -1,6 +1,15 @@
 
 include "wac/weapons.lua"
 
+
+for _, file in pairs(file.Find("wac/weapons/*", "LUA")) do
+	if SERVER then
+		AddCSLuaFile("wac/weapons/" .. file)
+	else
+		include("wac/weapons/" .. file)
+	end
+end
+
 local cvars = {
 	allow = CreateClientConVar("wac_weapon_freeview", 1, true, true),
 	offset = CreateClientConVar("wac_weapon_offset", 0, true, false),

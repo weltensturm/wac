@@ -85,7 +85,6 @@ function ENT:viewCalcFirstPerson(k, p, view)
 		if p.wac.viewFree then
 			p.wac.viewFree = false
 			p.wac_air_resetview = true
-			MsgN("reset view")
 		end
 	end
 	if

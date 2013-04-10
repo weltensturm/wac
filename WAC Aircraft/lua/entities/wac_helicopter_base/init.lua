@@ -70,6 +70,7 @@ end
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Float", 0, "Health");
+	self:NetworkVar("Bool", 0, "EngineOn");
 	--self:NetworkVar( "Vector", 1, "BloodPos");
 	--self:NetworkVar( "Vector", 2, "UrinePos");
 end
@@ -350,15 +351,14 @@ function ENT:HasPassenger()
 end
 
 function ENT:setEngine(b)
-	if self.disabled or self.engineDead then b = false end
-	if b then
+	if b and !self.disabled and !self.engineDead then
 		if self.Active then return end
 		self.Active = true
 	elseif self.Active then
 		self.Active=false
 	end
-	MsgN(self.Active)
-	self:SetNWBool("active", self.Active)
+	self:SetEngineOn(self.Active)
+	--self:SetNWBool("active", self.Active)
 end
 
 function ENT:SwitchState()
@@ -389,8 +389,8 @@ function ENT:PhysicsUpdate(ph)
 	end
 
 	for _, rotor in pairs(self.rotors) do
-		rotor.phys:AddAngleVelocity(Vector(0,0, self.engineRpm*rotor.dir*100))
-		rotor.throttle = self.controls.throttle+0.5
+		rotor.phys:AddAngleVelocity(Vector(0,0, self.engineRpm*rotor.dir*500))
+		rotor.controls = self.controls
 	end
 
 

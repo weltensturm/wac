@@ -6,7 +6,7 @@ AddCSLuaFile("shared.lua");
 
 include("shared.lua");
 
-if wire then
+if WireLib then
 	include('entities/base_wire_entity/init.lua'); 
 end
 
@@ -23,7 +23,7 @@ function ENT:Initialize()
 			self.phys:SetMass(math.Clamp(self.Weight, 1, 500))
 		end
 	end
-	if wire then
+	if WireLib then
 		self.Inputs = Wire_CreateInputs(self.Entity, {"ZPos", "Hovermode", "Add to Z", "Activate", "AirbrakeX" , "AirbrakeY" , "AirbrakeZ" , "GlobalBrake"})
 	end
 	self.CanUse = true

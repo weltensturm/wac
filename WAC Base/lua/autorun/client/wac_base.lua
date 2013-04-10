@@ -4,7 +4,7 @@ function PLAYER:GetViewEntity()
 	return GetViewEntity()
 end
 
-/*
+
 local VEHICLE = FindMetaTable("Vehicle")
 
 function VEHICLE:GetPassenger()
@@ -14,4 +14,4 @@ function VEHICLE:GetPassenger()
 		end
 	end
 end
-*/
+

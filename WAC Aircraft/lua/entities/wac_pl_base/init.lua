@@ -80,7 +80,7 @@ function ENT:AddRotor()
 					local dmg=(rotorVel*rotorVel + ph:GetVelocity():Length()*ph:GetVelocity():Length())/100000
 					ph:AddVelocity((e:GetPos()-self.TopRotor:GetPos())*dmg/e:GetPhysicsObject():GetMass()*10)
 					self:DamageBigRotor(dmg)
-					e.Entity:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self.Entity, self.Entity)
+					e:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self.Entity, self.Entity)
 				end
 			end
 		end
@@ -106,7 +106,7 @@ function ENT:AddRotor()
 		e:Spawn()
 		e:SetNotSolid(true)
 		e:GetPhysicsObject():SetMass(self.EngineWeight.Weight)
-		constraint.Weld(self.Entity, e)
+		constraint.Weld(self.Entity, e, 0, 0, 0, true, false)
 		self:AddOnRemove(e)
 		self.EngineWeight.Entity = e
 	end

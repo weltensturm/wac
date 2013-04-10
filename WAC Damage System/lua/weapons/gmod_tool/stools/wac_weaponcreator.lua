@@ -332,7 +332,6 @@ end
 
 TOOL.settings = wac.toolSettings({
 	updateSetting = function(self, name, var)
-		MsgN(name)
 		if name == "adminmode" and self.panel then
 			self:buildPanel()
 		end

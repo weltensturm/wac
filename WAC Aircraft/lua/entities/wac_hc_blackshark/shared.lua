@@ -43,16 +43,14 @@ ENT.Rotors = {
 		pos = Vector(30,0,106),
 		angle = Angle(0,0,0),
 		dir = 1,
-		force = 10,
-		physics = true
+		targetVel = 360
 	},
 	{
 		model = "models/sentry/ka-50_tr.mdl",
 		pos = Vector(30,0,158.5),
 		angle = Angle(0,0,0),
 		dir = -1,
-		force = 10,
-		physics = true
+		targetVel = 360
 	}
 }
 

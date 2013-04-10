@@ -23,17 +23,16 @@ wac.toolSettings = function(t, variables)
 
 	t.updateSetting = t.updateSetting or function(self, name, var)
 		if !self.panel then return end
-		if table.HasValue(self.trigger or {}, name) and CLIENT then
+		if table.HasValue(self.trigger or {}, name) then
 			self:buildPanel()
 		end
 	end
 
 
-	t.BuildCPanel = function(panel)
-		t.panel = panel
+	t.BuildCPanel = function(p)
+		t.panel = p
 		t:buildPanel()
 	end
-
 
 	return t
 end

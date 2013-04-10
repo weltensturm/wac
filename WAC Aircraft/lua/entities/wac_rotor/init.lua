@@ -4,9 +4,9 @@ include "shared.lua"
 AddCSLuaFile "shared.lua"
 AddCSLuaFile "cl_init.lua"
 
-ENT.rpmMax = 240
 ENT.throttle = 0
 ENT.dir = 1
+ENT.targetVel = 400
 
 function ENT:Initialize()
 	self.Entity:SetModel(self.model)
@@ -17,6 +17,7 @@ end
 
 
 function ENT:PhysicsUpdate(ph)
-	ph:AddVelocity(self:GetUp()*ph:GetAngleVelocity().z*self.dir*self.throttle/100)
+	local diff = self.targetVel - ph:GetAngleVelocity().z*self.dir
+	ph:AddVelocity(self:GetUp()*math.Clamp(diff, 0, 1)*self.throttle/200*self.force)
 end
 
