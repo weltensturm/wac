@@ -126,7 +126,7 @@ function ENT:PhysicsUpdate(ph)
 	local t=self:CalculateHover(ph,pos,vel,ang)
 
 	local realism = 3
-	local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
+	local phm = FrameTime()*66 --(wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	
 	if !self.disabled then
 		if self.Passenger[1] and self.Passenger[1]:IsValid() and self.Passenger[1]:IsPlayer() then
@@ -138,7 +138,7 @@ function ENT:PhysicsUpdate(ph)
 			else
 				self.upMul = math.Clamp(self.upMul + self:GetPLControl(self.Passenger[1], WAC_AIR_UPDOWN, 0)/2, 0, 1)
 			end
-			realism=math.Clamp(tonumber(self.Passenger[1]:GetInfo("wac_cl_air_realism")),1,3)
+			realism = math.Clamp(tonumber(self.Passenger[1]:GetInfo("wac_cl_air_realism")),1,3)
 		else
 			self.rotateX=0
 			self.rotateY=0
@@ -151,8 +151,8 @@ function ENT:PhysicsUpdate(ph)
 			end
 			self.rotorRpm = math.Clamp(self.TopRotor.Phys:GetAngleVelocity().z/3500*self.TopRotorDir*phm,-1,1)
 			if self.Active and self.TopRotor:WaterLevel() <= 0 then
-				self.engineRpm=math.Clamp(self.engineRpm+FrameTime(),0,1)
-				self.TopRotor.Phys:AddAngleVelocity(Vector(0,0,self.engineRpm*30 + self.upMul*self.engineRpm*20)*self.TopRotorDir)
+				self.engineRpm = math.Clamp(self.engineRpm+FrameTime(),0,1)
+				self.TopRotor.Phys:AddAngleVelocity(Vector(0,0,self.engineRpm*30 + self.upMul*self.engineRpm*20)*self.TopRotorDir*phm)
 			else
 				self.engineRpm = math.Clamp(self.engineRpm-FrameTime()*0.16*wac.aircraft.cvars.startSpeed:GetFloat(), 0, 1)
 			end

@@ -566,11 +566,11 @@ wac.aircraft.weapons = {
 				t.rocket.TargetPos=util.QuickTrace(self.Gun:GetPos()+self.Gun:GetForward()*20,self.Gun:GetForward()*100000).HitPos
 			end
 		end,
-		DeSelect=function(self,t,p)
-			self.MouseVector=Vector(0,0,0)
-			if t.rocket and t.rocket.Owner==p then
-				t.rocket.Aimed=false
-				t.rocket=nil
+		DeSelect = function(self,t,p)
+			self.MouseVector = Vector(0,0,0)
+			if IsValid(t.rocket) and t.rocket.Owner == p then
+				t.rocket.Aimed = false
+				t.rocket = nil
 			end
 		end,
 		RenderScreenSpace=function(self,t,p)

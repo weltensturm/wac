@@ -673,7 +673,8 @@ function ENT:PhysicsUpdate(ph)
 	local rotateY = (self.rotateY+t.p)*self.rotorRpm
 	local rotateZ = self.rotateZ*1.5*self.rotorRpm
 	
-	local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
+	--local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
+	local phm = FrameTime()*66
 	if self.UsePhysRotor then
 		if self.TopRotor and self.TopRotor.Phys and self.TopRotor.Phys:IsValid() then
 			if self.RotorBlurModel then

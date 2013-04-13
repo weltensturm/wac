@@ -314,7 +314,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	panel:AddControl("Label", {Text = ""})
 	panel:AddControl("Label", {Text = "Admin Settings"})
 
-	panel:CheckBox("Double Force","wac_air_doubletick")
+	--panel:CheckBox("Double Force","wac_air_doubletick")
 
 	panel:AddControl("Slider", {
 		Label="Start Speed",
