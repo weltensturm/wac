@@ -1,7 +1,6 @@
 
 
 include "wac/aircraft.lua"
-include "wac/keyboard.lua"
 
 CreateClientConVar("wac_cl_air_realism", 3, true, true)
 CreateClientConVar("wac_cl_air_sensitivity", 1, true, true)
@@ -12,38 +11,6 @@ CreateClientConVar("wac_cl_air_mouse_swap", 1, true, true)
 CreateClientConVar("wac_cl_air_mouse_invert_pitch", 0, true, true)
 CreateClientConVar("wac_cl_air_mouse_invert_yawroll", 0, true, true)
 CreateClientConVar("wac_cl_air_shakeview", 1, true, true)
-
-
--- new input
-
-local newBindingName = "wac_new_cl_air_key_"
-
-wac.key.addHook("wac_cl_aircraft_keyboard", function(key, pressed)
-	if !LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft"):IsValid() or vgui.CursorVisible() then return end
-	local k = 0
-	for name, range in pairs(wac.aircraft.controls) do
-		if type(range) == "boolean" then
-			if GetConVar(newBindingName .. name):GetInt() == key then
-				RunConsoleCommand("wac_air_input", name, (pressed and "1" or "0"))
-			end
-		else
-			if GetConVar(newBindingName .. name .. "_Inc"):GetInt() == key then
-				RunConsoleCommand("wac_air_input", name, (pressed and "1" or "0"))
-			elseif GetConVar(newBindingName .. name .. "_Dec"):GetInt() == key then
-				RunConsoleCommand("wac_air_input", name, (pressed and "-1" or "0"))
-			end
-		end
-	end
-end)
-
-
-for name, key in pairs(wac.aircraft.keybindings) do
-	CreateClientConVar(newBindingName .. name, key, true, true)
-	--CreateClientConVar("wac_air_key_")
-end
-
-
---/new input
 
 
 surface.CreateFont("wac_heli_big", {
@@ -58,20 +25,6 @@ surface.CreateFont("wac_heli_small", {
 
 usermessage.Hook("wac_toggle_thirdp", function(m)
 	RunConsoleCommand("gmod_vehicle_viewmode", GetConVar("gmod_vehicle_viewmode"):GetInt() == 1 and 0 or 1)
-end)
-
-for k, t in pairs(wac.aircraft.keys) do
-	CreateClientConVar("wac_cl_air_key_"..k, t.k, true, true)
-end
-
-wac.key.addHook("wac_cl_air_keyboard", function(key, pressed)
-	if !LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft"):IsValid() or vgui.CursorVisible() then return end
-	local k = 0
-	for i, _ in pairs(wac.aircraft.keys) do
-		if GetConVar("wac_cl_air_key_" .. i):GetInt() == key then
-			RunConsoleCommand("wac_air_key_" .. i, (pressed and "1" or "0"))
-		end
-	end
 end)
 
 
@@ -104,15 +57,6 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 
 end)
 
-wac.hook("PlayerBindPress", "wac_cl_air_exit", function(p,bind)
-	if bind=="+use" then
-		local heli=p:GetVehicle():GetNWEntity("wac_aircraft")
-		if IsValid(heli) then
-			return true
-		end
-	end
-end)
-
 wac.hook("RenderScreenspaceEffects", "wac_air_weaponcam",function()
 	local p = LocalPlayer()
 	if !IsValid(p) then return end
@@ -139,56 +83,6 @@ wac.hook("CreateMove", "wac_cl_air_mouseinput", function(md)
 	end
 end)
 
-
---[[
-local enterTime;	
-local fovTime=0.5
-wac.hook("CalcView", "wac_heli_calcview", function(p, pos, ang, fov)
-
-	p.wac = p.wac or {enterTime=0, leaveTime=0}
-
-	if p.wac.thirdPerson != GetConVar("gmod_vehicle_viewmode"):GetBool() then
-		p.wac.thirdPerson = !p.wac.thirdPerson
-	end
-
-	local aircraft = p:GetVehicle():GetNWEntity("wac_aircraft")
-
-	if GetViewEntity() == p then
-		if IsValid(aircraft) then
-			local targetView = aircraft:CalcPlayerView(p:GetNWInt("wac_passenger_id"),p,pos,ang)
-			if targetView then
-				if !enterTime then enterTime=CurTime() end
-				local fovd = GetConVar("fov_desired"):GetInt()
-				targetView.fov = (1-math.Clamp(CurTime()-enterTime,0,fovTime)/fovTime)*fovd+(fov-(90-fovd))*math.Clamp(CurTime()-enterTime,0,fovTime)/fovTime
-				p.wac.leaveView = {
-					origin = targetView.origin,
-					angles = targetView.angles,
-					fov = targetView.fov
-				}
-				p.wac.leaveTime = CurTime()
-				p.wac.inAircraft = true
-				return targetView
-			end
-		end
-		if p.wac.leaveView and GetConVar("gmod_vehicle_viewmode"):GetInt() == 0 then
-			if p.wac.inAircraft then
-				p.wac.inAircraft = false
-				p.wac.leaveView.angles = ang - p.wac.leaveView.angles
-				p.wac.leaveView.origin = p:WorldToLocal(p.wac.leaveView.origin - Vector(0,0,65))
-			end
-			local m = math.Clamp(CurTime()-p.wac.leaveTime,0,1)*100
-			p.wac.leaveView.angles = wac.smoothApproachAngles(p.wac.leaveView.angles, Angle(0,0,0), m)
-			wac.smoothApproachVector(p.wac.leaveView.origin, Vector(0,0,0), m)
-			if p.wac.leaveView.origin:Distance(Vector(0,0,0))>0.01 then
-				return {
-					origin = pos+p.wac.leaveView.origin,
-					angles = ang-p.wac.leaveView.angles,
-				}
-			end
-		end
-	end
-end)
-]]
 
 -- menu
 wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(panel, info)
@@ -263,13 +157,26 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		table.insert(presetParams.CVars, "wac_cl_air_key_" .. i)
 	end
 	panel:AddControl("ComboBox", presetParams)
-	
-	for i,t in pairs(wac.aircraft.keys) do
-		local k = vgui.Create("wackeyboard::key", panel)
-		k:setLabel(t.n)
-		k:setKey(t.k)
-		k.runCommand="wac_cl_air_key_"..i
-		panel:AddPanel(k)	
+
+	for name, t in pairs(wac.aircraft.controls) do
+		if type(t) == "boolean" then
+			local k = vgui.Create("wackeyboard::key", panel)
+			k:setLabel(name)
+			k:setKey(t)
+			k.runCommand="wac_cl_air_key_"..name
+			panel:AddPanel(k)
+		else
+			local f = vgui.Create("wackeyboard::key", panel)
+			f:setLabel(name .. " +")
+			f:setKey(wac.aircraft.keybindings["wac_cl_air_key_" .. name .. "_Inc"])
+			f.runCommand = "wac_cl_air_key_"..name.."_Inc"
+			panel:AddPanel(f)
+			local k = vgui.Create("wackeyboard::key", panel)
+			k:setLabel(name .. " -")
+			k:setKey(wac.aircraft.keybindings["wac_cl_air_key_" .. name .. "_Dec"])
+			k.runCommand = "wac_cl_air_key_"..name.."_Dec"
+			panel:AddPanel(k)
+		end
 	end
 	
 	panel:AddControl("Slider", {
@@ -288,9 +195,9 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		Command = "wac_cl_air_realism",
 	})
 	
-	panel:CheckBox("Smooth View","wac_cl_air_smoothview")
+	panel:CheckBox("Dynamic View Angle","wac_cl_air_smoothview")
 	
-	panel:CheckBox("Shake View","wac_cl_air_shakeview")
+	panel:CheckBox("Dynamic View Position","wac_cl_air_shakeview")
 
 	if info["wac_cl_air_usejoystick"]=="0" then
 		panel:CheckBox("Use Mouse","wac_cl_air_mouse")

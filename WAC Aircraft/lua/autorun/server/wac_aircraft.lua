@@ -5,20 +5,6 @@ AddCSLuaFile("autorun/client/wac_aircraft.lua");
 AddCSLuaFile("autorun/client/wac_aircraft_dev.lua");
 
 
--- new input
-
-concommand.Add("wac_air_input", function(p, c, a)
-	if IsValid(p) and p:Alive() then
-		local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-		if IsValid(e) then
-			e:receiveInput(p, a[1], tonumber(a[2]))
-		end
-	end
-end)
-
---/new input
-
-
 wac.aircraft.cvars = {
 	startSpeed = CreateConVar("wac_air_startspeed", 1, {FCVAR_ARCHIVE}),
 	doubleTick = CreateConVar("wac_air_doubletick", 0, {FCVAR_ARCHIVE}),
@@ -36,30 +22,6 @@ wac.hook("SetPlayerAnimation", "wac_cl_heliseat_animation", function(pl, anim)
 		end
 	end
 end)
-
-
-for k,t in pairs(wac.aircraft.keys) do
-	concommand.Add("wac_air_key_" .. k, function(p, c, a)
-		if IsValid(p) and p:Alive() then
-			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(e) and !e.new then
-				e:receiveInput(p, k, tonumber(a[1])==1)
-			end
-		end
-	end)
-end
-
-
-for name, type in pairs(wac.aircraft.controls) do
-	concommand.Add("wac_aircraft_input_" .. name, function(p, c, a)
-		if IsValid(p) and p:Alive() then
-			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(e) then
-				e:receiveInput(p, name, tonumber(a))
-			end
-		end
-	end)
-end
 
 
 wac.hook("JoystickInitialize", "wac_air_jcon_init", function()

@@ -4,38 +4,10 @@ include("wac/keyboard.lua")
 
 wac.menu.aircraft = "Aircraft"
 
-WAC_AIR_LEANP = 1
-WAC_AIR_LEANY = 2
-WAC_AIR_LEANR = 3
-WAC_AIR_UPDOWN = 4
-WAC_AIR_START = 5
-WAC_AIR_FIRE = 6
-WAC_AIR_CAM = 7
-WAC_AIR_NEXTWEP = 8
-WAC_AIR_HOVER = 9
-WAC_AIR_EXIT = 10
-WAC_AIR_FREEAIM = 11
-WAC_AIR_THIRDP = 12
-
-local currentKey = 1
-local function key(name)
-	local t = {}
-	t.index = currentKey
-	
-	t.name = name
-
-	t.down = false
-	t.isDown = function(self)
-		return self.down
-	end
-
-	currentKey = currentKey + 1
-	return t
-end
 
 wac.aircraft = wac.aircraft or {
 	
-	version = "328",
+	version = "329",
 	
 	spawnCategory = "WAC Aircraft",
 
@@ -45,20 +17,22 @@ wac.aircraft = wac.aircraft or {
 		Yaw = {-1, 1},
 		Roll = {-1, 1},
 		Start = true,
-		Exit = true
+		Exit = true,
+		FreeCamera = true,
 	},
 
 	keybindings = {
-		Throttle_Inc = KEY_W,
-		Throttle_Dec = KEY_S,
-		Yaw_Inc = KEY_D,
-		Yaw_Dec = KEY_A,
-		Roll_Inc = KEY_NONE,
-		Roll_Dec = KEY_NONE,
-		Pitch_Inc = KEY_NONE,
-		Pitch_Dec = KEY_NONE,
+		Throttle_Inc = KEY_SPACE,
+		Throttle_Dec = KEY_SHIFT,
+		Yaw_Inc = KEY_Q,
+		Yaw_Dec = KEY_E,
+		Roll_Inc = KEY_A,
+		Roll_Dec = KEY_D,
+		Pitch_Inc = KEY_W,
+		Pitch_Dec = KEY_S,
 		Start = KEY_R,
-		Exit = KEY_E,
+		Exit = KEY_F,
+		FreeCamera = KEY_SPACE,
 	},
 
 	keys = {
@@ -77,25 +51,6 @@ wac.aircraft = wac.aircraft or {
 		{k=MOUSE_RIGHT,n="Next Weapon"},
 		{k=MOUSE_4,n="Auto Hover Toggle"},
 		{k=KEY_SPACE,n="Free Pilot View"},
-	}
-
-	--[[
-	keys = {
-		exit = key('Exit Helicopter'),
-		start = key('Start Aircraft'),
-		thrust = key('Thrust'),
-		brake = key('Brake'),
-		rollLeft = key('Roll Left'),
-		rollRight = key('Roll Right'),
-		pitchUp = key('Pitch Up'),
-		pitchDown = key('Pitch Down'),
-		noseLeft = key('Nose Left'),
-		noseRight = key('Nose Right'),
-		fire = key('Fire Weapon'),
-		nextWeapon = key('Next Weapon'),
-		hover = key('Hover Toggle'),
-		freeview = key('Free View'),
 	},
-	]]
-	
+
 }

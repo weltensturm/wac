@@ -63,14 +63,8 @@ function ENT:Initialize()
 	self.UpdateSecond = 0
 	self.LastDamageTaken=0
 	self.wac_seatswitch = true
-	self.StartTime = 0
-	self.HoverTime=0
 	self.engineHealth = 100
-	self.rotateX = 0
-	self.rotateY = 0
-	self.rotateZ = 0
 	self.rotorRpm = 0
-	self.upMul = 0
 	self:SetNWFloat("health", 100)
 	self.LastActivated = 0
 	self.NextWepSwitch = 0
@@ -79,6 +73,13 @@ function ENT:Initialize()
 	self.LastPhys=0
 	self.Passenger={}
 	
+	self.controls = {
+		throttle = 0,
+		pitch = 0,
+		yaw = 0,
+		roll = 0,
+	}
+
 	self.SeatsT=self.SeatsT or table.Copy(self:AddSeatTable())
 	self:AddRotor()
 	self:AddSounds()
@@ -86,7 +87,6 @@ function ENT:Initialize()
 	self:AddWheels()
 	self:AddStuff()
 	self:addNpcTargets()
-	self:AddAirResistanceMods()
 	
 end
 
@@ -101,14 +101,12 @@ end
 
 function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
 
-function ENT:AddAirResistanceMods()
-	self.AirResistanceMods={
-		[1]=Vector(0,0,0),				--avel=lvel.x*this
-		[2]=Vector(-0.0005,0,0.004),	--avel=lvel.y*this
-		[3]=Vector(0,-0.00005,0),		--avel=lvel.z*this
-		[4]=Vector(0,0.003,0.003),		--general local air resistance
-	}
-end
+ENT.AirResistanceMods = {
+	[1]=Vector(0,0,0),				--avel=lvel.x*this
+	[2]=Vector(-0.0005,0,0.004),	--avel=lvel.y*this
+	[3]=Vector(0,-0.00005,0),		--avel=lvel.z*this
+	[4]=Vector(0,0.003,0.003),		--general local air resistance
+}
 
 function ENT:addNpcTargets()
 	--[[self.npcTargets = {}
@@ -387,6 +385,8 @@ function ENT:EjectPassenger(ply,idx,t)
 	end
 end
 
+
+
 function ENT:Use(act, cal)
 	if self.disabled then return end
 	local crt = CurTime()
@@ -441,19 +441,6 @@ function ENT:StopAllSounds()
 	end
 end
 
-local keyids={
-	[WAC_AIR_LEANP] ={7,8},
-	[WAC_AIR_LEANY] ={9,10},
-	[WAC_AIR_LEANR] ={6,5},
-	[WAC_AIR_UPDOWN] ={3,4},
-	[WAC_AIR_START] ={2,0},
-	[WAC_AIR_FIRE] ={12,0},
-	[WAC_AIR_CAM] ={11,0},
-	[WAC_AIR_NEXTWEP] ={13,0},
-	[WAC_AIR_HOVER]	= {14,0},
-	[WAC_AIR_EXIT] = {1,0},
-	[WAC_AIR_FREEAIM] = {15,0},
-}
 
 function ENT:RocketAlert()
 	if self.rotorRpm > 0.1 then
@@ -473,11 +460,13 @@ function ENT:RocketAlert()
 	end
 end
 
+
 function ENT:setVar(name, var)
 	if self:GetNWFloat(name) != var then
 		self:SetNWFloat(name, var)
 	end
 end
+
 
 function ENT:Think()
 	local crt = CurTime()
@@ -516,40 +505,22 @@ function ENT:Think()
 		
 		self:setVar("rotorRpm", math.Clamp(self.rotorRpm, 0, 150))
 		self:setVar("engineRpm", self.engineRpm)
-		self:setVar("up", self.upMul)
+		self:setVar("up", self.controls.throttle)
 
 		if self.TopRotor and self.TopRotor:WaterLevel() > 0 then
 			self:DamageEngine(0.5)
 		end
 		for k, t in pairs(self.SeatsT) do
-			local p=self.Passenger[k]
+			local p = self.Passenger[k]
 			if p and p:IsValid() and p:InVehicle() and p:GetVehicle().Helicopter then
-				if k==1 then
-					if self:GetPLControl(p,WAC_AIR_START,0,true)>0 and self.StartTime<CurTime() then
-						self:SwitchState()
-						self.StartTime=CurTime()+1
-					end
-					if self:GetPLControl(p,WAC_AIR_HOVER,0,true)>0 and self.HoverTime<CurTime() then
-						self:ToggleHover()
-						self.HoverTime=CurTime()+1
-					end
-				end
-				
-				if !p.wac_air_thirdp_toggled and self:GetPLControl(p,WAC_AIR_THIRDP,0,true, 1!=k)>0 then
-					umsg.Start("wac_toggle_thirdp", p)
-					umsg.End()
-					p.wac_air_thirdp_toggled = true
-				end
-				if p.wac_air_thirdp_toggled and self:GetPLControl(p,WAC_AIR_THIRDP,0,true, 1!=k)<=0 then
-					p.wac_air_thirdp_toggled = false
-				end
-				
-				if self:GetPLControl(p,WAC_AIR_CAM,0,true, 1!=k)>0 and (!p.NextCamSwitch or p.NextCamSwitch < crt) then
+
+				--[[if self:GetPLControl(p,WAC_AIR_CAM,0,true, 1!=k)>0 and (!p.NextCamSwitch or p.NextCamSwitch < crt) then
 					p:SetNWBool("docam", !p:GetNWBool("docam"))
 					p:SetNWBool("wac_mouse_seatinput", k==1 and p:GetNWBool("docam") or false)
 					p.NextCamSwitch=crt+0.5
-				end
+				end]]
 				
+				--[[
 				if t.wep then
 					if self:GetPLControl(p,WAC_AIR_NEXTWEP,0,true, 1!=k)>0 and t.wep_next<CurTime() then
 						self:NextWeapon(t, k, p)
@@ -562,6 +533,7 @@ function ENT:Think()
 					end
 					if t.wep[t.wep_act].Think then t.wep[t.wep_act].Think(self.Entity, t.wep[t.wep_act], p) end
 				end
+				]]
 			end
 		end
 	end
@@ -569,49 +541,23 @@ function ENT:Think()
 	return true
 end
 
-function ENT:receiveInput(player, key, pressed)
-	if key == keyids[WAC_AIR_EXIT][1] and pressed then
+
+function ENT:receiveInput(player, name, value)
+	if name == "Start" and value==1 then
+		self:setEngine(!self.active)
+	elseif name == "Throttle" then
+		self.controls.throttle = value
+	elseif name == "Pitch" then
+		self.controls.pitch = value
+	elseif name == "Yaw" then
+		self.controls.yaw = value
+	elseif name == "Roll" then
+		self.controls.roll = value
+	elseif name == "Exit" and value==1 then
 		self:EjectPassenger(player)
-		return
 	end
-	player.HelkeysDown[key] = pressed
 end
 
-function ENT:GetPLControl(pl, id, cur, static, nopilot)
-	local mul = tonumber(pl:GetInfo("wac_cl_air_sensitivity") or "1")
-	local tempJoyVal=0
-	if !nopilot and pl:GetInfo("wac_cl_air_usejoystick")=="1" and joystick then
-		tempJoyVal=joystick.Get(pl, "wac_air_"..id)
-		tempJoyVal=(type(tempJoyVal)=="number")and(tempJoyVal)or((tempJoyVal==true)and(1)or(0))
-		local addiv=tempJoyVal/127.5-1
-		if static then return addiv end
-		return math.Clamp(math.pow(addiv, 3)*mul, -1, 1)
-	else
-		local swap=pl:GetInfo("wac_cl_air_mouse_swap")
-		if (id==WAC_AIR_LEANP or (swap=="1"and id==WAC_AIR_LEANR) or (swap=="0" and id==WAC_AIR_LEANY)) and tonumber(pl:GetInfo("wac_cl_air_mouse"))==1 then
-			if self.Passenger[1].HelkeysDown[keyids[WAC_AIR_FREEAIM][1]] then return 0 end
-			local v=self:WorldToLocal(self:GetPos()+pl:GetAimVector())
-			if id==WAC_AIR_LEANP then
-				local m=(pl:GetInfo("wac_cl_air_mouse_invert_pitch")=="1" and -1 or 1)
-				return math.Clamp(v.z*mul*-m*10,-1,1)
-			else
-				if swap=="1" then mul=mul*-1 end
-				local m=(pl:GetInfo("wac_cl_air_mouse_invert_yawroll")=="1" and -1 or 1)
-				return math.Clamp(v.y*mul*m*10,-1,1)
-			end
-		else
-			if pl.HelkeysDown and keyids[id] and pl.HelkeysDown[keyids[id][1]] then
-				return math.Clamp(cur+0.03*mul, -1, 1)
-			elseif pl.HelkeysDown and keyids[id] and pl.HelkeysDown[keyids[id][2]] then
-				return math.Clamp(cur-0.03*mul, -1, 1)
-			end
-			if static then
-				return cur - cur/7
-			end
-		end
-	end
-	return 0
-end
 
 function ENT:HasPassenger()
 	for k, p in pairs(self.Passenger) do
@@ -621,19 +567,20 @@ function ENT:HasPassenger()
 	end
 end
 
-function ENT:SetOn(b)
+
+function ENT:setEngine(b)
 	if self.disabled or self.engineDead then b = false end
 	if b then
-		if self.Active then return end
-		self.Active = true
-	elseif self.Active then
-		self.Active=false
+		if self.active then return end
+		self.active = true
+	elseif self.active then
+		self.active=false
 	end
-	self:SetNWBool("active", self.Active)
+	self:SetNWBool("active", self.active)
 end
 
 function ENT:SwitchState()
-	self:SetOn(!self.Active)
+	self:setEngine(!self.active)
 end
 
 function ENT:ToggleHover()
@@ -655,23 +602,23 @@ function ENT:PhysicsUpdate(ph)
 	local realism = 2
 	local pilot = self.Passenger[1]
 	if IsValid(pilot) then
-		self.rotateY = self:GetPLControl(pilot, WAC_AIR_LEANP, self.rotateY)
-		self.rotateZ = self.BackRotor and self:GetPLControl(pilot, WAC_AIR_LEANY, self.rotateZ) or 0
-		self.rotateX = self:GetPLControl(pilot, WAC_AIR_LEANR, self.rotateX)
-		self.upMul = self:GetPLControl(pilot, WAC_AIR_UPDOWN, self.upMul, true)
+		--self.rotateY = self:GetPLControl(pilot, WAC_AIR_LEANP, self.rotateY)
+		--self.rotateZ = self.BackRotor and self:GetPLControl(pilot, WAC_AIR_LEANY, self.rotateZ) or 0
+		--self.rotateX = self:GetPLControl(pilot, WAC_AIR_LEANR, self.rotateX)
+		--self.upMul = self:GetPLControl(pilot, WAC_AIR_UPDOWN, self.upMul, true)
 		realism = math.Clamp(tonumber(pilot:GetInfo("wac_cl_air_realism")),1,3)
 	else
-		self.rotateY=0
-		self.rotateZ=0
-		self.rotateX=0
+		--self.rotateY=0
+		--self.rotateZ=0
+		--self.rotateX=0
 	end
 
 	local angbrake = ((self.TopRotor and self.BackRotor) and ph:GetAngleVelocity()*self.AngBrakeMul/math.pow(realism,2)*9 or NULLVEC)
 	local t = self:CalculateHover(ph,pos,vel,ang)
 	
-	local rotateX = (self.rotateX*1.5+t.r)*self.rotorRpm
-	local rotateY = (self.rotateY+t.p)*self.rotorRpm
-	local rotateZ = self.rotateZ*1.5*self.rotorRpm
+	local rotateX = (self.controls.roll*1.5+t.r)*self.rotorRpm
+	local rotateY = (self.controls.pitch+t.p)*self.rotorRpm
+	local rotateZ = self.controls.yaw*1.5*self.rotorRpm
 	
 	--local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	local phm = FrameTime()*66
@@ -681,7 +628,7 @@ function ENT:PhysicsUpdate(ph)
 				self.TopRotorModel:SetColor(Color(255,255,255,math.Clamp(1.3-self.rotorRpm,0.1,1)*255))
 			end
 
-			if self.Active and self.TopRotor:WaterLevel() <= 0 and !self.engineDead then
+			if self.active and self.TopRotor:WaterLevel() <= 0 and !self.engineDead then
 				self.engineRpm = math.Clamp(self.engineRpm+FrameTime()*0.1*wac.aircraft.cvars.startSpeed:GetFloat(),0,1)
 				--self.TopRotor.Phys:AddAngleVelocity(Vector(0,0,math.pow(self.engineRpm,2)*16-self.upMul)*self.TopRotorDir*phm)
 			else
@@ -694,11 +641,11 @@ function ENT:PhysicsUpdate(ph)
 			rotor.angVel = rotor.phys:GetAngleVelocity()
 			rotor.upvel = self.TopRotor:WorldToLocal(self.TopRotor:GetVelocity()+self.TopRotor:GetPos()).z
 			rotor.brake =
-				(math.abs(self.rotateX) + math.abs(self.rotateY) + math.abs(self.rotateZ))*0.01
+				(math.abs(rotateX) + math.abs(rotateY) + math.abs(rotateZ))*0.01
 				+ math.Clamp(math.abs(rotor.angVel.z) - 2950, 0, 100)/10 -- RPM cap
 				+ math.pow(math.Clamp(1500 - math.abs(rotor.angVel.z), 0, 1500)/900, 3)
 				+ math.abs(rotor.angVel.z/10000)
-				- (rotor.upvel - self.rotorRpm)*self.upMul/1000
+				- (rotor.upvel - self.rotorRpm)*self.controls.throttle/1000
 
 			rotor.targetAngVel =
 				Vector(0, 0, math.pow(self.engineRpm,2)*self.TopRotorDir*10)
@@ -728,7 +675,7 @@ function ENT:PhysicsUpdate(ph)
 					self.Sound.CrashAlarm:Play()
 				end
 			end
-			local temp=vel+up*(self.upMul*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
+			local temp=vel+up*(self.controls.throttle*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
 			temp=temp-self:LocalToWorld(lvel*self.AirResistanceMods[4]*dvel*dvel/500000)+pos
 			ph:SetVelocity(temp)
 			
@@ -743,7 +690,7 @@ function ENT:PhysicsUpdate(ph)
 								)/4)-pos
 						)
 						e:GetPhysicsObject():AddVelocity(up*ang.r*lpos.y/self.WheelStabilize)
-						if self.upMul < -0.8 then -- apply wheel brake
+						if self.controls.throttle < -0.8 then -- apply wheel brake
 							ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5)
 						end
 					end
@@ -756,8 +703,8 @@ function ENT:PhysicsUpdate(ph)
 			self.BackRotor.Phys:AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity()*-0.01)
 		end
 	else
-		self.rotorRpm=math.Approach(self.rotorRpm, self.Active and 1 or 0, self.EngineForce/1000)
-		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.upMul+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
+		self.rotorRpm=math.Approach(self.rotorRpm, self.active and 1 or 0, self.EngineForce/1000)
+		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.controls.throttle+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
 	end
 
 	ph:AddAngleVelocity((
@@ -772,9 +719,7 @@ function ENT:PhysicsUpdate(ph)
 			s.wep[s.wep_act].Phys(self,s.wep[s.wep_act],self.Passenger[k])
 		end
 	end
-
-	if self.CustomPhysicsUpdate then self:CustomPhysicsUpdate(ph) end
-	self.LastPhys=CurTime()
+	self.LastPhys = CurTime()
 end
 
 function ENT:CalculateHover(ph,pos,vel,ang)
@@ -910,7 +855,7 @@ function ENT:KillTopRotor()
 		if !e or !e:IsValid() then return end
 		e:Remove()
 	end)
-	self:SetOn(false)
+	self:setEngine(false)
 end
 --[###] Rotor Damage
 
@@ -949,7 +894,7 @@ function ENT:DamageEngine(amt)
 			if !self.Sound.LowHealth:IsPlaying() then
 				self.Sound.LowHealth:Play()
 			end
-			self:SetOn(false)
+			self:setEngine(false)
 			self.engineDead = true
 
 			if self.engineHealth < 20 and !self.EngineFire then
@@ -984,7 +929,7 @@ function ENT:DamageEngine(amt)
 				util.Effect("HelicopterMegaBomb", effectdata)
 				util.Effect("cball_explode", effectdata)
 				util.BlastDamage(self.Entity, self.Entity, self.Entity:GetPos(), 300, 300)
-				self:SetOn(false)
+				self:setEngine(false)
 				if self.Smoke then
 					self.Smoke:Remove()
 					self.Smoke=nil

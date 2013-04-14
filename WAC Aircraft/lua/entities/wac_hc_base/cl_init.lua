@@ -216,7 +216,7 @@ function ENT:viewCalcThirdPerson(k, p, view)
 	if
 			k == 1
 			and p:GetInfo("wac_cl_air_mouse") == "1"
-			and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15")))
+			and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_FreeCamera")))
 			and p:GetInfo("wac_cl_air_usejoystick") == "0"
 	then
 		ang = self:GetAngles()
@@ -240,7 +240,7 @@ end
 
 function ENT:viewCalcFirstPerson(k, p, view)
 	p.wac = p.wac or {}
-	if wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15"))) then
+	if wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_FreeCamera"))) then
 		if !p.wac.viewFree then
 			p.wac.viewFree = true
 		end
@@ -336,7 +336,9 @@ function ENT:MovePlayerView(k,p,md)
 	local freeView = md:GetViewAngles()
 	local id = self:GetNWInt("seat_"..k.."_actwep")
 	if !self.SeatsT or !self.SeatsT[k] or !self.SeatsT[k].wep[id] then return end
-	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0" and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15")))) or (self.SeatsT and self.SeatsT[k].wep[id].MouseControl) then
+	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0"
+			and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_FreeCamera"))))
+			or (self.SeatsT and self.SeatsT[k].wep[id].MouseControl) then
 		freeView.p = freeView.p-freeView.p*FrameTime()*6
 		freeView.y = freeView.y-(freeView.y-90)*FrameTime()*6
 	else
