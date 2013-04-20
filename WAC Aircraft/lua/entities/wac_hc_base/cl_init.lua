@@ -24,6 +24,7 @@ function ENT:Initialize()
 		self.BlurCModel:SetNoDraw(true)
 	end
 	self.RotorTime = 0
+	hook.Add("ShouldDrawLocalPlayer", "WAC-Thirdperson-"..self:EntIndex(), function() return self.ShouldDrawLocalPlayer(self) end)
 end
 
 function ENT:Think()
@@ -92,6 +93,7 @@ function ENT:OnRemove()
 	for _,s in pairs(self.Sound) do
 		s:Stop()
 	end
+	hook.Remove("ShouldDrawLocalPlayer", "WAC-Thirdperson-"..self:EntIndex())
 end
 
 function ENT:DrawHUD(k,p)
@@ -329,6 +331,14 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 		self.viewTarget = nil
 	end
 	return view
+end
+
+function ENT.ShouldDrawLocalPlayer(self)
+	local p=LocalPlayer()
+	local e=p:GetVehicle():GetNWEntity("wac_aircraft")
+	if e == self and p:GetVehicle():GetThirdPersonMode() then
+		return true
+	end
 end
 
 function ENT:MovePlayerView(k,p,md)
