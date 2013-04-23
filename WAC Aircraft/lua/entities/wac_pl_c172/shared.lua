@@ -43,56 +43,53 @@ ENT.WheelInfo={
 	},
 }
 
-function ENT:AddSeatTable()
-	return {
-		[1]={
-			Pos=Vector(1.4, 9.5, -10),
-			ExitPos=Vector(60, 50, -45),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
+ENT.Seats = {
+	{
+		Pos=Vector(1.4, 9.5, -10),
+		ExitPos=Vector(60, 50, -45),
+		NoHud=true,
+		wep={
+			wac.aircraft.getWeapon("No Weapon"),
 		},
-		[2]={
-			Pos=Vector(1.4, -9.5, -10),
-			ExitPos=Vector(60, -50, -45),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
+	},
+	{
+		Pos=Vector(1.4, -9.5, -10),
+		ExitPos=Vector(60, -50, -45),
+		NoHud=true,
+		wep={
+			wac.aircraft.getWeapon("No Weapon"),
 		},
-		[3]={
-			Pos=Vector(-40,-10,-13),
-			ExitPos=Vector(-50, -70, -45),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
+	},
+	{
+		Pos=Vector(-40,-10,-13),
+		ExitPos=Vector(-50, -70, -45),
+		NoHud=true,
+		wep={
+			wac.aircraft.getWeapon("No Weapon"),
 		},
-		[4]={
-			Pos=Vector(-40,10,-13),
-			ExitPos=Vector(-50, 70, -45),
-			NoHud=true,
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-			},
+	},
+	{
+		Pos=Vector(-40,10,-13),
+		ExitPos=Vector(-50, 70, -45),
+		NoHud=true,
+		wep={
+			wac.aircraft.getWeapon("No Weapon"),
 		},
-	}
-end
+	},
+}
 
-function ENT:AddSounds()
-	self.Sound={
-		Start=CreateSound(self.Entity,"FSX/C172/xc172_startup.wav"),
-		Blades=CreateSound(self.Entity,"FSX/C172/xc172_Rrpm2.wav"),
-		Engine=CreateSound(self.Entity,"FSX/C172/c172_rpm2.wav"),
-		MissileAlert=CreateSound(self.Entity,"HelicopterVehicle/MissileNearby.mp3"),
-		MissileShoot=CreateSound(self.Entity,"HelicopterVehicle/MissileShoot.mp3"),
-		MinorAlarm=CreateSound(self.Entity,"HelicopterVehicle/MinorAlarm.mp3"),
-		LowHealth=CreateSound(self.Entity,"HelicopterVehicle/LowHealth.mp3"),
-		CrashAlarm=CreateSound(self.Entity,"HelicopterVehicle/CrashAlarm.mp3"),
-	}
-end
 
-function ENT:DrawPilotHud() end
+ENT.Sounds = {
+	Start= "FSX/C172/xc172_startup.wav",
+	Blades= "FSX/C172/xc172_Rrpm2.wav",
+	Engine= "FSX/C172/c172_rpm2.wav",
+	MissileAlert= "HelicopterVehicle/MissileNearby.mp3",
+	MissileShoot= "HelicopterVehicle/MissileShoot.mp3",
+	MinorAlarm= "HelicopterVehicle/MinorAlarm.mp3",
+	LowHealth= "HelicopterVehicle/LowHealth.mp3",
+	CrashAlarm= "HelicopterVehicle/CrashAlarm.mp3",
+}
+
+--function ENT:DrawPilotHud() end
 function ENT:DrawWeaponSelection() end
 

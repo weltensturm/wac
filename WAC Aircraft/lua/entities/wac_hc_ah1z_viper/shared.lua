@@ -48,7 +48,7 @@ function ENT:AddSeatTable()
 end
 
 function ENT:AddSounds()
-	self.Sound={
+	self.Sounds={
 		Start=CreateSound(self.Entity,"wac/Heli/ah1_start.wav"),
 		Blades=CreateSound(self.Entity,"npc/attack_helicopter/aheli_rotor_loop1.wav"),--"npc/attack_helicopter/aheli_rotor_loop1.wav"),
 		Engine=CreateSound(self.Entity,"wac/heli/bellinternal.wav"),

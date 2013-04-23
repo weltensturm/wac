@@ -134,6 +134,7 @@ if CLIENT then
 			local b = info.b
 			info.b = key >= 107 and input.IsMouseDown(key) or input.IsKeyDown(key)
 			if info.b != b then
+				hook.Run("wacKey", key, info.b)
 				for name, func in pairs(wac.key.hooks) do
 					func(key, info.b)
 				end

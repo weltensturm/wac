@@ -22,37 +22,36 @@ ENT.ThirdPDist = 400
 ENT.SmokePos	= Vector(-80,0,50)
 ENT.FirePos		= Vector(-30,0,100)
 
-function ENT:AddSeatTable()
-	return{
-		[1]={
-			Pos=Vector(22, 15, 49),
-			ExitPos=Vector(70,60,10),
-			NoHud=true,
-			wep={wac.aircraft.getWeapon("No Weapon")},
-		},
-		[2]={
-			Pos=Vector(22, -12, 49),
-			ExitPos=Vector(70,-60,10),
-			NoHud=true,
-			wep={wac.aircraft.getWeapon("No Weapon")},
-		},
-		[3]={
-			Pos=Vector(-5, -45, 35),
-			ExitPos=Vector(20,-100,10),
-			NoHud=true,
-			wep={wac.aircraft.getWeapon("No Weapon")},
-		},
-		[4]={
-			Pos=Vector(-5, 45, 35),
-			ExitPos=Vector(20,100,10),
-			NoHud=true,
-			wep={wac.aircraft.getWeapon("No Weapon")},
-		},
-	}
-end
+ENT.Seats = {
+	{
+		Pos=Vector(22, 15, 49),
+		ExitPos=Vector(70,60,10),
+		NoHud=true,
+		wep={wac.aircraft.getWeapon("No Weapon")},
+	},
+	{
+		Pos=Vector(22, -12, 49),
+		ExitPos=Vector(70,-60,10),
+		NoHud=true,
+		wep={wac.aircraft.getWeapon("No Weapon")},
+	},
+	{
+		Pos=Vector(-5, -45, 35),
+		ExitPos=Vector(20,-100,10),
+		NoHud=true,
+		wep={wac.aircraft.getWeapon("No Weapon")},
+	},
+	{
+		Pos=Vector(-5, 45, 35),
+		ExitPos=Vector(20,100,10),
+		NoHud=true,
+		wep={wac.aircraft.getWeapon("No Weapon")},
+	},
+}
+
 
 function ENT:AddSounds()
-	self.Sound={
+	self.Sounds={
 		Start=CreateSound(self.Entity,"WAC/Heli/h6_start.wav"),
 		Blades=CreateSound(self.Entity,"WAC/Heli/heli_loop_ext.wav"),
 		Engine=CreateSound(self.Entity,"WAC/Heli/heli_loop_int.wav"),

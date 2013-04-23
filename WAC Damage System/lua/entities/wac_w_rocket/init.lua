@@ -42,7 +42,7 @@ function ENT:Initialize()
 		self.phys:EnableCollisions(true)
 		self.phys:AddVelocity(Vector(0,0,-100))
 	end
-	self.Sound=CreateSound(self.Entity, "rocket_engine_start_idle.wav")
+	self.Sounds=CreateSound(self.Entity, "rocket_engine_start_idle.wav")
 	self.gravon=false
 	self.IsBullet = true
 	self:NextThink(CurTime())
@@ -95,7 +95,7 @@ function ENT:OnTakeDamage(dmginfo)
 end
 
 function ENT:OnRemove()
-	self.Sound:Stop()
+	self.Sounds:Stop()
 	if self.weapon and self.weapon.Owner then
 		self.weapon.rocket = nil
 		self.weapon:Reload()
@@ -123,7 +123,7 @@ function ENT:StartRocket()
 	light:SetKeyValue("GlowProxySize", "50")
 	light:Spawn()
 	light:SetParent(self.Entity)
-	self.Sound:Play()	
+	self.Sounds:Play()	
 end
 
 function ENT:PhysicsUpdate()
@@ -153,7 +153,7 @@ function ENT:Think()
 		self:Explode()
 		return
 	end
-	self.Sound:ChangePitch(100+math.sin(CurTime()), 0)
+	self.Sounds:ChangePitch(100+math.sin(CurTime()), 0)
 	self:NextThink(CurTime())
 	return true
 end

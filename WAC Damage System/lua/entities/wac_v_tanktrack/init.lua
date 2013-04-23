@@ -24,7 +24,7 @@ function ENT:Initialize()
 end
 
 function ENT:OnRemove()
-	self.Sound:Stop()
+	self.Sounds:Stop()
 end
 
 function ENT:SpawnFunction(ply, tr)

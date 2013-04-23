@@ -17,7 +17,7 @@ function ENT:Initialize()
 		self.phys:EnableDrag(false)
 		self.phys:Wake()
 	end
-	self.Sound=CreateSound(self.Entity, "WAC/rocket_idle.wav")
+	self.Sounds=CreateSound(self.Entity, "WAC/rocket_idle.wav")
 end
 
 function ENT:Explode(tr)
@@ -48,7 +48,7 @@ function ENT:OnTakeDamage(dmginfo)
 end
 
 function ENT:OnRemove()
-	self.Sound:Stop()
+	self.Sounds:Stop()
 end
 
 function ENT:StartRocket()
@@ -82,7 +82,7 @@ function ENT:StartRocket()
 	light:SetKeyValue("GlowProxySize", "50")
 	light:Spawn()
 	light:SetParent(self.Entity)
-	self.Sound:Play()
+	self.Sounds:Play()
 	self.OldPos=self:GetPos()
 	self.phys:EnableCollisions(false)
 end

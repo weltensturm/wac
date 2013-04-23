@@ -40,7 +40,7 @@ function ENT:DrawPilotHud()
 	
 	local uptm = self.SmoothVal
 	local upm = self.SmoothUp
-	local spos=self.SeatsT[1].Pos
+	local spos=self.Seats[1].Pos
 
 	cam.Start3D2D(self:LocalToWorld(Vector(30,3.75,37.75)+spos), ang,0.015)
 		surface.SetDrawColor(HudCol)
@@ -85,6 +85,6 @@ function ENT:DrawPilotHud()
 		if n==14 and self:GetNWFloat("seat_1_1_nextshot")>CurTime() then
 			n=0
 		end
-		surface.DrawText(self.SeatsT[1].wep[1].Name..getspaces(n))
+		surface.DrawText(self.Seats[1].wep[1].Name..getspaces(n))
 	cam.End3D2D()
 end

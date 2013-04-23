@@ -86,7 +86,7 @@ function SWEP:CustomAttack()
 		local ri = self.Owner:GetRight()
 		local up = self.Owner:GetUp()
 		local shootvec = (self.Owner:GetAimVector():Angle()+self.VMAngAdd*1.6):Forward()
-		self.Owner:EmitSound(self.Sound)		
+		self.Owner:EmitSound(self.Sounds)		
 		local bulletstartpos = Vector(0,0,0)		
 		if self.Zoomed then
 			bulletstartpos = pos + shootvec * 30 + ri * 5 + up * -2

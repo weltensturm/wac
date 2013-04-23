@@ -54,7 +54,7 @@ ENT.Rotors = {
 	}
 }
 
-ENT.Seats = {
+ENT.self.Seats = {
 	[1]={
         Pos=Vector(116, 0, 52),
         ExitPos=Vector(160,70,40),

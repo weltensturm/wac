@@ -395,10 +395,10 @@ wac.aircraft.weapons = {
 						end
 						self.Entity:Remove()
 					end
-					self.Sound.GunSound1:Stop()
-					self.Sound.GunSound1:Play()
-					self.Sound.GunSound2:Stop()
-					self.Sound.GunSound2:Play()
+					self.Sounds.GunSound1:Stop()
+					self.Sounds.GunSound1:Play()
+					self.Sounds.GunSound2:Stop()
+					self.Sounds.GunSound2:Play()
 					local effectdata=EffectData()
 					effectdata:SetOrigin(pos)
 					effectdata:SetAngles(ang)
@@ -416,25 +416,25 @@ wac.aircraft.weapons = {
 			end
 		end,
 		Init=function(self,t)
-			self.Sound.GunSound1=CreateSound(self,"WAC/cannon/viper_cannon_1p.wav")
-			self.Sound.GunSound2=CreateSound(self,"WAC/cannon/viper_cannon_3p.wav")
-			self.Sound.GunSoundSpin=CreateSound(self,"WAC/cannon/viper_cannon_rotate.wav")
-			self.Sound.GunSoundSpin:Play()
-			self.Sound.GunSoundSpin:ChangePitch(0,0.1)
-			self.Sound.GunSoundSpin:ChangeVolume(0,0.1)
+			self.Sounds.GunSound1=CreateSound(self,"WAC/cannon/viper_cannon_1p.wav")
+			self.Sounds.GunSound2=CreateSound(self,"WAC/cannon/viper_cannon_3p.wav")
+			self.Sounds.GunSoundSpin=CreateSound(self,"WAC/cannon/viper_cannon_rotate.wav")
+			self.Sounds.GunSoundSpin:Play()
+			self.Sounds.GunSoundSpin:ChangePitch(0,0.1)
+			self.Sounds.GunSoundSpin:ChangeVolume(0,0.1)
 		end,
 		Phys=function(self,t,p)
 			self.MouseVector=self:WorldToLocal(self:GetPos()+p:GetAimVector()*5)
 			if IsValid(self.Gun) then
 				local pitch=self.Gun:GetPhysicsObject():GetAngleVelocity().x/10
-				self.Sound.GunSoundSpin:ChangePitch(pitch,0.1)
-				self.Sound.GunSoundSpin:ChangeVolume(math.Clamp(pitch/90,0,1)/2,0.1)
+				self.Sounds.GunSoundSpin:ChangePitch(pitch,0.1)
+				self.Sounds.GunSoundSpin:ChangeVolume(math.Clamp(pitch/90,0,1)/2,0.1)
 			end
 		end,
 		DeSelect=function(self,t,p)
 			self.MouseVector=Vector(0,0,0)
-			self.Sound.GunSoundSpin:ChangePitch(0,0.1)
-			self.Sound.GunSoundSpin:ChangeVolume(0,0.1)
+			self.Sounds.GunSoundSpin:ChangePitch(0,0.1)
+			self.Sounds.GunSoundSpin:ChangeVolume(0,0.1)
 		end,
 		CalcView=function(self,t,p,pos,ang,view)
 			if p:GetViewEntity()!=p then return view end
@@ -640,8 +640,8 @@ wac.aircraft.weapons = {
 						ph:SetVelocity(self:GetVelocity())
 						ph:AddAngleVelocity(self:GetPhysicsObject():GetAngleVelocity() + Vector(30,0,0))
 					end
-					self.Sound.MissileShoot:Stop()
-					self.Sound.MissileShoot:Play()
+					self.Sounds.MissileShoot:Stop()
+					self.Sounds.MissileShoot:Play()
 					constraint.NoCollide(self,rocket,0,0)
 					t.Gun=(t.Gun==1 and 2 or 1)
 					t.Ammo=t.Ammo-1

@@ -82,9 +82,9 @@ function ENT:ActivateIt(bool)
 		self.Active = false
 	elseif bool and !self.Active then 		
 		if self.vars.drawSprite == 1 then self:SetNWBool("drawsprite",true) end
-		self.Sound:Play()
-		self.SoundPlaying = true
-		self.Sound:ChangePitch(self.PitchStartup,0)
+		self.Sounds:Play()
+		self.SoundsPlaying = true
+		self.Sounds:ChangePitch(self.PitchStartup,0)
 		self.Active = true
 	end
 	self.ConstrainedEntities=constraint.GetAllConstrainedEntities(self.Entity)
@@ -163,7 +163,7 @@ function ENT:PhysicsUpdate(phys)
 	end
 	local pitch = self.Entity:GetVelocity():Length()
 	if pitch > 900 then pitch = 900  end
-	self.Sound:ChangePitch(self.PitchStartup+(pitch/6)*self.vars.pitchMul*self.PitchStartup/100,0.01)	
+	self.Sounds:ChangePitch(self.PitchStartup+(pitch/6)*self.vars.pitchMul*self.PitchStartup/100,0.01)	
 	if vel != NULLVEC then
 		phys:SetVelocity(vel)
 	end
@@ -194,7 +194,7 @@ function ENT:SetHoverMode(b)
 end
 
 function ENT:OnRemove()
-	self.Sound:Stop()
+	self.Sounds:Stop()
 end
 
 function ENT:SetEntGravity(e, b)
@@ -226,12 +226,12 @@ function ENT:Think()
 		self.NextCheckConstrained=crt+1
 	end
 	self.PitchStartup=math.Clamp(self.PitchStartup+(self.Active and 1 or -1),0,100)
-	if !self.Active and self.PitchStartup == 0 and self.SoundPlaying then
-		self.Sound:Stop()
-		self.SoundPlaying = false
+	if !self.Active and self.PitchStartup == 0 and self.SoundsPlaying then
+		self.Sounds:Stop()
+		self.SoundsPlaying = false
 	end
-	if self.SoundPlaying then
-		self.Sound:ChangePitch(self.PitchStartup,0.01)
+	if self.SoundsPlaying then
+		self.Sounds:ChangePitch(self.PitchStartup,0.01)
 	end
 	if self.PitchStartup < 100 then
 		self:NextThink(crt)

@@ -5,23 +5,23 @@ include("wac/keyboard.lua")
 function ENT:Think()
 	if !self:GetNWBool("locked") then
 		local mouseFlight = self:GetNWBool("active")
-		if self.Sound.Start then
+		if self.sounds.Start then
 			if mouseFlight!=self.IsOn then
 				if mouseFlight then
-					self.Sound.Start:Play()
+					self.sounds.Start:Play()
 				else
-					self.Sound.Start:Stop()
+					self.sounds.Start:Stop()
 				end
 				self.IsOn=mouseFlight
 			end
 		end
-		if !self.Sound.Engine:IsPlaying() then
-			self.Sound.Engine:ChangePitch(0,0.1)
-			self.Sound.Engine:Play()
+		if !self.sounds.Engine:IsPlaying() then
+			self.sounds.Engine:ChangePitch(0,0.1)
+			self.sounds.Engine:Play()
 		end
-		if !self.Sound.Blades:IsPlaying() then
-			self.Sound.Blades:ChangePitch(0,0.1)
-			self.Sound.Blades:Play()
+		if !self.sounds.Blades:IsPlaying() then
+			self.sounds.Blades:ChangePitch(0,0.1)
+			self.sounds.Blades:Play()
 		end
 		local frt=CurTime()-self.LastThink
 		local e=LocalPlayer():GetViewEntity()
@@ -42,20 +42,20 @@ function ENT:Think()
 		if --[[GetConVar("gmod_vehicle_viewmode"):GetInt() == 0 and]] vehicle and vehicle:IsValid() and vehicle:GetNetworkedEntity("wac_aircraft") == self then
 			inVehicle = true
 		end
-		self.Sound.Engine:ChangePitch(engineVal,0.1)
-		self.Sound.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5),0.1)
-		self.Sound.Blades:ChangePitch(math.Clamp(val, 50, 150),0.1)
-		self.Sound.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5),0.1)
-		if self.Sound.Start then
-			self.Sound.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*150, 0, 100)/100,0.1)
-			self.Sound.Start:ChangePitch(100 - self.engineRpm*30,0.1)
+		self.sounds.Engine:ChangePitch(engineVal,0.1)
+		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5),0.1)
+		self.sounds.Blades:ChangePitch(math.Clamp(val, 50, 150),0.1)
+		self.sounds.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5),0.1)
+		if self.sounds.Start then
+			self.sounds.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*150, 0, 100)/100,0.1)
+			self.sounds.Start:ChangePitch(100 - self.engineRpm*30,0.1)
 		end
 		self.LastThink=CurTime()
 	else
-		self.Sound.Engine:Stop()
-		self.Sound.Blades:Stop()
-		if self.Sound.Start then
-			self.Sound.Start:Stop()
+		self.sounds.Engine:Stop()
+		self.sounds.Blades:Stop()
+		if self.sounds.Start then
+			self.sounds.Start:Stop()
 		end
 	end
 end
@@ -96,7 +96,7 @@ end
 function ENT:Draw()
 	self:DrawModel()
 	self:DrawRotor()
-	if !self.SeatsT or self:GetNWBool("locked") then return end
+	if !self.Seats or self:GetNWBool("locked") then return end
 	self:DrawPilotHud()
 	self:DrawWeaponSelection()
 end

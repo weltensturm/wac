@@ -63,7 +63,7 @@ function ENT:Initialize()
 	
 	self:setRotors()
 	self:setSounds()
-	self:setSeats()
+	self:setself.Seats()
 	self:setWheels()
 	
 end
@@ -107,8 +107,8 @@ function ENT:setRotors()
 end
 
 
-function ENT:setSeats()
-	self.seats = {}
+function ENT:setself.Seats()
+	self.Seats = {}
 	local e = self:addEntity("wac_seat_connector")
 	e:SetPos(self:GetPos())
 	e:SetNoDraw(true)
@@ -132,31 +132,31 @@ function ENT:setSeats()
 			end
 		end
 		self:SetNWInt("seat_"..k.."_actwep", 1)
-		self.seats[k] = self:addEntity("prop_vehicle_prisoner_pod")
-		self.seats[k]:SetModel("models/nova/airboat_seat.mdl") 
-		self.seats[k]:SetPos(self:LocalToWorld(v.Pos))
+		self.Seats[k] = self:addEntity("prop_vehicle_prisoner_pod")
+		self.Seats[k]:SetModel("models/nova/airboat_seat.mdl") 
+		self.Seats[k]:SetPos(self:LocalToWorld(v.Pos))
 		if v.ang then
 			local a=self:GetAngles()
 			a.y = a.y-90
 			a:RotateAroundAxis(Vector(0,0,1),v.Ang.y)
-			self.seats[k]:SetAngles(a)
+			self.Seats[k]:SetAngles(a)
 		else
 			ang:RotateAroundAxis(self:GetUp(),-90)
-			self.seats[k]:SetAngles(ang)
+			self.Seats[k]:SetAngles(ang)
 		end
-		self.seats[k]:Spawn()
-		self.seats[k]:SetNoDraw(true)
-		self.seats[k].helicopter = self.Entity
-		self.seats[k].phys = self.seats[k]:GetPhysicsObject()
-		self.seats[k].phys:EnableGravity(true)
-		self.seats[k].phys:SetMass(1)
-		self.seats[k]:SetNotSolid(true)
-		self.seats[k]:SetParent(self)
-		self.seats[k].wac_ignore = true
-		self.seats[k]:SetNWEntity("wac_aircraft", self)
-		self.seats[k]:SetKeyValue("limitview", "0")
-		self.seatSwitcher:AddVehicle(self.seats[k])
-		self:AddOnRemove(self.seats[k])
+		self.Seats[k]:Spawn()
+		self.Seats[k]:SetNoDraw(true)
+		self.Seats[k].helicopter = self.Entity
+		self.Seats[k].phys = self.Seats[k]:GetPhysicsObject()
+		self.Seats[k].phys:EnableGravity(true)
+		self.Seats[k].phys:SetMass(1)
+		self.Seats[k]:SetNotSolid(true)
+		self.Seats[k]:SetParent(self)
+		self.Seats[k].wac_ignore = true
+		self.Seats[k]:SetNWEntity("wac_aircraft", self)
+		self.Seats[k]:SetKeyValue("limitview", "0")
+		self.seatSwitcher:AddVehicle(self.Seats[k])
+		self:AddOnRemove(self.Seats[k])
 	end
 end
 
@@ -205,7 +205,7 @@ function ENT:SeatSwitch(p, s)
 	if !psngr or !psngr:IsValid() or !psngr:InVehicle() then
 		p:ExitVehicle()
 		p:EnterVehicle(self.Seats[s])
-		self:updateSeats()
+		self:updateself.Seats()
 	end
 end
 
@@ -224,7 +224,7 @@ function ENT:EjectPassenger(ply,idx,t)
 		ply:SetPos(self:LocalToWorld(self.Seats[idx].ExitPos))
 		ply:SetVelocity(self:GetPhysicsObject():GetVelocity()*1.2)
 		ply:SetEyeAngles((self:LocalToWorld(self.Seats[idx].Pos-Vector(0,0,40))-ply:GetPos()):Angle())
-		self:updateSeats()
+		self:updateself.Seats()
 	end
 end
 
@@ -234,7 +234,7 @@ function ENT:Use(act, cal)
 	if !act.LastVehicleEntered or act.LastVehicleEntered < crt then
 		local d=self.MaxEnterDistance
 		local v
-		for k,veh in pairs(self.seats) do
+		for k,veh in pairs(self.Seats) do
 			if veh and veh:IsValid() then
 				local psngr = veh:GetPassenger(0)
 				if !psngr or !psngr:IsValid() then
@@ -252,11 +252,11 @@ function ENT:Use(act, cal)
 			act.LastVehicleEntered=crt+0.5		
 		end
 	end
-	self:updateSeats()
+	self:updateself.Seats()
 end
 
-function ENT:updateSeats()
-	for k, veh in pairs(self.seats) do
+function ENT:updateself.Seats()
+	for k, veh in pairs(self.Seats) do
 		if !veh:IsValid() then return end
 		local p = veh:GetPassenger(0)
 		if self.players[k] != p then
@@ -307,12 +307,12 @@ function ENT:RocketAlert()
 		for _, e in pairs(rockets) do
 			if e:GetPos():Distance(self:GetPos()) < 2000 then b = true break end
 		end
-		if self.Sound.MissileAlert:IsPlaying() then
+		if self.Sounds.MissileAlert:IsPlaying() then
 			if !b then
-				self.Sound.MissileAlert:Stop()
+				self.Sounds.MissileAlert:Stop()
 			end
 		elseif b then
-			self.Sound.MissileAlert:Play()
+			self.Sounds.MissileAlert:Play()
 		end
 	end
 end
@@ -403,7 +403,7 @@ function ENT:PhysicsUpdate(ph)
 	end
 
 	local angbrake = ((self.TopRotor and self.BackRotor) and ph:GetAngleVelocity()*self.AngBrakeMul/math.pow(realism,2)*9 or NULLVEC)
-	local t = self:CalculateHover(ph,pos,vel,ang)
+	local t = self:calcHover(ph,pos,vel,ang)
 	
 	local roll = (self.controls.roll*1.5+t.r)*self.rotorRpm
 	local pitch = (self.controls.pitch+t.p)*self.rotorRpm
@@ -459,8 +459,8 @@ function ENT:PhysicsUpdate(ph)
 			else
 				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotorDir))*phm)
 				ph:AddAngleVelocity(VectorRand()*self.rotorRpm*mind*phm)
-				if !self.Sound.CrashAlarm:IsPlaying() and !self.disabled then
-					self.Sound.CrashAlarm:Play()
+				if !self.Sounds.CrashAlarm:IsPlaying() and !self.disabled then
+					self.Sounds.CrashAlarm:Play()
 				end
 			end
 			local temp=vel+up*(self.upMul*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9)*phm
@@ -514,7 +514,7 @@ function ENT:PhysicsUpdate(ph)
 	
 end
 
-function ENT:CalculateHover(ph,pos,vel,ang)
+function ENT:calcHover(ph,pos,vel,ang)
 	if self.DoHover then
 		local v=self:WorldToLocal(pos+vel)
 		local av=ph:GetAngleVelocity()
@@ -567,8 +567,8 @@ function ENT:DamageSmallRotor(amt)
 		self.BackRotor.phys:AddAngleVelocity(self.BackRotor.phys:GetAngleVelocity()*-amt/50)
 		if self.BackRotor.fHealth < 0 then
 			self:KillBackRotor()
-			if !self.Sound.CrashAlarm:IsPlaying() and !self.disabled then
-				self.Sound.CrashAlarm:Play()
+			if !self.Sounds.CrashAlarm:IsPlaying() and !self.disabled then
+				self.Sounds.CrashAlarm:Play()
 			end
 		end
 		if self.BackRotor then
@@ -607,11 +607,11 @@ function ENT:DamageBigRotor(amt)
 		self.TopRotor.phys:AddAngleVelocity((self.TopRotor.phys:GetAngleVelocity()*-amt)*0.001)
 		if self.TopRotor.fHealth < 0 then
 			self:KillTopRotor()
-			if !self.Sound.CrashAlarm:IsPlaying() and !self.disabled then
-				self.Sound.CrashAlarm:Play()
+			if !self.Sounds.CrashAlarm:IsPlaying() and !self.disabled then
+				self.Sounds.CrashAlarm:Play()
 			end
-		elseif self.TopRotor.fHealth < 50 and !self.Sound.MinorAlarm:IsPlaying() and !self.disabled then
-			self.Sound.MinorAlarm:Play()
+		elseif self.TopRotor.fHealth < 50 and !self.Sounds.MinorAlarm:IsPlaying() and !self.disabled then
+			self.Sounds.MinorAlarm:Play()
 		end
 		if self.TopRotor then
 			self:SetNWFloat("rotorhealth", self.TopRotor.fHealth)
@@ -675,16 +675,16 @@ function ENT:DamageEngine(amt)
 	self.engineHealth = self.engineHealth - amt
 
 	if self.engineHealth < 80  then
-		if !self.Sound.MinorAlarm:IsPlaying() then
-			self.Sound.MinorAlarm:Play()
+		if !self.Sounds.MinorAlarm:IsPlaying() then
+			self.Sounds.MinorAlarm:Play()
 		end
 		if !self.Smoke and self.engineHealth>0 then
 			self.Smoke = self:CreateSmoke()
 		end
 
 		if self.engineHealth < 50 then
-			if !self.Sound.LowHealth:IsPlaying() then
-				self.Sound.LowHealth:Play()
+			if !self.Sounds.LowHealth:IsPlaying() then
+				self.Sounds.LowHealth:Play()
 			end
 			self:setEngine(false)
 			self.engineDead = true
@@ -695,7 +695,7 @@ function ENT:DamageEngine(amt)
 				fire:Spawn()
 				fire:SetParent(self.Entity)
 				self.Burning = true
-				self.Sound.LowHealth:Play()
+				self.Sounds.LowHealth:Play()
 				self.EngineFire = fire
 			end
 

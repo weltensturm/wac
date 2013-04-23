@@ -16,7 +16,7 @@ function ENT:Initialize()
 	if Wire then
 		self.Inputs = Wire_CreateInputs(self.Entity, {"Pitch"})
 	end
-	--self.Sound=CreateSound(self.Entity, "vehicles/tank_turret_loop1.wav")
+	--self.Sounds=CreateSound(self.Entity, "vehicles/tank_turret_loop1.wav")
 end
 
 function ENT:TriggerInput(name, v)
@@ -49,11 +49,11 @@ function ENT:PhysicsUpdate(ph)
 		ph:AddAngleVelocity(Vector(0,math.Clamp(self:WorldToLocal(pos).z/selfpos:Length(pos)*-7000*self.speed, -self.maxspeed, self.maxspeed),0)+(basevel-angvel))
 		
 		if self.nosound == 0 then
-			self.Sound:ChangeVolume(math.Clamp(length/self.maxspeed*100*self.SndSm, 0,100),0.1)
-			self.Sound:ChangePitch(math.Clamp(length/self.maxspeed*50*self.SndSm, 30, 80),0.1)
+			self.Sounds:ChangeVolume(math.Clamp(length/self.maxspeed*100*self.SndSm, 0,100),0.1)
+			self.Sounds:ChangePitch(math.Clamp(length/self.maxspeed*50*self.SndSm, 30, 80),0.1)
 		else
-			self.Sound:ChangePitch(0,0)
-			self.Sound:ChangeVolume(0,0)
+			self.Sounds:ChangePitch(0,0)
+			self.Sounds:ChangeVolume(0,0)
 		end
 	end
 end

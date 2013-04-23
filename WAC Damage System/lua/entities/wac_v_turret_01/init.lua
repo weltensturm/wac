@@ -14,16 +14,16 @@ function ENT:Initialize()
 		self.phys:EnableGravity(false)
 		self.phys:SetMass(self.Weight or 50)
 	end
-	self.Sound = CreateSound(self.Entity, "WAC/tank/turret.wav")
-	self.Sound:Play()
-	self.Sound:ChangeVolume(0,0)
-	self.Sound:ChangePitch(0,0)
+	self.Sounds = CreateSound(self.Entity, "WAC/tank/turret.wav")
+	self.Sounds:Play()
+	self.Sounds:ChangeVolume(0,0)
+	self.Sounds:ChangePitch(0,0)
 	self.SndSm=0
 	self.SndTm=0
 	if Wire then
 		self.Inputs = Wire_CreateInputs(self.Entity, {"Pitch"})
 	end
-	--self.Sound=CreateSound(self.Entity, "vehicles/tank_turret_loop1.wav")
+	--self.Sounds=CreateSound(self.Entity, "vehicles/tank_turret_loop1.wav")
 end
 
 function ENT:TriggerInput(iname,val)
@@ -56,11 +56,11 @@ function ENT:PhysicsUpdate(ph)
 		ph:AddAngleVelocity(Vector(0,math.Clamp(self:WorldToLocal(pos).z/selfpos:Length(pos)*-7000*self.speed, -self.maxspeed, self.maxspeed),0)+(basevel-angvel))
 		
 		if self.nosound == 0 then
-			self.Sound:ChangeVolume(math.Clamp(length/self.maxspeed*100*self.SndSm, 0,100),0.1)
-			self.Sound:ChangePitch(math.Clamp(length/self.maxspeed*50*self.SndSm+50, 30, 80),0.1)
+			self.Sounds:ChangeVolume(math.Clamp(length/self.maxspeed*100*self.SndSm, 0,100),0.1)
+			self.Sounds:ChangePitch(math.Clamp(length/self.maxspeed*50*self.SndSm+50, 30, 80),0.1)
 		else
-			self.Sound:ChangePitch(0,0)
-			self.Sound:ChangeVolume(0,0)
+			self.Sounds:ChangePitch(0,0)
+			self.Sounds:ChangeVolume(0,0)
 		end
 	end
 end
@@ -101,7 +101,7 @@ function ENT:OnRemove()
 	if Wire then
 		Wire_Remove(self.Entity)
 	end
-	self.Sound:Stop()
+	self.Sounds:Stop()
 end
 
 function ENT:OnRestore()

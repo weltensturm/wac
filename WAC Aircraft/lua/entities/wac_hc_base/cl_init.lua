@@ -9,9 +9,20 @@ ENT.thirdPerson = {
 	position = Vector(-50,0,100)
 }
 
+
+function ENT:receiveInput(player, name, value)
+	if name == "FreeCamera" then
+		if value == 1 then
+			player.wac.viewFree = true
+		else
+			player.wac.viewFree = false
+			player.wac_air_resetview = true
+		end
+	end
+end
+
 function ENT:Initialize()
-	self.SeatsT=self.SeatsT or self:AddSeatTable()
-	self:AddSounds()
+	self:addSounds()
 	self.SmoothUp = 0
 	self.engineRpm = 0
 	self.rotorRpm = 0
@@ -29,23 +40,23 @@ end
 function ENT:Think()
 	if !self:GetNWBool("locked") then
 		local mouseFlight = self:GetNWBool("active")
-		if self.Sound.Start then
+		if self.sounds.Start then
 			if mouseFlight!=self.IsOn then
 				if mouseFlight then
-					self.Sound.Start:Play()
+					self.sounds.Start:Play()
 				else
-					self.Sound.Start:Stop()
+					self.sounds.Start:Stop()
 				end
 				self.IsOn=mouseFlight
 			end
 		end
-		if !self.Sound.Engine:IsPlaying() then
-			self.Sound.Engine:ChangePitch(0,0.1)
-			self.Sound.Engine:Play()
+		if !self.sounds.Engine:IsPlaying() then
+			self.sounds.Engine:ChangePitch(0,0.1)
+			self.sounds.Engine:Play()
 		end
-		if !self.Sound.Blades:IsPlaying() then
-			self.Sound.Blades:ChangePitch(0,0.1)
-			self.Sound.Blades:Play()
+		if !self.sounds.Blades:IsPlaying() then
+			self.sounds.Blades:ChangePitch(0,0.1)
+			self.sounds.Blades:Play()
 		end
 		local frt=CurTime()-self.LastThink
 		local e=LocalPlayer():GetViewEntity()
@@ -66,44 +77,44 @@ function ENT:Think()
 		if 
 			IsValid(vehicle)
 			and !vehicle:GetThirdPersonMode()
-			and vehicle:GetNetworkedEntity("wac_aircraft") == self
+			and vehicle:GetNWEntity("wac_aircraft") == self
 		then
 			inVehicle = true
 		end
-		self.Sound.Engine:ChangePitch(engineVal/1.1 + val/10, 0.1)
-		self.Sound.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5), 0.1)
-		self.Sound.Blades:ChangePitch(math.Clamp(val, 10, 150), 0.1)
-		self.Sound.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5), 0.1)
-		if self.Sound.Start then
-			self.Sound.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*110, 0, 100)/100, 0.1)
-			self.Sound.Start:ChangePitch(100 - self.engineRpm*20, 0.1)
+		self.sounds.Engine:ChangePitch(engineVal/1.1 + val/10, 0.1)
+		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5), 0.1)
+		self.sounds.Blades:ChangePitch(math.Clamp(val, 10, 150), 0.1)
+		self.sounds.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5), 0.1)
+		if self.sounds.Start then
+			self.sounds.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*110, 0, 100)/100, 0.1)
+			self.sounds.Start:ChangePitch(100 - self.engineRpm*20, 0.1)
 		end
 		self.LastThink=CurTime()
 	else
-		self.Sound.Engine:Stop()
-		self.Sound.Blades:Stop()
-		if self.Sound.Start then
-			self.Sound.Start:Stop()
+		self.sounds.Engine:Stop()
+		self.sounds.Blades:Stop()
+		if self.sounds.Start then
+			self.sounds.Start:Stop()
 		end
 	end
 end
 
 function ENT:OnRemove()
-	for _,s in pairs(self.Sound) do
+	for _,s in pairs(self.sounds) do
 		s:Stop()
 	end
 end
 
 function ENT:DrawHUD(k,p)
-	if !self.SeatsT or !self.SeatsT[k] then return end
-	local activeWeapon=self:GetNWInt("seat_"..k.."_actwep")
-	local twep=self.SeatsT[k].wep[activeWeapon]
+	if !self.Seats or !self.Seats[k] then return end
+	local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
+	local twep = self.Seats[k].wep[activeWeapon]
 	if twep.CamPos and p:GetViewEntity()==p then
-		local sw=ScrW()
-		local sh=ScrH()
+		local sw = ScrW()
+		local sh = ScrH()
 		
-		local w=sh/6
-		local s=sh/3
+		local w = sh/6
+		local s = sh/3
 		
 		surface.SetDrawColor(255,255,255,150)
 		
@@ -119,9 +130,9 @@ function ENT:DrawHUD(k,p)
 		surface.DrawLine(sw/2+s, sh/2+s, sw/2+s-w, sh/2+s)
 		surface.DrawLine(sw/2+s, sh/2+s, sw/2+s, sh/2+s-w)
 		
-		local lasts=self:GetNWFloat("seat_"..k.."_"..activeWeapon.."_lastshot")
-		local nexts=self:GetNWFloat("seat_"..k.."_"..activeWeapon.."_nextshot")
-		local ammo=self:GetNWInt("seat_"..k.."_"..activeWeapon.."_ammo")
+		local lasts = self:GetNWFloat("seat_"..k.."_"..activeWeapon.."_lastshot")
+		local nexts = self:GetNWFloat("seat_"..k.."_"..activeWeapon.."_nextshot")
+		local ammo = self:GetNWInt("seat_"..k.."_"..activeWeapon.."_ammo")
 	
 		local width=twep.CrosshairWidth or 30
 		local height=twep.CrosshairHeight or 20
@@ -131,7 +142,7 @@ function ENT:DrawHUD(k,p)
 		if twep.DrawCrosshair then
 			twep.DrawCrosshair(self,twep,LocalPlayer())
 		else
-			if ammo==self.SeatsT[k].wep[self:GetNWInt("seat_"..k.."_actwep")].MaxAmmo and nexts>CurTime() then
+			if ammo==self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")].MaxAmmo and nexts>CurTime() then
 				surface.SetDrawColor(255,255,255,math.sin(CurTime()*10)*75+75)
 			else
 				surface.SetDrawColor(255,255,255,150)
@@ -154,7 +165,7 @@ function ENT:DrawHUD(k,p)
 		end
 		
 		local count=0
-		for i,wep in pairs(self.SeatsT[k].wep) do
+		for i,wep in pairs(self.Seats[k].wep) do
 			if type(wep)=="table" and wep.Name!="No Weapon" then
 				count=count+1
 				if i==self:GetNWInt("seat_"..k.."_actwep") then			--background active weapon
@@ -170,7 +181,7 @@ function ENT:DrawHUD(k,p)
 		surface.SetFont("wac_heli_small")
 		surface.SetTextColor(230,230,230,255)
 		local h=1
-		for i,wep in pairs(self.SeatsT[k].wep) do
+		for i,wep in pairs(self.Seats[k].wep) do
 			if type(wep)=="table" and wep.Name!="No Weapon" then		--weapon name and ammo
 				local freeView=self:GetNWInt("seat_"..k.."_"..i.."_ammo")
 				surface.SetTextPos(sw/2+w*2+5,sh/7+5+h*50)
@@ -188,7 +199,7 @@ function ENT:DrawHUD(k,p)
 		surface.DrawRect(sw/2+w*2+5,sh/7+10+h*50,math.Clamp((nexts-CurTime())/(nexts-lasts),0,1)*70,10)
 		surface.SetTextPos(sw/2+w*2+5,sh/7+20+h*50)
 		--surface.SetFont("MenuLarge")
-		if ammo==self.SeatsT[k].wep[self:GetNWInt("seat_"..k.."_actwep")].MaxAmmo and nexts>CurTime() then
+		if ammo==self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")].MaxAmmo and nexts>CurTime() then
 			surface.SetTextColor(255,255,255,math.sin(CurTime()*10)*100+100)
 			surface.DrawText("RELOADING")
 		else
@@ -216,7 +227,7 @@ function ENT:viewCalcThirdPerson(k, p, view)
 	if
 			k == 1
 			and p:GetInfo("wac_cl_air_mouse") == "1"
-			and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_FreeCamera")))
+			and !p.wac.viewFree
 			and p:GetInfo("wac_cl_air_usejoystick") == "0"
 	then
 		ang = self:GetAngles()
@@ -240,16 +251,6 @@ end
 
 function ENT:viewCalcFirstPerson(k, p, view)
 	p.wac = p.wac or {}
-	if wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_FreeCamera"))) then
-		if !p.wac.viewFree then
-			p.wac.viewFree = true
-		end
-	else
-		if p.wac.viewFree then
-			p.wac.viewFree = false
-			p.wac_air_resetview = true
-		end
-	end
 	if
 		k == 1
 		and p:GetInfo("wac_cl_air_mouse") == "1"
@@ -278,7 +279,7 @@ end
 
 local lastWeapon=0
 function ENT:viewCalc(k, p, pos, ang, fov)
-	if !self.SeatsT[k] then return end
+	if !self.Seats[k] then return end
 	local view = {origin = pos, angles = ang, fov = fov}
 
 	if p:GetVehicle():GetNWEntity("wac_aircraft") != self then
@@ -295,7 +296,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 		wac.smoothApproachVector(p.wac.lagAccelDelta, p.wac.lagAccel, 20)
 	end
 
-	local seat = self.SeatsT[k]
+	local seat = self.Seats[k]
 	local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
 	local weapon = seat.wep[activeWeapon]
 	if weapon.CalcView then
@@ -321,7 +322,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 		if p:GetInfo("wac_cl_air_smoothview") == "1" then
 			view.angles = self:GetAngles()*2 + self.viewPos.angles - p.wac.lagAngles
 			if shakeEnabled then
-				view.origin = view.origin + (p.wac.lagAccel - p.wac.lagAccelDelta)/4
+				view.origin = view.origin + (p.wac.lagAccel - p.wac.lagAccelDelta)/7
 			end
 		else
 			view.angles = self:GetAngles() + self.viewPos.angles
@@ -335,10 +336,9 @@ function ENT:MovePlayerView(k,p,md)
 	if p.wac_air_resetview then md:SetViewAngles(Angle(0,90,0)) p.wac_air_resetview=false end
 	local freeView = md:GetViewAngles()
 	local id = self:GetNWInt("seat_"..k.."_actwep")
-	if !self.SeatsT or !self.SeatsT[k] or !self.SeatsT[k].wep[id] then return end
-	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0"
-			and !wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_FreeCamera"))))
-			or (self.SeatsT and self.SeatsT[k].wep[id].MouseControl) then
+	if !self.Seats or !self.Seats[k] or !self.Seats[k].wep[id] then return end
+	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0" and !p.wac.viewFree)
+			or (self.Seats and self.Seats[k].wep[id].MouseControl) then
 		freeView.p = freeView.p-freeView.p*FrameTime()*6
 		freeView.y = freeView.y-(freeView.y-90)*FrameTime()*6
 	else
@@ -349,8 +349,8 @@ function ENT:MovePlayerView(k,p,md)
 end
 
 function ENT:DrawScreenSpaceEffects(k,p)
-	if !self.SeatsT or !self.SeatsT[k] or p:GetViewEntity()!=p then return end
-	local twep=self.SeatsT[k].wep[self:GetNWInt("seat_"..k.."_actwep")]
+	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
+	local twep=self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")]
 	if twep.RenderScreenSpace then twep.RenderScreenSpace(self,twep,p) end
 end
 
@@ -378,7 +378,7 @@ function ENT:DrawPilotHud()
 	
 	local uptm = self.rotorRpm
 	local upm = self.SmoothUp
-	local spos=self.SeatsT[1].Pos
+	local spos=self.Seats[1].Pos
 	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)+spos), ang,0.015)
 	surface.SetDrawColor(HudCol)
 	surface.DrawRect(235, 249, 10, 2)
@@ -434,8 +434,8 @@ function ENT:DrawWeaponSelection()
 	local ang = self:GetAngles()
 	ang:RotateAroundAxis(ri, 90)
 	ang:RotateAroundAxis(fwd, 90)
-	for k,t in pairs(self.SeatsT) do
-		if type(t)=="table" and !t.NoHud then
+	for k,t in pairs(self.Seats) do
+		if k != "BaseClass" and !t.NoHud then
 			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)+t.Pos), ang, 0.02)
 			surface.DrawRect(-10, 0, 500, 30)
 			surface.DrawRect(-10, 30, 10, 20)
@@ -460,11 +460,11 @@ end
 function ENT:Draw()
 	self:DrawModel()
 	self:DrawRotor()
-	if !self.SeatsT or self:GetNWBool("locked") then return end
+	if !self.Seats or self:GetNWBool("locked") then return end
 	self:DrawPilotHud()
 	self:DrawWeaponSelection()
 	if self.engineRpm > 0.2 and self.SmokePos then
-		if !self.lastHeatDrawn or self.lastHeatDrawn < CurTime()+1 then
+		if !self.lastHeatDrawn or self.lastHeatDrawn > CurTime()+0.1 then
 			if type(self.SmokePos) == "table" then
 				for _, v in self.SmokePos do
 					local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(v))

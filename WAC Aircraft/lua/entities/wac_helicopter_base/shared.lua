@@ -17,7 +17,7 @@ ENT.AdminSpawnable = false
 
 function ENT:setSounds()
 	self.sounds = {}
-	for name, s in pairs(self.Sounds) do
+	for name, s in pairs(self.Soundss) do
 		self.sounds[name] = CreateSound(self, name)
 	end
 end

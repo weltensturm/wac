@@ -23,61 +23,59 @@ ENT.MaxEnterDistance = 100
 ENT.EngineForce	= 30
 ENT.Weight = 9000
 
-function ENT:AddSeatTable()
-	return{
-		[1]={
-			Pos=Vector(54.74,0,85.22),
-			ExitPos=Vector(54.74,80,5),
-			wep={
-				wac.aircraft.getWeapon("Hydra 70",{
-					Name="S-8",
-					Ammo=40,
-					MaxAmmo=40,
-					Damage=70,
-					ShootDelay=0.2,
-					ShootPos={
-						Vector(3.22,72.94,49),
-						Vector(3.22,-72.94,49),
-					}
-				})
-			},
+ENT.Seats = {
+	{
+		Pos=Vector(54.74,0,85.22),
+		ExitPos=Vector(54.74,80,5),
+		wep={
+			wac.aircraft.getWeapon("Hydra 70",{
+				Name="S-8",
+				Ammo=40,
+				MaxAmmo=40,
+				Damage=70,
+				ShootDelay=0.2,
+				ShootPos={
+					Vector(3.22,72.94,49),
+					Vector(3.22,-72.94,49),
+				}
+			})
 		},
-		[2]={
-			Pos=Vector(115.3,0,61),
-			ExitPos=Vector(115.3,60,5),
-			wep={
-				wac.aircraft.getWeapon("No Weapon"),
-				wac.aircraft.getWeapon("2A42"),
-				wac.aircraft.getWeapon("Hellfire",{
-					Name="9M120",
-					ShootPos={
-						Vector(3.22,102.38,59.59),
-						Vector(3.22,-102.38,59.59),
-					},
-					CalcView=function(self,t,p,pos,ang,view)
-						if p:GetViewEntity()!=p then return view end
-						local e=self:GetNWEntity("wac_air_radar")
-						if IsValid(e) then
-							view.angles=e:GetAngles()
-							view.origin=e:GetPos()+e:GetForward()*15
-						end
-						return view
-					end,
-				}),
-			},
+	},
+	{
+		Pos=Vector(115.3,0,61),
+		ExitPos=Vector(115.3,60,5),
+		wep={
+			wac.aircraft.getWeapon("No Weapon"),
+			wac.aircraft.getWeapon("2A42"),
+			wac.aircraft.getWeapon("Hellfire",{
+				Name="9M120",
+				ShootPos={
+					Vector(3.22,102.38,59.59),
+					Vector(3.22,-102.38,59.59),
+				},
+				CalcView=function(self,t,p,pos,ang,view)
+					if p:GetViewEntity()!=p then return view end
+					local e=self:GetNWEntity("wac_air_radar")
+					if IsValid(e) then
+						view.angles=e:GetAngles()
+						view.origin=e:GetPos()+e:GetForward()*15
+					end
+					return view
+				end,
+			}),
 		},
-	}
-end
+	},
+}
 
-function ENT:AddSounds()
-	self.Sound={
-		Start=CreateSound(self.Entity,"WAC/Heli/ah1_start.wav"),
-		Blades=CreateSound(self.Entity,"npc/attack_helicopter/aheli_rotor_loop1.wav"),
-		Engine=CreateSound(self.Entity,"WAC/heli/bellinternal.wav"),
-		MissileAlert=CreateSound(self.Entity,"HelicopterVehicle/MissileNearby.mp3"),
-		MissileShoot=CreateSound(self.Entity,"HelicopterVehicle/MissileShoot.mp3"),
-		MinorAlarm=CreateSound(self.Entity,"HelicopterVehicle/MinorAlarm.mp3"),
-		LowHealth=CreateSound(self.Entity,"HelicopterVehicle/LowHealth.mp3"),
-		CrashAlarm=CreateSound(self.Entity,"HelicopterVehicle/CrashAlarm.mp3"),
-	}
-end
+
+ENT.Sounds = {
+	Start = "WAC/Heli/ah1_start.wav",
+	Blades = "npc/attack_helicopter/aheli_rotor_loop1.wav",
+	Engine = "WAC/heli/bellinternal.wav",
+	MissileAlert = "HelicopterVehicle/MissileNearby.mp3",
+	MissileShoot = "HelicopterVehicle/MissileShoot.mp3",
+	MinorAlarm = "HelicopterVehicle/MinorAlarm.mp3",
+	LowHealth = "HelicopterVehicle/LowHealth.mp3",
+	CrashAlarm = "HelicopterVehicle/CrashAlarm.mp3",
+}
+

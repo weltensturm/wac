@@ -23,8 +23,12 @@ surface.CreateFont("wac_heli_small", {
 	size = 28
 })
 
-usermessage.Hook("wac_toggle_thirdp", function(m)
-	RunConsoleCommand("gmod_vehicle_viewmode", GetConVar("gmod_vehicle_viewmode"):GetInt() == 1 and 0 or 1)
+
+wac.hook("ShouldDrawLocalPlayer", "wac_air_showplayerthirdperson", function()
+	local v = LocalPlayer():GetVehicle()
+	if IsValid(v:GetNWEntity("wac_aircraft")) then
+		return v:GetThirdPersonMode()
+	end
 end)
 
 
@@ -51,7 +55,7 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 	end
 	
 	local i = p:GetNWInt("wac_passenger_id")
-	if p.wac.air.vehicle and GetViewEntity() == p and aircraft.SeatsT then
+	if p.wac.air.vehicle and GetViewEntity() == p and aircraft.Seats then
 		return aircraft:viewCalc((i==0 and 1 or i), p, pos, ang, fov)
 	end
 
@@ -153,32 +157,42 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 			"wac_cl_air_mouse_invert_yawroll",
 		}
 	}	
-	for i,t in pairs(wac.aircraft.keys) do
-		table.insert(presetParams.CVars, "wac_cl_air_key_" .. i)
+	for category, controls in pairs(wac.aircraft.controls) do
+		for i, t in pairs(controls) do
+			if !t[3] then
+				table.insert(presetParams.CVars, "wac_cl_air_key_" .. i)
+			else
+				table.insert(presetParams.CVars, "wac_cl_air_key_" .. i .. "_Inc")
+				table.insert(presetParams.CVars, "wac_cl_air_key_" .. i .. "_Dec")
+			end
+		end
 	end
 	panel:AddControl("ComboBox", presetParams)
 
-	for name, t in pairs(wac.aircraft.controls) do
-		if type(t) == "boolean" then
-			local k = vgui.Create("wackeyboard::key", panel)
-			k:setLabel(name)
-			k:setKey(t)
-			k.runCommand="wac_cl_air_key_"..name
-			panel:AddPanel(k)
-		else
-			local f = vgui.Create("wackeyboard::key", panel)
-			f:setLabel(name .. " +")
-			f:setKey(wac.aircraft.keybindings["wac_cl_air_key_" .. name .. "_Inc"])
-			f.runCommand = "wac_cl_air_key_"..name.."_Inc"
-			panel:AddPanel(f)
-			local k = vgui.Create("wackeyboard::key", panel)
-			k:setLabel(name .. " -")
-			k:setKey(wac.aircraft.keybindings["wac_cl_air_key_" .. name .. "_Dec"])
-			k.runCommand = "wac_cl_air_key_"..name.."_Dec"
-			panel:AddPanel(k)
+	for category, controls in pairs(wac.aircraft.controls) do
+		panel:AddControl("Label", {Text = category})
+		for name, t in pairs(controls) do
+			if !t[3] then
+				local k = vgui.Create("wackeyboard::key", panel)
+				k:setLabel(name)
+				k:setKey(t[2])
+				k.runCommand="wac_cl_air_key_"..name
+				panel:AddPanel(k)
+			else
+				local f = vgui.Create("wackeyboard::key", panel)
+				f:setLabel(name .. " +")
+				f:setKey(t[2])
+				f.runCommand = "wac_cl_air_key_"..name.."_Inc"
+				panel:AddPanel(f)
+				local k = vgui.Create("wackeyboard::key", panel)
+				k:setLabel(name .. " -")
+				k:setKey(t[3])
+				k.runCommand = "wac_cl_air_key_"..name.."_Dec"
+				panel:AddPanel(k)
+			end
 		end
 	end
-	
+
 	panel:AddControl("Slider", {
 		Label = "Sensitivity",
 		Type = "float",

@@ -20,8 +20,8 @@ function ENT:Initialize()
 		self.Outputs=Wire_CreateOutputs(self.Entity, {"Ammo","CanFire"})
 	end
 	self.NextShoot=0
-	self.Sound = CreateSound(self.Entity,self.ConTable.soundShoot)
-	self.SoundStop=0
+	self.Sounds = CreateSound(self.Entity,self.ConTable.soundShoot)
+	self.SoundsStop=0
 	self.MagazineLoad=self.ConTable.msize
 end
 
@@ -36,9 +36,9 @@ function ENT:FireGun(act)
 	if self.NextShoot<=crt and self.MagazineLoad>0 then
 		act = act or self:GetOwner()
 		self.NextShoot=crt+self.ConTable.shootdelay
-		self.SoundPlayed=false
-		self.Sound:Stop()
-		self.SoundStop=crt+1
+		self.SoundsPlayed=false
+		self.Sounds:Stop()
+		self.SoundsStop=crt+1
 		local shootvec = self:GetUp()*(self:OBBMaxs().z+5)
 		local selfpos = self:GetPos()
 		local selfspeed = self:GetVelocity()
@@ -63,8 +63,8 @@ function ENT:FireGun(act)
 			if self.phys:IsValid() then
 				self.phys:AddVelocity(shootvec*-self.ConTable.damage/10)
 			end
-			self.Sound:ChangeVolume(450,0)
-			self.Sound:Play()
+			self.Sounds:ChangeVolume(450,0)
+			self.Sounds:Play()
 			if bullet.phys:IsValid() then
 				bullet.phys:SetVelocity(selfspeed + shootvec*3500)
 			end
@@ -79,8 +79,8 @@ function ENT:FireGun(act)
 			bullet.StartTime=1
 			bullet.ConTable=table.Copy(self.ConTable)
 			self.Rocket=bullet
-			self.Sound:ChangeVolume(450,0)
-			self.Sound:Play()
+			self.Sounds:ChangeVolume(450,0)
+			self.Sounds:Play()
 			if !bullet.phys then bullet.phys = bullet:GetPhysicsObject() end	
 			if bullet.phys:IsValid() then
 				bullet.phys:SetVelocity(self.Owner:GetVelocity()+shootvec*400)
@@ -101,11 +101,11 @@ function ENT:Think()
 			self.Rocket.targetpos = util.QuickTrace(self:GetPos(),self:GetAngles():Up()*9999999,self.Entity).HitPos
 		end
 	end
-	if self.SoundStop <= crt then
-		self.Sound:Stop()
+	if self.SoundsStop <= crt then
+		self.Sounds:Stop()
 	end
-	if self.MagazineLoad == 0 and crt>self.NextShoot-self.ConTable.reloadtime/2 and !self.SoundPlayed then
-		self.SoundPlayed = true
+	if self.MagazineLoad == 0 and crt>self.NextShoot-self.ConTable.reloadtime/2 and !self.SoundsPlayed then
+		self.SoundsPlayed = true
 		self.Entity:EmitSound(self.ConTable.soundReload, 300)
 	end
 	if self.MagazineLoad==0 and crt+self.ConTable.reloadtime>self.NextShoot then
@@ -149,7 +149,7 @@ function ENT:ApplyDupeInfo(ply, ent, info, GetEntByID)
 end
 
 function ENT:OnRemove()
-	self.Sound:Stop()
+	self.Sounds:Stop()
 end
 
 numpad.Register("fireGun", function(p, e)
