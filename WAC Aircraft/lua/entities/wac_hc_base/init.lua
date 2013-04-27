@@ -10,7 +10,6 @@ local NULLVEC=Vector(0,0,0)
 
 ENT.IgnoreDamage	= true
 ENT.wac_ignore		= true
-ENT.WheelInfo		={}
 
 ENT.UsePhysRotor	= true
 ENT.Submersible	= false
@@ -64,6 +63,7 @@ ENT.Aerodynamics = {
 		Top = Vector(0, 0, -0.5)
 	},
 	Rail = Vector(1, 5, 5),
+	RailRotor = 1, -- like Z rail but only active when moving and the rotor is turning
 	Drag = {
 		Directional = Vector(0.01, 0.01, 0.01),
 		Angular = Vector(0.01, 0.01, 0.01)
@@ -75,6 +75,11 @@ ENT.Agility = {
 	Thrust = 1
 }
 
+ENT.Weapons = {
+	pods = {},
+	profiles = {}
+}
+
 
 function ENT:base(name)
 	local current = self
@@ -84,6 +89,7 @@ function ENT:base(name)
 		end
 		current = current.BaseClass
 	end
+	error("No base class with name \"" .. name .. "\"", 2)
 end
 
 
@@ -108,9 +114,9 @@ function ENT:Initialize()
 	
 	self.OnRemoveEntities={}
 	self.OnRemoveFunctions={}
-	self.Wheels={}
+	self.wheels = {}
 	
-	self.UpdateSecond = 0
+	self.nextUpdate = 0
 	self.LastDamageTaken=0
 	self.wac_seatswitch = true
 	self.rotorRpm = 0
@@ -132,6 +138,7 @@ function ENT:Initialize()
 	self:addRotors()
 	self:addSounds()
 	self:addWheels()
+	self:addWeapons()
 	self:addSeats()
 	self:addStuff()
 	self:addNpcTargets()
@@ -148,6 +155,7 @@ function ENT:addEntity(name)
 	e:SetNWString("Owner", "World")
 	return e
 end
+
 
 function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
 
@@ -242,7 +250,7 @@ function ENT:addRotors()
 			self.RotorHeight=obb.z
 			self.TopRotorModel=e
 		end
-		self.BackRotor=self:AddBackRotor()
+		self.BackRotor = self:AddBackRotor()
 		self:SetNWEntity("rotor_rear",self.BackRotor)
 		constraint.Axis(self.Entity, self.TopRotor, 0, 0, self.TopRotorPos, Vector(0,0,1),0,0,0,1)
 		if self.TwinBladed then
@@ -257,7 +265,7 @@ end
 
 
 function ENT:AddBackRotor()
-	local e=self:addEntity("wac_hitdetector")
+	local e = self:addEntity("wac_hitdetector")
 	e:SetModel(self.BackRotorModel)
 	e:SetAngles(self:GetAngles())
 	e:SetPos(self:LocalToWorld(self.BackRotorPos))
@@ -318,6 +326,26 @@ end
 function ENT:addStuff() end
 
 
+function ENT:addWeapons()
+	self.weapons = {
+		pods = {},
+		profiles = {}
+	}
+	for i, w in pairs(self.Weapons.pods) do
+		local pod = ents.Create(w.class)
+		pod:SetPos(self:LocalToWorld(w.pos))
+		pod:SetParent(self)
+		table.insert(self.weapons.pods, pod)
+	end
+	for _, p in pairs(self.Weapons.profiles) do
+		local profile = table.Copy(p)
+		for i, n in pairs(profile.pods) do
+			profile.pods[i] = self.weapons.pods[n]
+		end
+		table.insert(self.weapons.profiles, profile)
+	end
+end
+
 function ENT:addSeats()
 	self.seats = {}
 	local e = self:addEntity("wac_seat_connector")
@@ -331,34 +359,21 @@ function ENT:addSeats()
 	for k, v in pairs(self.Seats) do
 		if k != "BaseClass" then
 			local ang = self:GetAngles()
-			v.wep_act=1
-			v.wep_next=0
-			for i,t in pairs(v.wep) do
-				if i != "BaseClass" then
-					if t.Init then t.Init(self,t) end
-					self:SetNWInt("seat_"..k.."_"..i.."_ammo",t.Ammo)
-					self:SetNWInt("seat_"..k.."_"..i.."_nextshot",1)
-					self:SetNWInt("seat_"..k.."_"..i.."_lastshot",0)
-				else
-					t = nil
-				end
-			end
-			self:SetNWInt("seat_"..k.."_actwep", 1)
-			self.seats[k]=self:addEntity("prop_vehicle_prisoner_pod")
+			self.seats[k] = self:addEntity("prop_vehicle_prisoner_pod")
 			self.seats[k]:SetModel("models/nova/airboat_seat.mdl") 
-			self.seats[k]:SetPos(self:LocalToWorld(v.Pos))
-			if v.Ang then
-				local a=self:GetAngles()
-				a.y=a.y-90
-				a:RotateAroundAxis(Vector(0,0,1),v.Ang.y)
+			self.seats[k]:SetPos(self:LocalToWorld(v.pos))
+			self.seats[k]:SetNWInt("selectedWeapon", 0)
+			if v.ang then
+				local a = self:GetAngles()
+				a.y = a.y-90
+				a:RotateAroundAxis(Vector(0,0,1), v.ang.y)
 				self.seats[k]:SetAngles(a)
 			else
-				ang:RotateAroundAxis(self:GetUp(),-90)
+				ang:RotateAroundAxis(self:GetUp(), -90)
 				self.seats[k]:SetAngles(ang)
 			end
 			self.seats[k]:Spawn()
 			self.seats[k]:SetNoDraw(true)
-			self.seats[k].Helicopter = self
 			self.seats[k].Phys = self.seats[k]:GetPhysicsObject()
 			self.seats[k].Phys:EnableGravity(true)
 			self.seats[k].Phys:SetMass(1)
@@ -375,7 +390,7 @@ end
 
 
 function ENT:addWheels()
-	for _,t in pairs(self.WheelInfo) do
+	for _,t in pairs(self.Wheels) do
 		if t.mdl then
 			local e=self:addEntity("prop_physics")
 			e:SetModel(t.mdl)
@@ -384,16 +399,12 @@ function ENT:addWheels()
 			e:Spawn()
 			e:Activate()
 			local ph=e:GetPhysicsObject()
-			if ph:IsValid() then
-				if t.mass then
-					ph:SetMass(t.mass)
-				end
-				ph:EnableDrag(false)
-			else
-				e:Remove()
+			if t.mass then
+				ph:SetMass(t.mass)
 			end
+			ph:EnableDrag(false)
 			constraint.Axis(e,self,0,0,Vector(0,0,0),self:WorldToLocal(e:LocalToWorld(Vector(0,1,0))),0,0,t.friction,1)
-			table.insert(self.Wheels,e)
+			table.insert(self.wheels,e)
 			self:AddOnRemove(e)
 		end
 	end
@@ -419,9 +430,9 @@ function ENT:EjectPassenger(ply,idx,t)
 	end
 	ply.LastVehicleEntered = CurTime()+0.5
 	ply:ExitVehicle()
-	ply:SetPos(self:LocalToWorld(self.Seats[idx].ExitPos))
+	ply:SetPos(self:LocalToWorld(self.Seats[idx].exit))
 	ply:SetVelocity(self:GetPhysicsObject():GetVelocity()*1.2)
-	ply:SetEyeAngles((self:LocalToWorld(self.Seats[idx].Pos-Vector(0,0,40))-ply:GetPos()):Angle())
+	ply:SetEyeAngles((self:LocalToWorld(self.Seats[idx].pos-Vector(0,0,40))-ply:GetPos()):Angle())
 	self:updateSeats()
 end
 
@@ -507,7 +518,7 @@ end
 function ENT:Think()
 	local crt = CurTime()
 	if !self.disabled then
-		if self.UpdateSecond<crt then
+		if self.nextUpdate<crt then
 			if self.phys and self.phys:IsValid() then
 				self.phys:Wake()
 			end
@@ -536,7 +547,7 @@ function ENT:Think()
 				self.Smoke:SetKeyValue("JetLength", tostring(50+self.rotorRpm*50))
 			end
 			self:updateSeats()
-			self.UpdateSecond = crt+0.1
+			self.nextUpdate = crt+0.1
 		end
 		
 		self:setVar("rotorRpm", math.Clamp(self.rotorRpm, 0, 150))
@@ -564,6 +575,8 @@ function ENT:receiveInput(name, value, seat)
 			self.controls.yaw = value
 		elseif name == "Roll" then
 			self.controls.roll = value
+		elseif name == "Hover" and value>0.5 then
+			self:SetHover(!self:GetHover())
 		end
 	end
 	if name == "Exit" and value>0.5 then
@@ -601,12 +614,6 @@ function ENT:setEngine(b)
 end
 
 
-function ENT:ToggleHover()
-	self.DoHover=!self.DoHover
-	self:SetNWBool("hover",self.DoHover)
-end
-
-
 function ENT:calcAerodynamics(ph)
 
 	local dvel = self:GetVelocity():Length()
@@ -633,7 +640,7 @@ end
 
 
 function ENT:calcHover(ph,pos,vel,ang)
-	if self.DoHover then
+	if self:GetHover() then
 		local v=self:WorldToLocal(pos+vel)
 		local av=ph:GetAngleVelocity()
 		if !self.EasyMode then
@@ -730,8 +737,9 @@ function ENT:PhysicsUpdate(ph)
 				end
 			end
 
-			local throttle = up*(self.controls.throttle*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
-			ph:AddVelocity(throttle*phm)
+			local throttle = self.Agility.Thrust*up*(self.controls.throttle*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
+			local brakez = self:LocalToWorld(Vector(0, 0, lvel.z*dvel*self.rotorRpm/100000*self.Aerodynamics.RailRotor)) - pos
+			ph:AddVelocity((throttle - brakez)*phm)
 			
 		elseif IsValid(self.BackRotor) and self.BackRotor.Phys:IsValid() then
 			local backSpeed = (self.BackRotor.Phys:GetAngleVelocity() - ph:GetAngleVelocity()).y
@@ -743,14 +751,14 @@ function ENT:PhysicsUpdate(ph)
 		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.controls.throttle+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
 	end
 
-	local controlAng = Vector(rotateX, rotateY, rotateZ) / math.pow(realism, 1.3) * 4.17
+	local controlAng = Vector(rotateX, rotateY, rotateZ) / math.pow(realism, 1.3) * 4.17 * self.Agility.Rotate
 
 	local aeroVelocity, aeroAng = self:calcAerodynamics(ph)
 
 	ph:AddAngleVelocity((aeroAng + controlAng)*phm)
 	ph:AddVelocity((aeroVelocity)*phm)
 
-	for _,e in pairs(self.Wheels) do
+	for _,e in pairs(self.wheels) do
 		if IsValid(e) then
 			local ph=e:GetPhysicsObject()
 			if ph:IsValid() then

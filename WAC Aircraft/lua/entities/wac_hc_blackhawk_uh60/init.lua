@@ -18,7 +18,7 @@ ENT.AngBrakeMul	= 0.01
 ENT.Weight		= 8000
 
 
-ENT.WheelInfo={
+ENT.Wheels = {
 	{
 		mdl="models/BF2/helicopters/Mil Mi-28/mil mi-28_tailwheel.mdl",
 		pos=Vector(-307,0,4),

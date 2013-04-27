@@ -5,7 +5,7 @@ AddCSLuaFile("shared.lua")
 
 ENT.WheelStabilize	=-150
 
-ENT.WheelInfo={
+ENT.Wheels = {
 	{
 		mdl="models/BF2/helicopters/Mil Mi-28/mi28_w2.mdl",
 		pos=Vector(-416.87,0,53.31),

@@ -640,8 +640,8 @@ wac.aircraft.weapons = {
 						ph:SetVelocity(self:GetVelocity())
 						ph:AddAngleVelocity(self:GetPhysicsObject():GetAngleVelocity() + Vector(30,0,0))
 					end
-					self.Sounds.MissileShoot:Stop()
-					self.Sounds.MissileShoot:Play()
+					self.sounds.MissileShoot:Stop()
+					self.sounds.MissileShoot:Play()
 					constraint.NoCollide(self,rocket,0,0)
 					t.Gun=(t.Gun==1 and 2 or 1)
 					t.Ammo=t.Ammo-1

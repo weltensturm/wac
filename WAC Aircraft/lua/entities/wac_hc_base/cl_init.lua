@@ -108,7 +108,7 @@ end
 function ENT:DrawHUD(k,p)
 	if !self.Seats or !self.Seats[k] then return end
 	local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
-	local twep = self.Seats[k].wep[activeWeapon]
+	--[[local twep = self.Seats[k].wep[activeWeapon]
 	if twep.CamPos and p:GetViewEntity()==p then
 		local sw = ScrW()
 		local sh = ScrH()
@@ -205,8 +205,8 @@ function ENT:DrawHUD(k,p)
 		else
 			surface.SetTextColor(255,255,255,200)
 			surface.DrawText(ammo)
-		end]]
-	end
+		end
+	end]]
 end
 
 function ENT:onViewSwitch(p, thirdPerson)
@@ -298,8 +298,8 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 
 	local seat = self.Seats[k]
 	local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
-	local weapon = seat.wep[activeWeapon]
-	if weapon.CalcView then
+	--local weapon = seat.wep[activeWeapon]
+	if false then--weapon.CalcView then
 		view = weapon.CalcView(self,weapon,p,pos,ang,view)
 		if lastWeapon != activeWeapon then
 			p.wac_air_resetview = true
@@ -336,9 +336,8 @@ function ENT:MovePlayerView(k,p,md)
 	if p.wac_air_resetview then md:SetViewAngles(Angle(0,90,0)) p.wac_air_resetview=false end
 	local freeView = md:GetViewAngles()
 	local id = self:GetNWInt("seat_"..k.."_actwep")
-	if !self.Seats or !self.Seats[k] or !self.Seats[k].wep[id] then return end
-	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0" and !p.wac.viewFree)
-			or (self.Seats and self.Seats[k].wep[id].MouseControl) then
+	if !self.Seats or !self.Seats[k] then return end
+	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0" and !p.wac.viewFree) then
 		freeView.p = freeView.p-freeView.p*FrameTime()*6
 		freeView.y = freeView.y-(freeView.y-90)*FrameTime()*6
 	else
@@ -350,8 +349,8 @@ end
 
 function ENT:DrawScreenSpaceEffects(k,p)
 	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
-	local twep=self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")]
-	if twep.RenderScreenSpace then twep.RenderScreenSpace(self,twep,p) end
+	--[[local twep=self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")]
+	if twep.RenderScreenSpace then twep.RenderScreenSpace(self,twep,p) end]]
 end
 
 function ENT:DrawRotor()
@@ -378,8 +377,7 @@ function ENT:DrawPilotHud()
 	
 	local uptm = self.rotorRpm
 	local upm = self.SmoothUp
-	local spos=self.Seats[1].Pos
-	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)+spos), ang,0.015)
+	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)+self.Seats[1].pos), ang,0.015)
 	surface.SetDrawColor(HudCol)
 	surface.DrawRect(235, 249, 10, 2)
 	surface.DrawRect(255, 249, 10, 2)
@@ -412,7 +410,7 @@ function ENT:DrawPilotHud()
 	surface.SetTextPos(-10, 520)
 	surface.DrawText(math.floor(self:GetVelocity():Length()*0.1)) --knots (real would be 0.037147, but fuck it)
 	
-	if self:GetNWBool("hover") then
+	if self:GetHover() then
 		surface.SetTextColor(HudCol)
 		surface.SetFont("wac_heli_small")
 		surface.SetTextPos(483, -18)
@@ -436,7 +434,7 @@ function ENT:DrawWeaponSelection()
 	ang:RotateAroundAxis(fwd, 90)
 	for k,t in pairs(self.Seats) do
 		if k != "BaseClass" and !t.NoHud then
-			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)+t.Pos), ang, 0.02)
+			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)+t.pos), ang, 0.02)
 			surface.DrawRect(-10, 0, 500, 30)
 			surface.DrawRect(-10, 30, 10, 20)
 			if t.wep then
@@ -464,7 +462,7 @@ function ENT:Draw()
 	self:DrawPilotHud()
 	self:DrawWeaponSelection()
 	if self.engineRpm > 0.2 and self.SmokePos then
-		if !self.lastHeatDrawn or self.lastHeatDrawn > CurTime()+0.1 then
+		if !self.lastHeatDrawn or self.lastHeatDrawn < CurTime()-0.1 then
 			if type(self.SmokePos) == "table" then
 				for _, v in self.SmokePos do
 					local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(v))

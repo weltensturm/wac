@@ -11,14 +11,20 @@ wac.aircraft = wac.aircraft or {
 	
 	spawnCategory = "WAC Aircraft",
 
-	addControl = function(category, name, range, key1, key2)
-		wac.aircraft.controls[category] = wac.aircraft.controls[category] or {}
-		wac.aircraft.controls[category][name] = {range, key1, key2}
-	end,
+	addControls = function(category, t)
+		local c
+		for i, t in pairs(wac.aircraft.controls) do
+			if t.name == category then
+				c = t
+			end
+		end
+		if !c then
+			c = { name = category, list = {} }
+			table.insert(wac.aircraft.controls, c)
+		end
 
-	addControls = function(category, table)
-		for name, control in pairs(table) do
-			wac.aircraft.addControl(category, name, control[1], control[2], control[3])
+		for name, control in pairs(t) do
+			c.list[name] = control
 		end
 	end,
 

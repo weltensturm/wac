@@ -8,21 +8,21 @@ ENT.AdminSpawnable = true
 
 ENT.PrintName = "Cessna C172"
 
-ENT.Model						= "models/Cessna/cessna172.mdl"
-ENT.RotorPhModel		= "models/props_junk/sawblade001a.mdl"
-ENT.RotorModel			= "models/Cessna/cessna172_prop.mdl"
+ENT.Model = "models/Cessna/cessna172.mdl"
+ENT.RotorPhModel = "models/props_junk/sawblade001a.mdl"
+ENT.RotorModel = "models/Cessna/cessna172_prop.mdl"
 
-ENT.FirePos			= Vector(70,0,0)
-ENT.SmokePos		= ENT.FirePos
+ENT.FirePos = Vector(70,0,0)
+ENT.SmokePos = ENT.FirePos
 
-ENT.Weight			= 800
+ENT.Weight = 800
 
 ENT.EngineWeight = {
 	Weight = 300,
 	Position = ENT.TopRotorPos
 }
 
-ENT.WheelInfo={
+ENT.Wheels = {
 	{
 		mdl="models/Cessna/cessna172_mlwheel.mdl",
 		pos=Vector(-13.73,45.36,-39),

@@ -169,9 +169,9 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	end
 	panel:AddControl("ComboBox", presetParams)
 
-	for category, controls in pairs(wac.aircraft.controls) do
-		panel:AddControl("Label", {Text = category})
-		for name, t in pairs(controls) do
+	for i, controls in pairs(wac.aircraft.controls) do
+		panel:AddControl("Label", {Text = controls.name})
+		for name, t in pairs(controls.list) do
 			if !t[3] then
 				local k = vgui.Create("wackeyboard::key", panel)
 				k:setLabel(name)

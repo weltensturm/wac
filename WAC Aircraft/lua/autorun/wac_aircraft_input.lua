@@ -10,6 +10,7 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 		Yaw = {{-1, 1}, KEY_Q, KEY_E},
 		Roll = {{-1, 1}, KEY_D, KEY_A},
 		Start = {true, KEY_R},
+		Hover = {true, MOUSE_4},
 	})
 
 	wac.aircraft.addControls("Common", {
@@ -21,7 +22,7 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 		Fire = {true, MOUSE_LEFT},
 		NextWeapon = {true, MOUSE_RIGHT}
 	})
-	
+
 end)
 
 
@@ -67,8 +68,8 @@ else
 		local vehicle = LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft")
 		if !IsValid(vehicle) or vgui.CursorVisible() then return end
 		local k = 0
-		for category, controls in pairs(wac.aircraft.controls) do
-			for name, k in pairs(controls) do
+		for i, category in pairs(wac.aircraft.controls) do
+			for name, k in pairs(category.list) do
 				if !k[3] then
 					if GetConVar("wac_cl_air_key_" .. name):GetInt() == key then
 						RunConsoleCommand("wac_air_input", name, (pressed and "1" or "0"))
@@ -93,8 +94,8 @@ else
 			hook.Run("wacAirAddInputs")
 			wac.aircraft.init = true
 
-			for category, controls in pairs(wac.aircraft.controls) do	
-				for name, key in pairs(controls) do
+			for i, category in pairs(wac.aircraft.controls) do	
+				for name, key in pairs(category.list) do
 					if !key[3] then
 						CreateClientConVar("wac_cl_air_key_" .. name, key[2], true, true)
 					else

@@ -24,41 +24,36 @@ ENT.FirePos		= Vector(-30,0,100)
 
 ENT.Seats = {
 	{
-		Pos=Vector(22, 15, 49),
-		ExitPos=Vector(70,60,10),
-		NoHud=true,
-		wep={wac.aircraft.getWeapon("No Weapon")},
+		pos = Vector(22, 15, 49),
+		exit = Vector(70,60,10),
+		NoHud = true,
 	},
 	{
-		Pos=Vector(22, -12, 49),
-		ExitPos=Vector(70,-60,10),
-		NoHud=true,
-		wep={wac.aircraft.getWeapon("No Weapon")},
+		pos = Vector(22, -12, 49),
+		exit = Vector(70,-60,10),
+		NoHud = true,
 	},
 	{
-		Pos=Vector(-5, -45, 35),
-		ExitPos=Vector(20,-100,10),
-		NoHud=true,
-		wep={wac.aircraft.getWeapon("No Weapon")},
+		pos = Vector(-5, -45, 35),
+		exit = Vector(20,-100,10),
+		NoHud = true,
 	},
 	{
-		Pos=Vector(-5, 45, 35),
-		ExitPos=Vector(20,100,10),
-		NoHud=true,
-		wep={wac.aircraft.getWeapon("No Weapon")},
+		pos = Vector(-5, 45, 35),
+		exit = Vector(20,100,10),
+		NoHud = true,
 	},
 }
 
 
-function ENT:AddSounds()
-	self.Sounds={
-		Start=CreateSound(self.Entity,"WAC/Heli/h6_start.wav"),
-		Blades=CreateSound(self.Entity,"WAC/Heli/heli_loop_ext.wav"),
-		Engine=CreateSound(self.Entity,"WAC/Heli/heli_loop_int.wav"),
-		MissileAlert=CreateSound(self.Entity,"HelicopterVehicle/MissileNearby.mp3"),
-		MissileShoot=CreateSound(self.Entity,"HelicopterVehicle/MissileShoot.mp3"),
-		MinorAlarm=CreateSound(self.Entity,"HelicopterVehicle/MinorAlarm.mp3"),
-		LowHealth=CreateSound(self.Entity,"HelicopterVehicle/LowHealth.mp3"),
-		CrashAlarm=CreateSound(self.Entity,"HelicopterVehicle/CrashAlarm.mp3"),
-	}
-end
+ENT.Sounds = {
+	Start = "WAC/Heli/h6_start.wav",
+	Blades = "WAC/Heli/heli_loop_ext.wav",
+	Engine = "WAC/Heli/heli_loop_int.wav",
+	MissileAlert = "HelicopterVehicle/MissileNearby.mp3",
+	MissileShoot = "HelicopterVehicle/MissileShoot.mp3",
+	MinorAlarm = "HelicopterVehicle/MinorAlarm.mp3",
+	LowHealth = "HelicopterVehicle/LowHealth.mp3",
+	CrashAlarm = "HelicopterVehicle/CrashAlarm.mp3",
+}
+

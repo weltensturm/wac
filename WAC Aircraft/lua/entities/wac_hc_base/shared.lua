@@ -20,11 +20,8 @@ ENT.FirePos = Vector(-60,0,60)
 
 ENT.Seats = {
 	{
-		Pos=Vector(68, 0, 48),
-		ExitPos=Vector(72,70,0),
-		wep={
-			[1] = wac.aircraft.getWeapon("No Weapon"),
-		},
+		pos = Vector(68, 0, 48),
+		exit = Vector(72,70,0),
 	},
 }
 
@@ -34,11 +31,13 @@ ENT.Sounds = {
 	Blades = "vehicles/Airboat/fan_blade_idle_loop1.wav",
 	Engine = "WAC/Heli/heli_loop_int.wav",
 	MissileAlert = "HelicopterVehicle/MissileNearby.mp3",
-	MissileShoot = "HelicopterVehicle/MissileShoot.mp3",
 	MinorAlarm = "HelicopterVehicle/MinorAlarm.mp3",
 	LowHealth = "HelicopterVehicle/LowHealth.mp3",
 	CrashAlarm = "HelicopterVehicle/CrashAlarm.mp3",
 }
+
+ENT.Wheels = {}
+
 
 function ENT:addSounds()
 	self.sounds = {}
@@ -47,4 +46,8 @@ function ENT:addSounds()
 			self.sounds[name] = CreateSound(self, value)
 		end
 	end
+end
+
+function ENT:SetupDataTables()
+	self:NetworkVar("Bool", 0, "Hover");
 end
