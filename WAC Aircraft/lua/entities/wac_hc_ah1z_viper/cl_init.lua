@@ -39,7 +39,7 @@ function ENT:DrawPilotHud()
 	
 	local uptm = self.SmoothVal
 	local upm = self.SmoothUp
-	local spos=self.Seats[1].Pos
+	local spos=self.Seats[1].pos
 
 	cam.Start3D2D(self:LocalToWorld(Vector(30,3.75,37.75)+spos), ang,0.015)
 	surface.SetDrawColor(HudCol)
@@ -79,12 +79,14 @@ function ENT:DrawPilotHud()
 	local tr=util.QuickTrace(pos+self:GetUp()*10,Vector(0,0,-999999),self.Entity)
 	surface.DrawText("ALT  "..math.ceil((pos.z-tr.HitPos.z)*0.01905).."m")
 	
-	surface.SetTextPos(300,445)
-	local n=self:GetNWInt("seat_1_1_ammo")
-	if n==14 and self:GetNWFloat("seat_1_1_nextshot")>CurTime() then
-		n=0
+	if self:GetNWInt("seat_1_actwep") == 1 then
+		surface.SetTextPos(300,445)
+		local n = self:GetNWInt("seat_1_1_ammo")
+		if n == 14 and self:GetNWFloat("seat_1_1_nextshot")>CurTime() then
+			n = 0
+		end
+		surface.DrawText("Hydra 70" .. getspaces(n))
 	end
-	surface.DrawText("Hydra 70"..getspaces(n))
 	
 	cam.End3D2D()
 end

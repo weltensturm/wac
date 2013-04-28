@@ -1,5 +1,5 @@
 
-ENT.Base = "base_anim"
+ENT.Base = "wac_pod_base"
 ENT.Type = "anim"
 
 ENT.PrintName = ""
@@ -14,11 +14,5 @@ ENT.AdminSpawnable = false
 
 
 ENT.Name = "M134"
-ENT.Ammo = 800
+ENT.Ammo = 400
 ENT.FireRate = 2000
-
-function ENT:SetupDataTables()
-	self:NetworkVar("Int", 0, "Ammo");
-	self:NetworkVar("Float", 0, "LastShot")
-	self:NetworkVar("Float", 1, "NextShot")
-end

@@ -25,30 +25,16 @@ ENT.Weight = 9000
 
 ENT.Seats = {
 	{
-		Pos=Vector(54.74,0,85.22),
-		ExitPos=Vector(54.74,80,5),
-		wep={
-			wac.aircraft.getWeapon("Hydra 70",{
-				Name="S-8",
-				Ammo=40,
-				MaxAmmo=40,
-				Damage=70,
-				ShootDelay=0.2,
-				ShootPos={
-					Vector(3.22,72.94,49),
-					Vector(3.22,-72.94,49),
-				}
-			})
-		},
+		pos = Vector(54.74,0,85.22),
+		exit = Vector(54.74,80,5),
+		weapons = {"Hydra 70"}
 	},
 	{
-		Pos=Vector(115.3,0,61),
-		ExitPos=Vector(115.3,60,5),
-		wep={
-			wac.aircraft.getWeapon("No Weapon"),
-			wac.aircraft.getWeapon("2A42"),
+		pos = Vector(115.3,0,61),
+		exit = Vector(115.3,60,5),
+		weapons = {"2A42", "9M120", "Hydra 70"}
 			wac.aircraft.getWeapon("Hellfire",{
-				Name="9M120",
+				Name=,
 				ShootPos={
 					Vector(3.22,102.38,59.59),
 					Vector(3.22,-102.38,59.59),
@@ -65,6 +51,16 @@ ENT.Seats = {
 			}),
 		},
 	},
+}
+
+
+ENT.Weapons = {
+	pods = {
+		{
+			class = "wac_pod_hydra",
+			
+		}		
+	}
 }
 
 

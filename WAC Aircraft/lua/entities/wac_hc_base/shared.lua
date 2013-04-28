@@ -12,9 +12,9 @@ ENT.Category = wac.aircraft.spawnCategory
 ENT.Contact = ""
 ENT.Purpose = ""
 ENT.Instructions = ""
-
 ENT.Spawnable = false
 ENT.AdminSpawnable = false
+
 ENT.SmokePos = Vector(-75,0,20)
 ENT.FirePos = Vector(-60,0,60)
 

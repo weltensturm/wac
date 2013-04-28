@@ -53,9 +53,9 @@ ENT.engineHealth = 100
 ]]
 ENT.Aerodynamics = {
 	Rotation = {
-		Front = Vector(0, 0, 0),
-		Right = Vector(0, 0, 20), -- Rotate towards flying direction
-		Top = Vector(0, -1, 0)
+		Front = Vector(0, 0.5, 0),
+		Right = Vector(0, 0, 50), -- Rotate towards flying direction
+		Top = Vector(0, -5, 0)
 	},
 	Lift = {
 		Front = Vector(0, 0, 3), -- Go up when flying forward
@@ -271,11 +271,11 @@ function ENT:AddBackRotor()
 	e:SetPos(self:LocalToWorld(self.BackRotorPos))
 	e.Owner = self.Owner
 	e:SetNWFloat("rotorhealth", 100)
-	e.wac_ignore=true
+	e.wac_ignore = true
 	e.TouchFunc = function(touchedEnt, pos)
 		local ph = touchedEnt:GetPhysicsObject()
 		if ph:IsValid() then
-			if 
+			if
 					!table.HasValue(self.Passenger, touchedEnt)
 					and !table.HasValue(self.entities, touchedEnt)
 					and touchedEnt != self
@@ -332,17 +332,27 @@ function ENT:addWeapons()
 		profiles = {}
 	}
 	for i, w in pairs(self.Weapons.pods) do
-		local pod = ents.Create(w.class)
-		pod:SetPos(self:LocalToWorld(w.pos))
-		pod:SetParent(self)
-		table.insert(self.weapons.pods, pod)
-	end
-	for _, p in pairs(self.Weapons.profiles) do
-		local profile = table.Copy(p)
-		for i, n in pairs(profile.pods) do
-			profile.pods[i] = self.weapons.pods[n]
+		if i != "BaseClass" then
+			local pod = ents.Create(w.class)
+			pod:SetPos(self:LocalToWorld(w.pos))
+			pod:SetParent(self)
+			pod:Spawn()
+			pod:Activate()
+			pod:SetNoDraw(true)
+			pod.aircraft = self
+			self.weapons.pods[i] = pod
 		end
-		table.insert(self.weapons.profiles, profile)
+	end
+	for name, p in pairs(self.Weapons.profiles) do
+		if name != "BaseClass" then
+			local profile = table.Copy(p)
+			for i, n in pairs(profile.pods) do
+				if i != "BaseClass" then
+					profile.pods[i] = self.weapons.pods[n]
+				end
+			end
+			self.weapons.profiles[name] = profile
+		end
 	end
 end
 
@@ -358,6 +368,7 @@ function ENT:addSeats()
 	self.SeatSwitcher = e
 	for k, v in pairs(self.Seats) do
 		if k != "BaseClass" then
+			self.Seats[k].activeProfile = 0
 			local ang = self:GetAngles()
 			self.seats[k] = self:addEntity("prop_vehicle_prisoner_pod")
 			self.seats[k]:SetModel("models/nova/airboat_seat.mdl") 
@@ -411,13 +422,55 @@ function ENT:addWheels()
 end
 
 
-function ENT:NextWeapon(t,k,p)
-	if t.wep[t.wep_act].DeSelect then t.wep[t.wep_act].DeSelect(self.Entity, t.wep[t.wep_act], p) end
-	t.wep_act=(t.wep_act<#t.wep)and(t.wep_act+1)or(1)
-	t.wep_next=CurTime()+0.5
-	self:SetNWInt("seat_"..k.."_actwep", t.wep_act)
+function ENT:fireWeapon(bool, seat, t)
+	if !t.weapons then return end
+	local profile = self.weapons.profiles[t.weapons[t.activeProfile]]
+	if !profile then return end
+	for _, pod in pairs(profile.pods) do
+		pod:trigger(bool, self.Passenger[seat])
+	end
 end
 
+function ENT:nextWeapon(t,k,p)
+	if !t.weapons then return end
+
+	local profile = self.weapons.profiles[t.weapons[t.activeProfile]]
+	if profile then
+		for _, pod in pairs(profile.pods) do
+			pod:select(false)
+		end
+	end
+
+	if t.activeProfile == #t.weapons then
+		t.activeProfile = 0
+	else
+		t.activeProfile = t.activeProfile + 1
+		for _, pod in pairs(self.weapons.profiles[t.weapons[t.activeProfile]].pods) do
+			pod:select(true)
+		end
+	end
+	self:SetNWInt("seat_"..k.."_actwep", t.activeProfile)
+end
+
+function ENT:thinkWeapons()
+	for i, s in pairs(self.Seats) do
+		if s.weapons then
+			local profile = self.weapons.profiles[s.weapons[s.activeProfile]]
+			if profile then
+				local ammo = 0
+				local lastShot, nextShot
+				for _, pod in pairs(profile.pods) do
+					nextShot = pod:GetNextShot()
+					lastShot = pod:GetLastShot()
+					ammo = ammo + pod:GetAmmo()
+				end
+				self:SetNWFloat("seat_"..i.."_"..s.activeProfile.."_nextshot", nextShot)
+				self:SetNWFloat("seat_"..i.."_"..s.activeProfile.."_lastshot", lastShot)
+				self:SetNWInt("seat_"..i.."_"..s.activeProfile.."_ammo", ammo)
+			end
+		end
+	end
+end
 
 function ENT:EjectPassenger(ply,idx,t)
 	if !idx then
@@ -518,6 +571,7 @@ end
 function ENT:Think()
 	local crt = CurTime()
 	if !self.disabled then
+		self:thinkWeapons()
 		if self.nextUpdate<crt then
 			if self.phys and self.phys:IsValid() then
 				self.phys:Wake()
@@ -577,18 +631,16 @@ function ENT:receiveInput(name, value, seat)
 			self.controls.roll = value
 		elseif name == "Hover" and value>0.5 then
 			self:SetHover(!self:GetHover())
+		elseif name == "FreeCamera" then
+			self.Passenger[seat].wac.mouseInput = (value < 0.5)
 		end
 	end
 	if name == "Exit" and value>0.5 then
 		self:EjectPassenger(self.Passenger[seat])
 	elseif name == "Fire" then
-		local t = self.Seats[seat]
-		t.wep[t.wep_act].func(self, t.wep[t.wep_act], self.Passenger[seat])
-		self:SetNWFloat("seat_"..seat.."_"..t.wep_act.."_nextshot", t.wep[t.wep_act].NextShoot)
-		self:SetNWFloat("seat_"..seat.."_"..t.wep_act.."_lastshot", t.wep[t.wep_act].LastShot)
-		self:SetNWInt("seat_"..seat.."_"..t.wep_act.."_ammo", t.wep[t.wep_act].Ammo)
+		self:fireWeapon(value > 0.5, seat, self.Seats[seat])
 	elseif name == "NextWeapon" and value > 0.5 then
-		self:NextWeapon(self.Seats[seat], seat, self.Passenger[seat])
+		self:nextWeapon(self.Seats[seat], seat, self.Passenger[seat])
 	end
 end
 
@@ -751,7 +803,7 @@ function ENT:PhysicsUpdate(ph)
 		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.controls.throttle+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
 	end
 
-	local controlAng = Vector(rotateX, rotateY, rotateZ) / math.pow(realism, 1.3) * 4.17 * self.Agility.Rotate
+	local controlAng = Vector(rotateX, rotateY, IsValid(self.BackRotor) and rotateZ or 0) / math.pow(realism, 1.3) * 4.17 * self.Agility.Rotate
 
 	local aeroVelocity, aeroAng = self:calcAerodynamics(ph)
 

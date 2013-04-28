@@ -1,4 +1,4 @@
-
+--[[ apparently fixed
 include "wac/base.lua"
 
 local eb = CreateConVar("wac_npc_headshotfix", 1, {FCVAR_REPLICATED,FCVAR_ARCHIVE})
@@ -19,3 +19,4 @@ else
 	end)
 
 end
+]]

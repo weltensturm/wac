@@ -19,62 +19,50 @@ ENT.Weight = 800
 
 ENT.EngineWeight = {
 	Weight = 300,
-	Position = ENT.TopRotorPos
+	position = ENT.TopRotorPos
 }
 
 ENT.Wheels = {
 	{
-		mdl="models/Cessna/cessna172_mlwheel.mdl",
-		pos=Vector(-13.73,45.36,-39),
-		friction=0,
-		mass=50,
+		mdl = "models/Cessna/cessna172_mlwheel.mdl",
+		pos = Vector(-13.73,45.36,-39),
+		friction = 0,
+		mass = 50,
 	},
 	{
-		mdl="models/Cessna/cessna172_mwheel.mdl",
-		pos=Vector(-13.73,-45.36,-39),
-		friction=0,
-		mass=50,
+		mdl = "models/Cessna/cessna172_mwheel.mdl",
+		pos = Vector(-13.73,-45.36,-39),
+		friction = 0,
+		mass = 50,
 	},
 	{
-		mdl="models/Cessna/cessna172_nwheel.mdl",
-		pos=Vector(53.31,0,-41.89),
-		friction=0,
-		mass=50,
+		mdl = "models/Cessna/cessna172_nwheel.mdl",
+		pos = Vector(53.31,0,-41.89),
+		friction = 0,
+		mass = 50,
 	},
 }
 
 ENT.Seats = {
 	{
-		Pos=Vector(1.4, 9.5, -10),
-		ExitPos=Vector(60, 50, -45),
-		NoHud=true,
-		wep={
-			wac.aircraft.getWeapon("No Weapon"),
-		},
+		pos = Vector(1.4, 9.5, -10),
+		exit = Vector(60, 50, -45),
+		NoHud = true
 	},
 	{
-		Pos=Vector(1.4, -9.5, -10),
-		ExitPos=Vector(60, -50, -45),
-		NoHud=true,
-		wep={
-			wac.aircraft.getWeapon("No Weapon"),
-		},
+		pos = Vector(1.4, -9.5, -10),
+		exit = Vector(60, -50, -45),
+		NoHud = true,
 	},
 	{
-		Pos=Vector(-40,-10,-13),
-		ExitPos=Vector(-50, -70, -45),
-		NoHud=true,
-		wep={
-			wac.aircraft.getWeapon("No Weapon"),
-		},
+		pos = Vector(-40,-10,-13),
+		exit = Vector(-50, -70, -45),
+		NoHud = true,
 	},
 	{
-		Pos=Vector(-40,10,-13),
-		ExitPos=Vector(-50, 70, -45),
-		NoHud=true,
-		wep={
-			wac.aircraft.getWeapon("No Weapon"),
-		},
+		pos = Vector(-40,10,-13),
+		exit = Vector(-50, 70, -45),
+		NoHud = true,
 	},
 }
 

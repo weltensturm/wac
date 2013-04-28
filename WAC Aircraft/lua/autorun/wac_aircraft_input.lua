@@ -43,18 +43,18 @@ if SERVER then
 	wac.hook("Think", "wac_aircraft_mouseinput", function()
 		for _, p in pairs(player.GetAll()) do
 			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(e) and p.wac.mouseInput then
+			if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
 				local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")
 				local v = e:WorldToLocal(e:GetPos() + p:GetAimVector())
 				local pid = p:GetNWInt("wac_passenger_id")
 				e:receiveInput(
 					"Pitch",
-					math.Clamp(v.z*m*(p:GetInfo("wac_cl_air_mouse_invert_pitch")=="1" and -1 or 1)*10, -1, 1),
+					math.Clamp(v.z*m*(p:GetInfo("wac_cl_air_mouse_invert_pitch")=="1" and 1 or -1)*10, -1, 1),
 					pid
 				)
 				e:receiveInput(
-					p:GetInfo("wac_cl_air_mouse_swap")=="1" and "Yaw" or "Roll",
-					math.Clamp(v.y*m*(p:GetInfo("wac_cl_air_mouse_invert_yawroll")=="1" and -1 or 1)*10, -1, 1),
+					p:GetInfo("wac_cl_air_mouse_swap")=="0" and "Yaw" or "Roll",
+					math.Clamp(v.y*m*(p:GetInfo("wac_cl_air_mouse_invert_yawroll")=="1" and 1 or -1)*10, -1, 1),
 					pid
 				)
 			end

@@ -17,16 +17,16 @@ ENT.CrRotorWash = false
 
 ENT.Aerodynamics = {
 	Rotation = {
-		Front = Vector(0, 4, 0),
+		Front = Vector(0, 0, 0),
 		Right = Vector(0, 0, 70), -- Rotate towards flying direction
 		Top = Vector(0, -70, 0)
 	},
 	Lift = {
-		Front = Vector(0, 0, 80), -- Go up when flying forward
+		Front = Vector(0, 0, 60), -- Go up when flying forward
 		Right = Vector(0, 0, 0),
 		Top = Vector(0, 0, -0.5)
 	},
-	Rail = Vector(1, 5, 20),
+	Rail = Vector(1, 5, 25),
 	Drag = {
 		Directional = Vector(0.01, 0.01, 0.01),
 		Angular = Vector(0.01, 0.01, 0.01)

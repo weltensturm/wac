@@ -20,7 +20,7 @@ surface.CreateFont("wac_heli_big", {
 
 surface.CreateFont("wac_heli_small", {
 	font = "monospace",
-	size = 28
+	size = 24
 })
 
 
@@ -56,7 +56,7 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 	
 	local i = p:GetNWInt("wac_passenger_id")
 	if p.wac.air.vehicle and GetViewEntity() == p and aircraft.Seats then
-		return aircraft:viewCalc((i==0 and 1 or i), p, pos, ang, fov)
+		return aircraft:viewCalc((i==0 and 1 or i), p, pos, ang, 75)
 	end
 
 end)
@@ -99,52 +99,44 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		Folder = "wac_aircraft",
 		Options = {
 			mouse = {
-				wac_cl_air_easy = "1",
-				wac_cl_air_sensitivity = "1",
-				wac_cl_air_usejoystick = "0",
 				wac_cl_air_mouse = "1",
 				wac_cl_air_mouse_swap ="1",
 				wac_cl_air_mouse_invert_pitch = "0",
 				wac_cl_air_mouse_invert_yawroll = "0",
-				wac_cl_air_key_1 = KEY_E,
-				wac_cl_air_key_2 = KEY_R,
-				wac_cl_air_key_3 = KEY_W,
-				wac_cl_air_key_4 = KEY_S,
-				wac_cl_air_key_5 = KEY_A,
-				wac_cl_air_key_6 = KEY_D,
-				wac_cl_air_key_7 = KEY_NONE,
-				wac_cl_air_key_8 = KEY_NONE,
-				wac_cl_air_key_9 = KEY_A,
-				wac_cl_air_key_10 = KEY_D,
-				wac_cl_air_key_11 = KEY_LALT,
-				wac_cl_air_key_12 = MOUSE_LEFT,
-				wac_cl_air_key_13 = MOUSE_RIGHT,
-				wac_cl_air_key_14 = MOUSE_4,
-				wac_cl_air_key_15 = KEY_SPACE,
+				wac_cl_air_key_Exit = KEY_E,
+				wac_cl_air_key_Start = KEY_R,
+				wac_cl_air_key_Throttle_Inc = KEY_W,
+				wac_cl_air_key_Throttle_Dec = KEY_S,
+				wac_cl_air_key_Yaw_Inc = KEY_A,
+				wac_cl_air_key_Yaw_Dec = KEY_D,
+				wac_cl_air_key_Pitch_Inc = KEY_NONE,
+				wac_cl_air_key_Pitch_Dec = KEY_NONE,
+				wac_cl_air_key_Roll_Inc = KEY_NONE,
+				wac_cl_air_key_Roll_Dec = KEY_NONE,
+				wac_cl_air_key_FreeCamera = KEY_SPACE,
+				wac_cl_air_key_Fire = MOUSE_LEFT,
+				wac_cl_air_key_NextWeapon = MOUSE_RIGHT,
+				wac_cl_air_key_Hover = MOUSE_4,
 			},
 			keyboard = {
-				wac_cl_air_easy = "1",
-				wac_cl_air_sensitivity = "1",
-				wac_cl_air_usejoystick = "0",
 				wac_cl_air_mouse = "0",
 				wac_cl_air_mouse_swap = "0",
 				wac_cl_air_mouse_invert_pitch = "0",
 				wac_cl_air_mouse_invert_yawroll = "0",
-				wac_cl_air_key_1 = KEY_E,
-				wac_cl_air_key_2 = KEY_R,
-				wac_cl_air_key_3 = KEY_SPACE,
-				wac_cl_air_key_4 = KEY_LSHIFT,
-				wac_cl_air_key_5 = KEY_A,
-				wac_cl_air_key_6 = KEY_D,
-				wac_cl_air_key_7 = KEY_W,
-				wac_cl_air_key_8 = KEY_S,
-				wac_cl_air_key_9 = MOUSE_LEFT,
-				wac_cl_air_key_10 = MOUSE_RIGHT,
-				wac_cl_air_key_11 = KEY_LALT,
-				wac_cl_air_key_12 = KEY_F,
-				wac_cl_air_key_13 = KEY_G,
-				wac_cl_air_key_14 = MOUSE_4,
-				wac_cl_air_key_15 = KEY_X,
+				wac_cl_air_key_Exit = KEY_E,
+				wac_cl_air_key_Start = KEY_R,
+				wac_cl_air_key_Throttle_Inc = KEY_SPACE,
+				wac_cl_air_key_Throttle_Dec = KEY_SHIFT,
+				wac_cl_air_key_Yaw_Inc = MOUSE_LEFT,
+				wac_cl_air_key_Yaw_Dec = MOUSE_RIGHT,
+				wac_cl_air_key_Pitch_Inc = KEY_W,
+				wac_cl_air_key_Pitch_Dec = KEY_S,
+				wac_cl_air_key_Roll_Inc = KEY_D,
+				wac_cl_air_key_Roll_Dec = KEY_A,
+				wac_cl_air_key_FreeCamera = KEY_ALT,
+				wac_cl_air_key_Fire = KEY_F,
+				wac_cl_air_key_NextWeapon = KEY_G,
+				wac_cl_air_key_Hover = MOUSE_4,
 			},
 		},
 		CVars = {

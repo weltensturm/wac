@@ -23,8 +23,9 @@ ENT.ThirdPDist		= 500
 
 ENT.Seats = {
 	{
-		pos = wdVector(70, 0, 48),
+		pos = Vector(70, 0, 48),
 		exit = Vector(72,70,0),
+		weapons = {"Hydra 70"}
 	},
 	{
 		pos = Vector(120, 0, 42),
@@ -32,6 +33,21 @@ ENT.Seats = {
 	},
 }
 
+ENT.Weapons = {
+	profiles = {
+		["Hydra 70"] = { pods = {1, 2} }
+	},
+	pods = {
+		{
+			class = "wac_pod_hydra",
+			pos = Vector(40.25, 36.33, 32.93)
+		},
+		{
+			class = "wac_pod_hydra",
+			pos = Vector(40.25, -36.33, 32.93)
+		},
+	}
+}
 
 ENT.Sounds = {
 	Start = "wac/Heli/ah1_start.wav",

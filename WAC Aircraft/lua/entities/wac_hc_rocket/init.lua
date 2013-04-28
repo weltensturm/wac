@@ -11,7 +11,7 @@ function ENT:Initialize()
 	self.Entity:SetSolid(SOLID_VPHYSICS)
 	self.phys = self.Entity:GetPhysicsObject()
 	if (self.phys:IsValid()) then
-		self.phys:SetMass(100)
+		self.phys:SetMass(400)
 		--self.phys:EnableGravity(false)
 		self.phys:EnableCollisions(true)
 		self.phys:EnableDrag(false)
@@ -24,12 +24,12 @@ function ENT:Explode(tr)
 	if self.Exploded then return end
 	self.Exploded=true
 	if tr.HitSky then self:Remove() return end
-	util.BlastDamage(self, self.Owner, tr.HitPos+tr.HitNormal, self.Radius, self.Damage)
+	util.BlastDamage(self, self.Owner or self, tr.HitPos+tr.HitNormal, self.Radius, self.Damage)
 	local explode=ents.Create("env_physexplosion")
 	explode:SetPos(tr.HitPos+tr.HitNormal)
 	explode:Spawn()
 	explode:SetKeyValue("magnitude", self.Damage)
-	explode:SetKeyValue("radius", self.Radius)
+	explode:SetKeyValue("radius", self.Radius*0.75)
 	explode:SetKeyValue("spawnflags","19")
 	explode:Fire("Explode", 0, 0)
 	util.Decal("Scorch",tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
@@ -97,11 +97,11 @@ end
 
 function ENT:PhysicsUpdate(ph)
 	if !self.Started or self.HasNoFuel then return end
-	local trd={
-		start=self.OldPos,
-		endpos=self:GetPos(),
-		filter={self,self.Owner,self.Launcher},
-		mask=CONTENTS_SOLID + CONTENTS_MOVEABLE + CONTENTS_OPAQUE + CONTENTS_DEBRIS + CONTENTS_HITBOX + CONTENTS_MONSTER + CONTENTS_WINDOW + CONTENTS_WATER,
+	local trd = {
+		start = self.OldPos,
+		endpos = self:GetPos(),
+		filter = {self,self.Owner,self.Launcher},
+		mask = CONTENTS_SOLID + CONTENTS_MOVEABLE + CONTENTS_OPAQUE + CONTENTS_DEBRIS + CONTENTS_HITBOX + CONTENTS_MONSTER + CONTENTS_WINDOW + CONTENTS_WATER,
 	}
 	local tr=util.TraceLine(trd)
 	if tr.Hit then
@@ -113,7 +113,7 @@ function ENT:PhysicsUpdate(ph)
 	vel.x=0
 	local m = self:GetFuelMul()
 	ph:AddVelocity(self:GetForward()*m*self.Speed-self:LocalToWorld(vel*Vector(0.1, 1, 1))+self:GetPos())
-	ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.1 + Vector(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1))/2)
+	ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5 + Vector(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1)))
 	if self.Aimed==1 and IsValid(self.Owner) and IsValid(self.Launcher) then
 		local v=self.Launcher:WorldToLocal(self.Launcher:GetPos()+self.Owner:GetAimVector()*5)*m/2
 		local clamp=Vector(v.x,v.y,v.z)

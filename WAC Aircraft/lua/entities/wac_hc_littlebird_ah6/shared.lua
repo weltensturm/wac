@@ -19,7 +19,7 @@ ENT.BackRotorPos = Vector(-217,9,73)
 ENT.EngineForce = 20
 ENT.Weight = 1300
 
-ENT.SmokePos = Vector(-80,0,50)
+ENT.SmokePos = Vector(-90,0,50)
 ENT.FirePos = Vector(-50,0,100)
 
 ENT.Seats = {

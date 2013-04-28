@@ -10,8 +10,9 @@ ENT.thirdPerson = {
 }
 
 
-function ENT:receiveInput(player, name, value)
+function ENT:receiveInput(name, value, seat)
 	if name == "FreeCamera" then
+		local player = LocalPlayer()
 		if value == 1 then
 			player.wac.viewFree = true
 		else
@@ -107,8 +108,8 @@ end
 
 function ENT:DrawHUD(k,p)
 	if !self.Seats or !self.Seats[k] then return end
-	local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
-	--[[local twep = self.Seats[k].wep[activeWeapon]
+	--[[local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
+	local twep = self.Seats[k].wep[activeWeapon]
 	if twep.CamPos and p:GetViewEntity()==p then
 		local sw = ScrW()
 		local sh = ScrH()
@@ -265,10 +266,10 @@ function ENT:viewCalcFirstPerson(k, p, view)
 	else
 		self.viewTarget = {
 			origin = Vector(0,0,0),
-			angles = view.angles - self:GetAngles(),
+			angles = p:GetAimVector():Angle() - self:GetAngles(),
 			fov = view.fov
 		}
-		--self.viewTarget.angles.r = self.viewTarget.angles.r + view.angles.r
+		self.viewTarget.angles.r = self.viewTarget.angles.r + view.angles.r
 	end
 	return view
 end
@@ -437,15 +438,15 @@ function ENT:DrawWeaponSelection()
 			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)+t.pos), ang, 0.02)
 			surface.DrawRect(-10, 0, 500, 30)
 			surface.DrawRect(-10, 30, 10, 20)
-			if t.wep then
-				local actwep=self:GetNWInt("seat_"..k.."_actwep")
-				if t.wep[actwep] then
-					local lastshot=self:GetNWFloat("seat_"..k.."_"..actwep.."_lastshot")
-					local nextshot=self:GetNWFloat("seat_"..k.."_"..actwep.."_nextshot")
-					local ammo=self:GetNWInt("seat_"..k.."_"..actwep.."_ammo")
+			if t.weapons then
+				local active = self:GetNWInt("seat_"..k.."_actwep")
+				if t.weapons[active] then
+					local lastshot = self:GetNWFloat("seat_"..k.."_"..active.."_lastshot")
+					local nextshot = self:GetNWFloat("seat_"..k.."_"..active.."_nextshot")
+					local ammo=self:GetNWInt("seat_"..k.."_"..active.."_ammo")
 					surface.DrawRect(10, 40, math.Clamp((nextshot-CurTime())/(nextshot-lastshot), 0, 1)*480, 10)
-					draw.SimpleText(k.." "..t.wep[actwep].Name, "wac_heli_big", 0, -2.5, Black, 0)
-					draw.SimpleText(nextshot>CurTime() and ammo==t.wep[actwep].MaxAmmo and "RELOADING" or ammo, "wac_heli_big", 480, -2.5, Black, 2)
+					draw.SimpleText(k.." "..t.weapons[active], "wac_heli_big", 0, -2.5, Black, 0)
+					draw.SimpleText(ammo, "wac_heli_big", 480, -2.5, Black, 2)
 				end
 			else
 				draw.SimpleText(k, "wac_heli_big", 0, -2.5, Black, 0)
