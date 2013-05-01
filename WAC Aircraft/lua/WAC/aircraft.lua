@@ -7,7 +7,7 @@ wac.menu.aircraft = "Aircraft"
 
 wac.aircraft = wac.aircraft or {
 	
-	version = "329",
+	version = "330",
 	
 	spawnCategory = "WAC Aircraft",
 
@@ -24,12 +24,18 @@ wac.aircraft = wac.aircraft or {
 		end
 
 		for name, control in pairs(t) do
+			control[2] = control[2] or KEY_NONE
 			c.list[name] = control
 		end
 	end,
 
 	controls = {},
 
-	init = false
+	initialize = function()
+		if !wac.aircraft.initialized then
+			wac.aircraft.initialized = true
+			hook.Run("wacAirAddInputs")
+		end
+	end,
 
 }

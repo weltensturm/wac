@@ -81,25 +81,9 @@ ENT.Weapons = {
 }
 
 
-function ENT:base(name)
-	local current = self
-	while current do
-		if current.Base == name then
-			return current.BaseClass
-		end
-		current = current.BaseClass
-	end
-	error("No base class with name \"" .. name .. "\"", 2)
-end
-
 
 function ENT:Initialize()
-
-	if !wac.aircraft.init then
-		hook.Run("wacAirAddInputs")
-		wac.aircraft.init = true
-	end
-
+	wac.aircraft.initialize()
 	self.Entity:SetModel(self.Model)
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
@@ -631,7 +615,7 @@ function ENT:receiveInput(name, value, seat)
 			self.controls.roll = value
 		elseif name == "Hover" and value>0.5 then
 			self:SetHover(!self:GetHover())
-		elseif name == "FreeCamera" then
+		elseif name == "FreeView" then
 			self.Passenger[seat].wac.mouseInput = (value < 0.5)
 		end
 	end

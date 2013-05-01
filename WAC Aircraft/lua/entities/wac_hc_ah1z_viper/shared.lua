@@ -30,12 +30,17 @@ ENT.Seats = {
 	{
 		pos = Vector(120, 0, 42),
 		exit = Vector(120,70,0),
+		weapons = {"Hellfire"}
 	},
 }
 
 ENT.Weapons = {
 	profiles = {
-		["Hydra 70"] = { pods = {1, 2} }
+		["Hydra 70"] = { pods = {1, 2} },
+		["Hellfire"] = {
+			pods = {3, 4},
+			sequential = true
+		}
 	},
 	pods = {
 		{
@@ -46,6 +51,46 @@ ENT.Weapons = {
 			class = "wac_pod_hydra",
 			pos = Vector(40.25, -36.33, 32.93)
 		},
+		{
+			class = "wac_pod_hydra",
+			pos = Vector(50, 60, 40),
+		},
+		{
+			class = "wac_pod_hydra",
+			pos = Vector(50, -60, 40),
+		}
+	},
+	attachments = {
+
+		gunMount1 = {
+			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g1.mdl",
+			pos = Vector(136,0,29),
+		},
+		
+		gunMount2 = {
+			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g2.mdl",
+			pos = Vector(138,0,23),
+			localTo = "gunMount1",
+		},
+
+		gun = {
+			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g.mdl",
+			pos = Vector(138, 0, 23),
+			localTo = "gunMount2"
+		},
+		
+		radar1 = {
+			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_radar2.mdl",
+			pos = Vector(175,0,51),
+		},
+		
+		camera = {
+			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_radar1.mdl",
+			pos = Vector(175,0,42),
+			viewPos = Vector(-3, 0, 3),
+			localTo = "radar1"
+		},
+		
 	}
 }
 

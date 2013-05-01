@@ -15,7 +15,8 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 
 	wac.aircraft.addControls("Common", {
 		Exit = {true, KEY_E},
-		FreeCamera = {true, KEY_SPACE},
+		FreeView = {true, KEY_SPACE},
+		Camera = {true, KEY_ALT},
 	})
 
 	wac.aircraft.addControls("Weapons", {
@@ -25,6 +26,42 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 
 end)
 
+
+wac.hook("JoystickInitialize", "wac_air_jcon_init", function()
+	wac.aircraft.initialize()
+	for i, category in pairs(wac.aircraft.controls) do
+		for name, control in pairs(category.list) do
+			jcon.register({
+				uid = "wac_air_"..name,
+				type = ((control[1] == true) and "digital" or "analog"),
+				description = name,
+				category = "WAC Aircraft"
+			})
+		end
+	end
+	wac.aircraft.joyInitialized = true
+	wac.aircraft.joyCache = {}
+end)
+
+wac.hook("Think", "wac_aircraft_joyinput", function() 
+	if wac.aircraft.joyInitialized then
+		for _, p in pairs(player.GetAll()) do
+			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
+			if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
+				for i, category in pairs(wac.aircraft.controls) do
+					for name, control in pairs(category.list) do
+						local n = joystick.Get(p, "wac_air_"..name)
+						if n != wac.aircraft.joyCache[name] then
+							wac.aircraft.joyCache[name] = n
+							n = (n == true and 1 or (n == false and 0 or (n/127.5-1)))
+							e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
+						end
+					end
+				end
+			end
+		end
+	end
+end)
 
 if SERVER then
 

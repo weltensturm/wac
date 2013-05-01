@@ -31,6 +31,8 @@ ENT.thirdPerson = {
 	angle = 10
 }
 
+
+
 function ENT:DrawPilotHud()
 	local pos = self:GetPos()
 	local ang = self:GetAngles()

@@ -9,15 +9,19 @@ ENT.thirdPerson = {
 	position = Vector(-50,0,100)
 }
 
-
 function ENT:receiveInput(name, value, seat)
-	if name == "FreeCamera" then
+	if name == "FreeView" then
 		local player = LocalPlayer()
-		if value == 1 then
+		if value > 0.5 then
 			player.wac.viewFree = true
 		else
 			player.wac.viewFree = false
 			player.wac_air_resetview = true
+		end
+	elseif name == "Camera" then
+		local player = LocalPlayer()
+		if value > 0.5 then
+			player.wac.useCamera = !player.wac.useCamera
 		end
 	end
 end
@@ -36,7 +40,25 @@ function ENT:Initialize()
 		self.BlurCModel:SetNoDraw(true)
 	end
 	self.RotorTime = 0
+
+	self.weaponAttachments = {}
+	if self.Weapons and self.Weapons.attachments then
+		for name, info in pairs(self.Weapons.attachments) do
+			if name != "BaseClass" then
+				local t = table.Copy(info)
+				t.model = ClientsideModel(info.model, RENDERGROUP_OPAQUE)
+				t.model:Spawn()
+				t.model:SetPos(self:LocalToWorld(info.pos))
+				t.model:SetParent(self)
+				table.insert(self.weaponAttachments, t)
+				if name == "camera" then
+					self.camera = t
+				end
+			end
+		end
+	end
 end
+
 
 function ENT:Think()
 	if !self:GetNWBool("locked") then
@@ -59,12 +81,12 @@ function ENT:Think()
 			self.sounds.Blades:ChangePitch(0,0.1)
 			self.sounds.Blades:Play()
 		end
-		local frt=CurTime()-self.LastThink
-		local e=LocalPlayer():GetViewEntity()
-		if !IsValid(e) then e=LocalPlayer() end
-		local pos=e:GetPos()
-		local spos=self:GetPos()
-		local doppler=(pos:Distance(spos+e:GetVelocity())-pos:Distance(spos+self:GetVelocity()))/200*self.rotorRpm
+		local frt = CurTime()-self.LastThink
+		local e = LocalPlayer():GetViewEntity()
+		if !IsValid(e) then e = LocalPlayer() end
+		local pos = e:GetPos()
+		local spos = self:GetPos()
+		local doppler = (pos:Distance(spos+e:GetVelocity())-pos:Distance(spos+self:GetVelocity()))/200*self.rotorRpm
 
 		self.SmoothUp = self.SmoothUp - (self.SmoothUp-self:GetNWFloat("up"))*frt*10
 		self.rotorRpm = self.rotorRpm - (self.rotorRpm-self:GetNWFloat("rotorRpm"))*frt*10
@@ -103,6 +125,9 @@ end
 function ENT:OnRemove()
 	for _,s in pairs(self.sounds) do
 		s:Stop()
+	end
+	for _, t in pairs(self.weaponAttachments) do
+		t.model:Remove()
 	end
 end
 
@@ -278,7 +303,6 @@ function ENT:viewCalcExit(p, view)
 	p.wac.air.vehicle = nil
 end
 
-local lastWeapon=0
 function ENT:viewCalc(k, p, pos, ang, fov)
 	if !self.Seats[k] then return end
 	local view = {origin = pos, angles = ang, fov = fov}
@@ -297,20 +321,20 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 		wac.smoothApproachVector(p.wac.lagAccelDelta, p.wac.lagAccel, 20)
 	end
 
-	local seat = self.Seats[k]
-	local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
-	--local weapon = seat.wep[activeWeapon]
-	if false then--weapon.CalcView then
-		view = weapon.CalcView(self,weapon,p,pos,ang,view)
-		if lastWeapon != activeWeapon then
-			p.wac_air_resetview = true
-			lastWeapon = activeWeapon
-		end
-	elseif seat.CalcView then
-		view = seat.CalcView(self,weapon,p,pos,ang,view)
+	if p:GetVehicle():GetThirdPersonMode() then
+		view = self:viewCalcThirdPerson(k, p, view)
 	else
-		if p:GetVehicle():GetThirdPersonMode() then
-			view = self:viewCalcThirdPerson(k, p, view)
+		if p.wac.useCamera and self.camera then
+			--view = weapon.CalcView(self,weapon,p,pos,ang,view)
+			view.origin = self.camera.model:LocalToWorld(self.camera.viewPos)
+			view.angles = self.camera.model:GetAngles()
+			if self.viewTarget then
+				self.viewTarget.angles = p:GetAimVector():Angle() - self:GetAngles()
+			end
+			self.viewPos = nil
+			p.wac.lagAngles = Angle(0, 0, 0)
+			p.wac.lagAccel = Vector(0, 0, 0)
+			p.wac.lagAccelDelta = Vector(0, 0, 0)
 		else
 			view = self:viewCalcFirstPerson(k, p, view)
 		end
