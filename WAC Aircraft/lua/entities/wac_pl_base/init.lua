@@ -184,7 +184,7 @@ function ENT:PhysicsUpdate(ph)
 			up * aeroAng.x
 			+ ri * aeroAng.z
 			+ aeroVelocity
-			- Vector(0,0, math.pow(lvel.x/100,3)*self:WorldToLocal(self.EngineWeight.Entity:GetPos()).x/200000)
+			- Vector(0,0, math.pow(lvel.x/100,3)*self:WorldToLocal(self.EngineWeight.Entity:GetPos()).x/100000)
 		)*phm)
 	end
 

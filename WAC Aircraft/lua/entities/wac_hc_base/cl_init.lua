@@ -9,6 +9,7 @@ ENT.thirdPerson = {
 	position = Vector(-50,0,100)
 }
 
+
 function ENT:receiveInput(name, value, seat)
 	if name == "FreeView" then
 		local player = LocalPlayer()
@@ -25,6 +26,7 @@ function ENT:receiveInput(name, value, seat)
 		end
 	end
 end
+
 
 function ENT:Initialize()
 	self:addSounds()
@@ -61,6 +63,12 @@ end
 
 
 function ENT:Think()
+	
+	if self.skin != self:GetSkin() then
+		self.skin = self:GetSkin()
+		self:updateSkin(self.skin)
+	end
+
 	if !self:GetNWBool("locked") then
 		local mouseFlight = self:GetNWBool("active")
 		if self.sounds.Start then
@@ -122,6 +130,7 @@ function ENT:Think()
 	end
 end
 
+
 function ENT:OnRemove()
 	for _,s in pairs(self.sounds) do
 		s:Stop()
@@ -130,6 +139,7 @@ function ENT:OnRemove()
 		t.model:Remove()
 	end
 end
+
 
 function ENT:DrawHUD(k,p)
 	if !self.Seats or !self.Seats[k] then return end
@@ -235,9 +245,11 @@ function ENT:DrawHUD(k,p)
 	end]]
 end
 
+
 function ENT:onViewSwitch(p, thirdPerson)
 	self.viewPos = nil
 end
+
 
 function ENT:onEnter(p)
 	p.wac.lagAngles =  self:GetAngles()
@@ -248,13 +260,13 @@ function ENT:onEnter(p)
 	p.wac.air.vehicle = self
 end
 
+
 function ENT:viewCalcThirdPerson(k, p, view)
 	local ang;
 	if
 			k == 1
 			and p:GetInfo("wac_cl_air_mouse") == "1"
 			and !p.wac.viewFree
-			and p:GetInfo("wac_cl_air_usejoystick") == "0"
 	then
 		ang = self:GetAngles()
 	else
@@ -275,13 +287,13 @@ function ENT:viewCalcThirdPerson(k, p, view)
 	return view
 end
 
+
 function ENT:viewCalcFirstPerson(k, p, view)
 	p.wac = p.wac or {}
 	if
 		k == 1
 		and p:GetInfo("wac_cl_air_mouse") == "1"
 		and !p.wac.viewFree
-		and p:GetInfo("wac_cl_air_usejoystick") == "0"
 	then
 		self.viewTarget = {
 			origin = Vector(0,0,0),
@@ -294,21 +306,22 @@ function ENT:viewCalcFirstPerson(k, p, view)
 			angles = p:GetAimVector():Angle() - self:GetAngles(),
 			fov = view.fov
 		}
-		self.viewTarget.angles.r = self.viewTarget.angles.r + view.angles.r
+		self.viewTarget.angles.r = self.viewTarget.angles.r + self:GetAngles().r
 	end
 	return view
 end
 
+
 function ENT:viewCalcExit(p, view)
 	p.wac.air.vehicle = nil
 end
+
 
 function ENT:viewCalc(k, p, pos, ang, fov)
 	if !self.Seats[k] then return end
 	local view = {origin = pos, angles = ang, fov = fov}
 
 	if p:GetVehicle():GetNWEntity("wac_aircraft") != self then
-		--p.wac.air.vehicle = nil
 		return self:viewCalcExit(p, view)
 	end
 
@@ -362,7 +375,7 @@ function ENT:MovePlayerView(k,p,md)
 	local freeView = md:GetViewAngles()
 	local id = self:GetNWInt("seat_"..k.."_actwep")
 	if !self.Seats or !self.Seats[k] then return end
-	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and p:GetInfo("wac_cl_air_usejoystick")=="0" and !p.wac.viewFree) then
+	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and !p.wac.viewFree) then
 		freeView.p = freeView.p-freeView.p*FrameTime()*6
 		freeView.y = freeView.y-(freeView.y-90)*FrameTime()*6
 	else

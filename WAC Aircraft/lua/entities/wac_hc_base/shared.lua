@@ -43,14 +43,22 @@ function ENT:addSounds()
 	self.sounds = {}
 	for name, value in pairs(self.Sounds) do
 		if name != "BaseClass" then
-			self.sounds[name] = CreateSound(self, value)
+			sound.Add({
+				name = "wac."..self.ClassName.."."..name,
+				channel = CHAN_STATIC,
+				soundlevel = (name == "Blades" or name == "Engine") and 180 or 100,
+				sound = value
+			})
+			self.sounds[name] = CreateSound(self, "wac."..self.ClassName.."."..name)
 		end
 	end
 end
 
+
 function ENT:SetupDataTables()
 	self:NetworkVar("Bool", 0, "Hover");
 end
+
 
 function ENT:base(name)
 	local current = self
@@ -62,3 +70,19 @@ function ENT:base(name)
 	end
 	error("No base class with name \"" .. name .. "\"", 2)
 end
+
+
+function ENT:updateSkin(n)
+	if SERVER then
+		for _, e in pairs(self.entities) do
+			if IsValid(e) then
+				e:SetSkin(n)
+			end
+		end
+	else
+		for _,e in pairs(self.weaponAttachments) do
+			e.model:SetSkin(n)
+		end
+	end
+end
+

@@ -4,12 +4,11 @@ include "wac/aircraft.lua"
 
 CreateClientConVar("wac_cl_air_realism", 3, true, true)
 CreateClientConVar("wac_cl_air_sensitivity", 1, true, true)
-CreateClientConVar("wac_cl_air_usejoystick", 0, true, true)
-CreateClientConVar("wac_cl_air_smoothview", 1, true, true)
 CreateClientConVar("wac_cl_air_mouse", 1, true, true)
 CreateClientConVar("wac_cl_air_mouse_swap", 1, true, true)
 CreateClientConVar("wac_cl_air_mouse_invert_pitch", 0, true, true)
 CreateClientConVar("wac_cl_air_mouse_invert_yawroll", 0, true, true)
+CreateClientConVar("wac_cl_air_smoothview", 1, true, true)
 CreateClientConVar("wac_cl_air_shakeview", 1, true, true)
 
 
@@ -205,24 +204,18 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	
 	panel:CheckBox("Dynamic View Position","wac_cl_air_shakeview")
 
-	if info["wac_cl_air_usejoystick"]=="0" then
-		panel:CheckBox("Use Mouse","wac_cl_air_mouse")
-		if info["wac_cl_air_mouse"]=="1" then
-			panel:CheckBox(" - Invert Pitch","wac_cl_air_mouse_invert_pitch")
-			panel:CheckBox(" - Invert Yaw/Roll","wac_cl_air_mouse_invert_yawroll")
-			panel:CheckBox(" - Swap Yaw/Roll","wac_cl_air_mouse_swap")
-			panel:AddControl("Label", {Text = ""})
-		end
+	panel:CheckBox("Use Mouse","wac_cl_air_mouse")
+	if info["wac_cl_air_mouse"]=="1" then
+		panel:CheckBox(" - Invert Pitch","wac_cl_air_mouse_invert_pitch")
+		panel:CheckBox(" - Invert Yaw/Roll","wac_cl_air_mouse_invert_yawroll")
+		panel:CheckBox(" - Swap Yaw/Roll","wac_cl_air_mouse_swap")
+		panel:AddControl("Label", {Text = ""})
 	end
 	
-	panel:CheckBox("Use Joystick","wac_cl_air_usejoystick")
-	
-	if info["wac_cl_air_usejoystick"]=="1" then
-		panel:AddControl("Button", {
-			Label = "Joystick Configuration",
-			Command = "joyconfig"
-		})
-	end
+	panel:AddControl("Button", {
+		Label = "Joystick Configuration",
+		Command = "joyconfig"
+	})
 	
 	panel:AddControl("Label", {Text = ""})
 	panel:AddControl("Label", {Text = "Admin Settings"})
@@ -287,7 +280,6 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	end
 end,
 	"wac_cl_air_mouse",
-	"wac_cl_air_usejoystick",
 	"wac_cl_air_showdevhelp"
 )
 

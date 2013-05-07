@@ -1,6 +1,6 @@
 "VertexLitGeneric"
 {
-	"$baseTexture" "models/bf2/helicopters/AH-1 Cobra/AH-1 Cobra_desert"
+	"$baseTexture" "models/bf2/helicopters/AH-1 Cobra/AH-1 Cobra_pacific"
 	"$bumpmap" "models/bf2/helicopters/AH-1 Cobra/AH-1 Cobra_bump"
 	"$normalmapalphaenvmapmask" "1"
 	"$phong" 		"1"

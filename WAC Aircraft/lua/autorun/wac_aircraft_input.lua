@@ -29,9 +29,10 @@ end)
 
 wac.hook("JoystickInitialize", "wac_air_jcon_init", function()
 	wac.aircraft.initialize()
+	wac.aircraft.joyControls = {}
 	for i, category in pairs(wac.aircraft.controls) do
 		for name, control in pairs(category.list) do
-			jcon.register({
+			wac.aircraft.joyControls[name] = jcon.register({
 				uid = "wac_air_"..name,
 				type = ((control[1] == true) and "digital" or "analog"),
 				description = name,
@@ -43,25 +44,7 @@ wac.hook("JoystickInitialize", "wac_air_jcon_init", function()
 	wac.aircraft.joyCache = {}
 end)
 
-wac.hook("Think", "wac_aircraft_joyinput", function() 
-	if wac.aircraft.joyInitialized then
-		for _, p in pairs(player.GetAll()) do
-			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
-				for i, category in pairs(wac.aircraft.controls) do
-					for name, control in pairs(category.list) do
-						local n = joystick.Get(p, "wac_air_"..name)
-						if n != wac.aircraft.joyCache[name] then
-							wac.aircraft.joyCache[name] = n
-							n = (n == true and 1 or (n == false and 0 or (n/127.5-1)))
-							e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
-						end
-					end
-				end
-			end
-		end
-	end
-end)
+
 
 if SERVER then
 
@@ -94,6 +77,27 @@ if SERVER then
 					math.Clamp(v.y*m*(p:GetInfo("wac_cl_air_mouse_invert_yawroll")=="1" and 1 or -1)*10, -1, 1),
 					pid
 				)
+			end
+		end
+	end)
+
+
+	wac.hook("Think", "wac_aircraft_joyinput", function() 
+		if wac.aircraft.joyInitialized then
+			for _, p in pairs(player.GetAll()) do
+				local e = p:GetVehicle():GetNWEntity("wac_aircraft")
+				if IsValid(e) then
+					for i, category in pairs(wac.aircraft.controls) do
+						for name, control in pairs(category.list) do
+							local n = joystick.Get(p, "wac_air_"..name)
+							if n != wac.aircraft.joyCache[name] then
+								wac.aircraft.joyCache[name] = n
+								n = (n == true and 1 or (n == false and 0 or (n/127.5-1)))
+								e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
+							end
+						end
+					end
+				end
 			end
 		end
 	end)

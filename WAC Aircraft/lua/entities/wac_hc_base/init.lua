@@ -560,6 +560,23 @@ function ENT:Think()
 			if self.phys and self.phys:IsValid() then
 				self.phys:Wake()
 			end
+
+			local target = math.floor(math.Clamp(self.rotorRpm, 0, 0.99)*3)
+			if self.bodyGroup != target then
+				self.bodyGroup = target
+				if IsValid(self.TopRotorModel) then
+					self.TopRotorModel:SetBodygroup(1, self.bodyGroup)
+				end
+				if IsValid(self.BackRotor) then
+					self.BackRotor:SetBodygroup(1, self.bodyGroup)
+				end
+			end
+
+			if self.skin != self:GetSkin() then
+				self.skin = self:GetSkin()
+				self:updateSkin(self.skin)
+			end
+
 			if self.Burning then
 				self:DamageEngine(0.1)
 			end
@@ -766,7 +783,7 @@ function ENT:PhysicsUpdate(ph)
 
 				self.BackRotor.Phys:AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity() * rotorBrake / 10)
 			else
-				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotorDir))*phm)
+				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotorDir*2))*phm)
 				ph:AddAngleVelocity(VectorRand()*self.rotorRpm*mind*phm)
 				if !self.sounds.CrashAlarm:IsPlaying() and !self.disabled then
 					self.sounds.CrashAlarm:Play()
@@ -868,6 +885,7 @@ function ENT:KillBackRotor()
 	e:SetAngles(self.BackRotor:GetAngles())
 	e:SetPos(self.BackRotor:GetPos())
 	e:SetModel(self.BackRotor:GetModel())
+	e:SetSkin(self.BackRotor:GetSkin())
 	e:Spawn()
 	e:SetVelocity(self.BackRotor:GetVelocity())
 	e:GetPhysicsObject():AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity())
@@ -907,9 +925,10 @@ end
 function ENT:KillTopRotor()
 	if !self.TopRotor then return end
 	local e = self:addEntity("prop_physics")
-	e:SetModel(self.RotorModel)
 	e:SetPos(self.TopRotor:GetPos())
 	e:SetAngles(self.TopRotor:GetAngles())
+	e:SetModel(self.RotorModel)
+	e:SetSkin(self.TopRotorModel:GetSkin())
 	e:Spawn()
 	self:SetNWFloat("up",0)
 	self:SetNWFloat("uptime",0)
