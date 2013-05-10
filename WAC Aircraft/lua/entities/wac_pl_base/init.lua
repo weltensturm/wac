@@ -22,11 +22,11 @@ ENT.Aerodynamics = {
 		Top = Vector(0, -70, 0)
 	},
 	Lift = {
-		Front = Vector(0, 0, 60), -- Go up when flying forward
+		Front = Vector(0, 0, 70), -- Go up when flying forward
 		Right = Vector(0, 0, 0),
 		Top = Vector(0, 0, -0.5)
 	},
-	Rail = Vector(1, 5, 25),
+	Rail = Vector(1, 5, 30),
 	Drag = {
 		Directional = Vector(0.01, 0.01, 0.01),
 		Angular = Vector(0.01, 0.01, 0.01)

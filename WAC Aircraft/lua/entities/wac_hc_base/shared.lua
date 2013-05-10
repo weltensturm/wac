@@ -56,7 +56,8 @@ end
 
 
 function ENT:SetupDataTables()
-	self:NetworkVar("Bool", 0, "Hover");
+	self:NetworkVar("Bool", 0, "Hover")
+	self:NetworkVar("Entity", 0, "Switcher")
 end
 
 

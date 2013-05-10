@@ -10,7 +10,7 @@ ENT.AdminSpawnable = true
 function ENT:wacLink(e)
 	if type(e) == "Vehicle" then
 		if SERVER then
-			self:AddVehicle(e)
+			self:addVehicle(e)
 		end
 		return true
 	end

@@ -22,16 +22,16 @@ wac.hook("HUDPaint", "wac_seatswitch_hudpaint", function()
 	colorBackground.a = math.Clamp(lastSwitch - CurTime(), 0.1, 0.5)*200
 	colorPlayers.a = math.Clamp(lastSwitch - CurTime(), 0.1, 0.5)*400
 	draw.RoundedBox(
-		2, screen.w-pos.x, screen.h-pos.y+15-#self.Seats*17,
-		215, #self.Seats*17+2, colorBackground
+		2, screen.w-pos.x, screen.h-pos.y+15-#self.seats*17,
+		215, #self.seats*17+2, colorBackground
 	)
-	for k,s in pairs(self.Seats) do
+	for k,s in pairs(self.seats) do
 		if passengers[k] != s:GetPassenger() then
 			passengers[k]=s:GetPassenger()
 			lastSwitch=CurTime()+1.5
 		end
 		draw.RoundedBox(
-			2, screen.w-pos.x+2, screen.h-pos.y-#self.Seats*17+k*17,
+			2, screen.w-pos.x+2, screen.h-pos.y-#self.seats*17+k*17,
 			211, 15, colorBackground
 		)
 		local v = s:GetPassenger()
@@ -39,20 +39,20 @@ wac.hook("HUDPaint", "wac_seatswitch_hudpaint", function()
 			local n = (v.Nick and v:Nick() or v:GetName())
 			draw.SimpleTextOutlined(
 				k..": "..n, "wac_seatswitcher_text", screen.w-pos.x+4,
-				screen.h-pos.y+3-#self.Seats*17+k*17, colorPlayers,
+				screen.h-pos.y+3-#self.seats*17+k*17, colorPlayers,
 				TEXT_ALIGN_LEFT, 0, 1, colorBackground
 			)
 		else
 			draw.SimpleTextOutlined(
 				k..": Empty", "wac_seatswitcher_text", screen.w-pos.x+4,
-				screen.h-pos.y+3-#self.Seats*17+k*17, colorPlayers,
+				screen.h-pos.y+3-#self.seats*17+k*17, colorPlayers,
 				TEXT_ALIGN_LEFT, 0, 1, colorBackground
 			)
 		end
 	end
 end)
 
-local lastVehicle=nil
+local lastVehicle = nil
 wac.hook("CreateMove", "wac_cl_seatswitch_centerview", function(md)
 	local p = LocalPlayer()
 	local vehicle = p:GetVehicle()

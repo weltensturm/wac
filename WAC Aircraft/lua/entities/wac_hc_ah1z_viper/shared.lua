@@ -62,33 +62,37 @@ ENT.Weapons = {
 	},
 	attachments = {
 
+		seat = 2,
+
 		gunMount1 = {
 			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g1.mdl",
-			pos = Vector(136,0,29),
+			pos = Vector(137,0,29),
+			restrictPitch = true
 		},
 		
 		gunMount2 = {
 			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g2.mdl",
-			pos = Vector(138,0,23),
-			localTo = "gunMount1",
+			pos = Vector(137,0,23),
+			offset = Vector(2,0,0)
 		},
 
 		gun = {
 			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g.mdl",
-			pos = Vector(138, 0, 23),
-			localTo = "gunMount2"
+			pos = Vector(137, 0, 23),
+			offset = Vector(2,0,0)
 		},
 		
 		radar1 = {
 			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_radar2.mdl",
 			pos = Vector(175,0,51),
+			restrictPitch = true
 		},
 		
 		camera = {
 			model = "models/BF2/helicopters/AH-1 Cobra/ah1z_radar1.mdl",
 			pos = Vector(175,0,42),
-			viewPos = Vector(-3, 0, 3),
-			localTo = "radar1"
+			offset = Vector(-1,0,0),
+			viewPos = Vector(-1, 0, 3)
 		},
 		
 	}

@@ -54,7 +54,7 @@ ENT.engineHealth = 100
 ENT.Aerodynamics = {
 	Rotation = {
 		Front = Vector(0, 0.5, 0),
-		Right = Vector(0, 0, 50), -- Rotate towards flying direction
+		Right = Vector(0, 0, 30), -- Rotate towards flying direction
 		Top = Vector(0, -5, 0)
 	},
 	Lift = {
@@ -62,7 +62,7 @@ ENT.Aerodynamics = {
 		Right = Vector(0, 0, 0),
 		Top = Vector(0, 0, -0.5)
 	},
-	Rail = Vector(1, 5, 5),
+	Rail = Vector(0.3, 3, 2),
 	RailRotor = 1, -- like Z rail but only active when moving and the rotor is turning
 	Drag = {
 		Directional = Vector(0.01, 0.01, 0.01),
@@ -142,6 +142,7 @@ end
 
 
 function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
+
 
 function ENT:addNpcTargets()
 	--[[self.npcTargets = {}
@@ -346,10 +347,11 @@ function ENT:addSeats()
 	e:SetPos(self:LocalToWorld(self.SeatSwitcherPos))
 	e:SetNoDraw(true)
 	e:Spawn()
+	e:Activate()
 	e.wac_ignore = true
 	e:SetNotSolid(true)
 	e:SetParent(self)
-	self.SeatSwitcher = e
+	self:SetSwitcher(e)
 	for k, v in pairs(self.Seats) do
 		if k != "BaseClass" then
 			self.Seats[k].activeProfile = 0
@@ -368,6 +370,7 @@ function ENT:addSeats()
 				self.seats[k]:SetAngles(ang)
 			end
 			self.seats[k]:Spawn()
+			self.seats[k]:Activate()
 			self.seats[k]:SetNoDraw(true)
 			self.seats[k].Phys = self.seats[k]:GetPhysicsObject()
 			self.seats[k].Phys:EnableGravity(true)
@@ -377,7 +380,7 @@ function ENT:addSeats()
 			self.seats[k].wac_ignore = true
 			self.seats[k]:SetNWEntity("wac_aircraft", self)
 			self.seats[k]:SetKeyValue("limitview","0")
-			self.SeatSwitcher:AddVehicle(self.seats[k])
+			e:addVehicle(self.seats[k])
 			self:AddOnRemove(self.seats[k])
 		end
 	end
@@ -727,7 +730,7 @@ function ENT:PhysicsUpdate(ph)
 	local realism = 2
 	local pilot = self.Passenger[1]
 	if IsValid(pilot) then
-		realism = math.Clamp(tonumber(pilot:GetInfo("wac_cl_air_realism")),1,3)
+		realism = math.Clamp(tonumber(pilot:GetInfo("wac_cl_air_realism")), 1, 3)
 	end
 
 	local t = self:calcHover(ph,pos,vel,ang)
@@ -841,9 +844,9 @@ function ENT:PhysicsCollide(cdat, phys)
 	if cdat.DeltaTime > 0.5 then
 		local mass = cdat.HitObject:GetMass()
 		if cdat.HitEntity:GetClass() == "worldspawn" then
-			mass = 1000
+			mass = 5000
 		end
-		local dmg = (cdat.Speed*cdat.Speed*math.Clamp(mass, 0, 1000))/8000000
+		local dmg = (cdat.Speed*cdat.Speed*math.Clamp(mass, 0, 5000))/10000000
 		if !dmg then return end
 		self:TakeDamage(dmg*15)
 		if dmg > 2 then

@@ -46,7 +46,7 @@ function ENT:Initialize()
 	self.weaponAttachments = {}
 	if self.Weapons and self.Weapons.attachments then
 		for name, info in pairs(self.Weapons.attachments) do
-			if name != "BaseClass" then
+			if name != "BaseClass" and name != "seat" then
 				local t = table.Copy(info)
 				t.model = ClientsideModel(info.model, RENDERGROUP_OPAQUE)
 				t.model:Spawn()
@@ -70,6 +70,9 @@ function ENT:Think()
 	end
 
 	if !self:GetNWBool("locked") then
+
+		self:attachmentThink()
+
 		local mouseFlight = self:GetNWBool("active")
 		if self.sounds.Start then
 			if mouseFlight!=self.IsOn then
@@ -131,6 +134,31 @@ function ENT:Think()
 end
 
 
+function ENT:getPassenger(seat)
+	if !IsValid(self:GetSwitcher()) then return end
+	local s = self:GetSwitcher().seats[seat]
+	if IsValid(s) then
+		return s:GetPassenger()
+	end
+end
+
+
+function ENT:attachmentThink()
+	if !self.Weapons or !self.Weapons.attachments or !self.weaponAttachments then return end
+	local p = self:getPassenger(self.Weapons.attachments.seat)
+	if IsValid(p) then
+		local view = p:GetAimVector():Angle()
+		for _, t in pairs(self.weaponAttachments) do
+			local ang = Angle(t.restrictPitch and 0 or view.p, t.restrictYaw and 0 or view.y, self:GetAngles().r*(1-math.AngleDifference(view.y, self:GetAngles().y)/90))
+			t.model:SetAngles(ang)
+			if t.offset then
+				t.model:SetPos(self:LocalToWorld(t.pos) + ang:Forward()*t.offset.x + ang:Right() * t.offset.y + ang:Up() * t.offset.z)
+			end
+		end
+	end
+end
+
+
 function ENT:OnRemove()
 	for _,s in pairs(self.sounds) do
 		s:Stop()
@@ -141,108 +169,144 @@ function ENT:OnRemove()
 end
 
 
-function ENT:DrawHUD(k,p)
-	if !self.Seats or !self.Seats[k] then return end
-	--[[local activeWeapon = self:GetNWInt("seat_"..k.."_actwep")
-	local twep = self.Seats[k].wep[activeWeapon]
-	if twep.CamPos and p:GetViewEntity()==p then
-		local sw = ScrW()
-		local sh = ScrH()
-		
-		local w = sh/6
-		local s = sh/3
-		
-		surface.SetDrawColor(255,255,255,150)
-		
-		surface.DrawLine(sw/2-s, sh/2-s, sw/2-s+w, sh/2-s)
-		surface.DrawLine(sw/2-s, sh/2-s, sw/2-s, sh/2-s+w)
-		
-		surface.DrawLine(sw/2+s, sh/2-s, sw/2+s-w, sh/2-s)
-		surface.DrawLine(sw/2+s, sh/2-s, sw/2+s, sh/2-s+w)
-		
-		surface.DrawLine(sw/2-s, sh/2+s, sw/2-s+w, sh/2+s)
-		surface.DrawLine(sw/2-s, sh/2+s, sw/2-s, sh/2+s-w)
-		
-		surface.DrawLine(sw/2+s, sh/2+s, sw/2+s-w, sh/2+s)
-		surface.DrawLine(sw/2+s, sh/2+s, sw/2+s, sh/2+s-w)
-		
-		local lasts = self:GetNWFloat("seat_"..k.."_"..activeWeapon.."_lastshot")
-		local nexts = self:GetNWFloat("seat_"..k.."_"..activeWeapon.."_nextshot")
-		local ammo = self:GetNWInt("seat_"..k.."_"..activeWeapon.."_ammo")
-	
-		local width=twep.CrosshairWidth or 30
-		local height=twep.CrosshairHeight or 20
-		local lw=twep.CrosshairLinew or 30
-		local lh=twep.CrosshairLineh or 20
-		
-		if twep.DrawCrosshair then
-			twep.DrawCrosshair(self,twep,LocalPlayer())
-		else
-			if ammo==self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")].MaxAmmo and nexts>CurTime() then
-				surface.SetDrawColor(255,255,255,math.sin(CurTime()*10)*75+75)
-			else
-				surface.SetDrawColor(255,255,255,150)
-			end
-			
-			surface.DrawOutlinedRect(sw/2-width,sh/2-height,width*2,height*2)
-			surface.DrawOutlinedRect(sw/2-width-1,sh/2-height-1,width*2+2,height*2+2)
-			
-			surface.DrawLine(sw/2,sh/2-height,sw/2,sh/2-height-lh)
-			surface.DrawLine(sw/2-1,sh/2-height-1,sw/2-1,sh/2-height-lh)
 
-			surface.DrawLine(sw/2,sh/2+height,sw/2,sh/2+height+lh)
-			surface.DrawLine(sw/2-1,sh/2+height+1,sw/2-1,sh/2+height+lh)
-			
-			surface.DrawLine(sw/2-width-1,sh/2,sw/2-width-lw-1,sh/2)
-			surface.DrawLine(sw/2-width-1,sh/2-1,sw/2-width-lw-1,sh/2-1)
-			
-			surface.DrawLine(sw/2+width+1,sh/2,sw/2+width+lw+1,sh/2)
-			surface.DrawLine(sw/2+width+1,sh/2-1,sw/2+width+lw+1,sh/2-1)
-		end
-		
-		local count=0
-		for i,wep in pairs(self.Seats[k].wep) do
-			if type(wep)=="table" and wep.Name!="No Weapon" then
-				count=count+1
-				if i==self:GetNWInt("seat_"..k.."_actwep") then			--background active weapon
-					surface.SetDrawColor(10,10,10,150)
-					surface.DrawRect(sw/2+w*2,sh/7+count*50,w*2+10,50)
-				end
+function ENT:DrawHUD(k,p)
+	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
+	if p.wac.useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
+		self:drawCameraHUD(self.Weapons.attachments.seat)
+	end
+end
+
+
+function ENT:drawCameraHUD(seat)
+
+	local sw = ScrW()
+	local sh = ScrH()
+	
+	local w = sh/6
+	local s = sh/3
+	
+	surface.SetDrawColor(255,255,255,150)
+	
+	surface.DrawLine(sw/2-s, sh/2-s, sw/2-s+w, sh/2-s)
+	surface.DrawLine(sw/2-s, sh/2-s, sw/2-s, sh/2-s+w)
+	
+	surface.DrawLine(sw/2+s, sh/2-s, sw/2+s-w, sh/2-s)
+	surface.DrawLine(sw/2+s, sh/2-s, sw/2+s, sh/2-s+w)
+	
+	surface.DrawLine(sw/2-s, sh/2+s, sw/2-s+w, sh/2+s)
+	surface.DrawLine(sw/2-s, sh/2+s, sw/2-s, sh/2+s-w)
+	
+	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s-w, sh/2+s)
+	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s, sh/2+s-w)
+	
+	self:drawCameraCrosshair(seat)
+
+	local count=0
+	for i, name in pairs(self.Seats[seat].weapons) do
+		if i != "BaseClass" then
+			count = count+1
+			if i == self:GetNWInt("seat_"..seat.."_actwep") then
+				surface.SetDrawColor(10,10,10,150)
+				surface.DrawRect(sw/2+w*2,sh/7+count*50,w*2+10,50)
 			end
 		end
-		surface.SetDrawColor(10,10,10,100)								--background
-		surface.DrawRect(sw/2+w*2,sh/7+50,w*2+10,count*50)
-		surface.SetDrawColor(255,255,255,200)
-		surface.DrawOutlinedRect(sw/2+w*2,sh/7+50,w*2+10,count*50)	--background outline
-		surface.SetFont("wac_heli_small")
-		surface.SetTextColor(230,230,230,255)
-		local h=1
-		for i,wep in pairs(self.Seats[k].wep) do
-			if type(wep)=="table" and wep.Name!="No Weapon" then		--weapon name and ammo
-				local freeView=self:GetNWInt("seat_"..k.."_"..i.."_ammo")
-				surface.SetTextPos(sw/2+w*2+5,sh/7+5+h*50)
-				surface.DrawText(wep.Name)
-				surface.SetTextPos(sw/2+w*4+5-string.len(freeView)*14,sh/7+5+h*50)
-				surface.DrawText(freeView)
-				surface.SetDrawColor(255,255,255,200)
-				local lastshot=self:GetNWFloat("seat_"..k.."_"..i.."_lastshot")
-				local nextshot=self:GetNWFloat("seat_"..k.."_"..i.."_nextshot")
-				surface.DrawRect(sw/2+w*2,sh/7+h*50+40,(w*2+10)*math.Clamp((nextshot-CurTime())/(nextshot-lastshot),0,1),10)
-				h=h+1
-			end
-		end
-		--[[surface.SetDrawColor(255,255,255,200)
-		surface.DrawRect(sw/2+w*2+5,sh/7+10+h*50,math.Clamp((nexts-CurTime())/(nexts-lasts),0,1)*70,10)
-		surface.SetTextPos(sw/2+w*2+5,sh/7+20+h*50)
-		--surface.SetFont("MenuLarge")
-		if ammo==self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")].MaxAmmo and nexts>CurTime() then
-			surface.SetTextColor(255,255,255,math.sin(CurTime()*10)*100+100)
-			surface.DrawText("RELOADING")
-		else
-			surface.SetTextColor(255,255,255,200)
+	end
+	surface.SetDrawColor(10,10,10,100)
+	surface.DrawRect(sw/2+w*2,sh/7+50,w*2+10,count*50)
+	surface.SetDrawColor(255,255,255,200)
+	surface.DrawOutlinedRect(sw/2+w*2,sh/7+50,w*2+10,count*50)
+	surface.SetFont("wac_heli_small")
+	surface.SetTextColor(230,230,230,255)
+	local h = 1
+	for i, wep in pairs(self.Seats[seat].weapons) do
+		if i != "BaseClass" then
+			local ammo = self:GetNWInt("seat_"..seat.."_"..i.."_ammo")
+			surface.SetTextPos(sw/2+w*2+5,sh/7+5+h*50)
+			surface.DrawText(wep)
+			surface.SetTextPos(sw/2+w*4+5-string.len(ammo)*14,sh/7+5+h*50)
 			surface.DrawText(ammo)
+			surface.SetDrawColor(255,255,255,200)
+			local lastshot=self:GetNWFloat("seat_"..seat.."_"..i.."_lastshot")
+			local nextshot=self:GetNWFloat("seat_"..seat.."_"..i.."_nextshot")
+			surface.DrawRect(sw/2+w*2,sh/7+h*50+40,(w*2+10)*math.Clamp((nextshot-CurTime())/(nextshot-lastshot),0,1),10)
+			h=h+1
 		end
+	end
+end
+
+
+function ENT:drawCameraCrosshair(seat)
+
+	local sw = ScrW()
+	local sh = ScrH()
+	local width = 30
+	local height = 20
+	local lw = 30
+	local lh = 20
+
+	--[[local activeWeapon = self:GetNWInt("seat_"..seat.."_actwep")
+	local profile = self.Weapons.profiles[self.Seats[seat].weapons[activeWeapon] ]
+	local nexts = self:GetNWFloat("seat_"..seat.."_"..activeWeapon.."_nextshot")
+	local ammo = self:GetNWInt("seat_"..seat.."_"..activeWeapon.."_ammo")
+
+	if ammo == profile.Ammo and nexts > CurTime() then
+		surface.SetDrawColor(255,255,255,math.sin(CurTime()*10)*75+75)
+	else
+		surface.SetDrawColor(255,255,255,150)
 	end]]
+	
+	surface.SetDrawColor(255,255,255,150)
+
+	surface.DrawOutlinedRect(sw/2-width,sh/2-height,width*2,height*2)
+	surface.DrawOutlinedRect(sw/2-width-1,sh/2-height-1,width*2+2,height*2+2)
+	
+	surface.DrawLine(sw/2,sh/2-height,sw/2,sh/2-height-lh)
+	surface.DrawLine(sw/2-1,sh/2-height-1,sw/2-1,sh/2-height-lh)
+
+	surface.DrawLine(sw/2,sh/2+height,sw/2,sh/2+height+lh)
+	surface.DrawLine(sw/2-1,sh/2+height+1,sw/2-1,sh/2+height+lh)
+	
+	surface.DrawLine(sw/2-width-1,sh/2,sw/2-width-lw-1,sh/2)
+	surface.DrawLine(sw/2-width-1,sh/2-1,sw/2-width-lw-1,sh/2-1)
+	
+	surface.DrawLine(sw/2+width+1,sh/2,sw/2+width+lw+1,sh/2)
+	surface.DrawLine(sw/2+width+1,sh/2-1,sw/2+width+lw+1,sh/2-1)
+	
+end
+
+
+function ENT:DrawScreenSpaceEffects(k,p)
+	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
+	if p.wac.useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
+		self:renderCameraEffects(self.Weapons.attachments.seat)
+	end
+end
+
+
+local blurMaterial = Material("pp/blurscreen")
+
+function ENT:renderCameraEffects(seat)
+	local crt = CurTime()
+	if !self.flickerNext or crt > self.flickerNext then
+		self.flicker = math.random(1,8)==1 and 2 or 0
+		self.flickerNext = crt+0.1
+	end
+	blurMaterial:SetFloat("$blur", 1+self.flicker)
+	render.UpdateScreenEffectTexture()
+	render.SetMaterial(blurMaterial)
+	render.DrawScreenQuad()
+	DrawColorModify({
+		["$pp_colour_addr"] = 0,
+		["$pp_colour_addg"] = 0,
+		["$pp_colour_addb"] = 0,
+		["$pp_colour_brightness"] = 0,
+		["$pp_colour_contrast" ] = 1,
+		["$pp_colour_colour" ] = 0.01,
+		["$pp_colour_mulr" ] = 0,
+		["$pp_colour_mulg" ] = 0,
+		["$pp_colour_mulb" ] = 0,
+	})
 end
 
 
@@ -370,6 +434,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	return view
 end
 
+
 function ENT:MovePlayerView(k,p,md)
 	if p.wac_air_resetview then md:SetViewAngles(Angle(0,90,0)) p.wac_air_resetview=false end
 	local freeView = md:GetViewAngles()
@@ -385,11 +450,6 @@ function ENT:MovePlayerView(k,p,md)
 	md:SetViewAngles(freeView)
 end
 
-function ENT:DrawScreenSpaceEffects(k,p)
-	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
-	--[[local twep=self.Seats[k].wep[self:GetNWInt("seat_"..k.."_actwep")]
-	if twep.RenderScreenSpace then twep.RenderScreenSpace(self,twep,p) end]]
-end
 
 function ENT:DrawRotor()
 	if IsValid(self.BlurCModel) and self.rotorRpm>0.6 then
