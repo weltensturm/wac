@@ -4,6 +4,10 @@ AddCSLuaFile("shared.lua")
 include("shared.lua")
 include("entities/base_wire_entity/init.lua")
 
+
+util.AddNetworkString("wac.seatSwitcher.switch")
+
+
 function ENT:Initialize()
 	self.Entity:SetModel("models/props_c17/consolebox01a.mdl")
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
@@ -22,14 +26,21 @@ function ENT:SpawnFunction(ply, tr)
 	return ent
 end
 
-function ENT:UpdateTransmitState() return TRANSMIT_ALWAYS end
 
-
-function ENT:updateVehicles()
-	MsgN("updated seat connector")
+function ENT:updateSeats()
+	local passengers = {}
 	for i = 1, 9 do
-		self:SetNWEntity(i, self.seats[i])
+		if IsValid(self.seats[i]) and IsValid(self.seats[i]:GetPassenger(0)) then
+			table.insert(passengers, self.seats[i]:GetPassenger(0))
+		end
 	end
+	net.Start("wac.seatSwitcher.switch")
+	net.WriteEntity(self)
+	net.WriteInt(#self.seats, 8)
+	for _, e in pairs(self.seats) do
+		net.WriteEntity(e)
+	end
+	net.Send(passengers)
 end
 
 
@@ -37,20 +48,20 @@ function ENT:addVehicle(e)
 	if table.HasValue(self.seats, e) then return end
 	table.insert(self.seats, e)
 	e.wac_seatswitcher = self.Entity
-	self:updateVehicles()
+	self:updateSeats()
 end
 
 
 function ENT:removeVehicle(i)
 	self.seats[i].wac_seatswitcher = nil
 	table.remove(self.seats, i)
-	self:updateVehicles()
+	self:updateSeats()
 end
 
 
 function ENT:Use(p)
 	if IsValid(p) and p:IsPlayer() then
-		for _,v in pairs(self.seats) do
+		for _, v in pairs(self.seats) do
 			if !IsValid(v:GetPassenger(0)) and !p:InVehicle() then
 				p:EnterVehicle(v)
 				break
@@ -59,6 +70,7 @@ function ENT:Use(p)
 	end
 end
 
+
 function ENT:switchSeat(p, int)
 	if !self.seats[int] or self.seats[int]:GetPassenger(0):IsValid() then return end
 	local oldang = p:GetAimVector():Angle()
@@ -66,7 +78,9 @@ function ENT:switchSeat(p, int)
 	p:ExitVehicle()
 	p:EnterVehicle(self.seats[int])
 	--p:SnapEyeAngles(self.seats[int]:GetAngles())
+	self:updateSeats()
 end
+
 
 concommand.Add("wac_setseat", function(p,c,a)
 	if !p:InVehicle() then return end
@@ -75,6 +89,7 @@ concommand.Add("wac_setseat", function(p,c,a)
 		veh.wac_seatswitcher:switchSeat(p, tonumber(a[1]))
 	end
 end)
+
 
 function ENT:Think()
 	for k,v in pairs(self.seats) do

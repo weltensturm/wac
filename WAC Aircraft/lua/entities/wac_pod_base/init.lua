@@ -10,9 +10,16 @@ ENT.Spawnable = false
 ENT.AdminSpawnable = false
 
 
+function ENT:Initialize()
+	self:SetNextShot(0)
+	self:SetLastShot(0)
+	self:SetAmmo(self.Ammo)
+end
+
+
 function ENT:trigger(b, player)
 	self.shouldShoot = b
-	self.player = player
+	self.seat = player
 end
 
 
@@ -30,17 +37,19 @@ function ENT:select(bool)
 	end
 end
 
+
+function ENT:takeAmmo(amount)
+	if self:GetAmmo() < amount then return false end
+	self:SetAmmo(self:GetAmmo() - amount)
+	return true
+end
+
+
 function ENT:Think()
 	if self.shouldShoot and self:GetNextShot() <= CurTime() and self:GetAmmo() > 0 then
 		self:fire()
-		self:SetAmmo(self:GetAmmo()-1)
 		self:SetLastShot(CurTime())
 		self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
-		if self:GetAmmo() <= 0 then
-			self:stop()
-			self:SetAmmo(self.Ammo)
-			self:SetNextShot(CurTime() + 60)
-		end
 	end
 	if self:GetNextShot() <= CurTime() then
 		self:stop()

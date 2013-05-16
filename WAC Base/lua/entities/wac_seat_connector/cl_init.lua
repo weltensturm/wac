@@ -1,45 +1,28 @@
 
 include("shared.lua")
 
+
 function ENT:Initialize()
 	self.seats = {}
-	self.passenger = {}
+	self.passengers = {}
 end
 
-function ENT:Draw()
-	self:DrawModel()
-end
 
-function ENT:updateSeats()
-	for i=1,9 do
-		local e = self:GetNWEntity(i)
-		if IsValid(e) then
-			if self.seats[i] != e then
-				MsgN("added seat number " .. i)
-				self.seats[i] = e
-				e.wac_seatswitcher = self.Entity
-			end
-			local p = e:GetPassenger()
-			self.passenger[i] = (IsValid(p) and p or nil)
-		else
-			self.seats[i] = nil
-			self.passenger[i] = nil
-		end
+wac.hook("wacKey", "wac_seatswitcher_input", function(key, pressed)
+	if !pressed or vgui.CursorVisible() then return end
+	if key >= 2 and key <= 10 then
+		RunConsoleCommand("wac_setseat", key-1)
 	end
-end
+end)
 
-function ENT:Think()
-	local crt = CurTime()
-	local p = LocalPlayer()
-	for i = 2, 10 do
-		if input.IsKeyDown(i) and (!p.LastKeyDown or p.LastKeyDown < crt) and !vgui.CursorVisible() then
-			RunConsoleCommand("wac_setseat", i-1)
-			p.LastKeyDown = crt+0.1
-			break
-		end
+
+net.Receive("wac.seatSwitcher.switch", function(length)
+	local switcher = net.ReadEntity()
+	local count = net.ReadInt(8)
+	for i = 1, count do
+		local e = net.ReadEntity()
+		e.wac_seatswitcher = switcher
+		switcher.seats[i] = e
+		switcher.passengers[i] = IsValid(e) and e:GetPassenger() or nil
 	end
-	self:updateSeats()
-	self:NextThink(crt)
-	return true
-end
-
+end)

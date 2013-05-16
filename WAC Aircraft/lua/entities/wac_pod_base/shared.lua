@@ -23,3 +23,15 @@ function ENT:SetupDataTables()
 	self:NetworkVar("Float", 0, "LastShot")
 	self:NetworkVar("Float", 1, "NextShot")
 end
+
+
+function ENT:base(name)
+	local current = self
+	while current do
+		if current.ClassName == name then
+			return current
+		end
+		current = current.BaseClass
+	end
+	error("No base class with name \"" .. name .. "\"", 2)
+end

@@ -15,7 +15,7 @@ local mHorizon0=Material("WeltEnSTurm/WAC/Helicopter/hud_line_0")
 local HudCol=Color(70,199,50,150)
 local Black=Color(0,0,0,200)
 
-mat={
+local mat = {
 	Material("WeltEnSTurm/WAC/Helicopter/hud_line_0"),
 	Material("WeltEnSTurm/WAC/Helicopter/hud_line_high"),
 	Material("WeltEnSTurm/WAC/Helicopter/hud_line_low"),
@@ -32,6 +32,7 @@ local function getspaces(n)
 	return n
 end
 
+--[[
 function ENT:DrawPilotHud()
 	local pos = self:GetPos()
 	local ang = self:GetAngles()
@@ -40,7 +41,7 @@ function ENT:DrawPilotHud()
 	
 	local uptm = self.SmoothVal
 	local upm = self.SmoothUp
-	local spos=self.Seats[1].Pos
+	local spos = self.Seats[1].pos
 
 	cam.Start3D2D(self:LocalToWorld(Vector(30,3.75,37.75)+spos), ang,0.015)
 		surface.SetDrawColor(HudCol)
@@ -88,3 +89,4 @@ function ENT:DrawPilotHud()
 		surface.DrawText(self.Seats[1].wep[1].Name..getspaces(n))
 	cam.End3D2D()
 end
+]]

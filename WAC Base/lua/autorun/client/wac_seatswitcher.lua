@@ -7,10 +7,10 @@ surface.CreateFont("wac_seatswitcher_text", {
 })
 
 local pos = {x = 224, y = 25}
-local lastSwitch=0
-local colorBackground=Color(0,0,0,100)
-local colorPlayers=Color(255,255,255,200)
-local passengers={}
+local lastSwitch = 0
+local colorBackground = Color(0,0,0,100)
+local colorPlayers = Color(255,255,255,200)
+local passengers = {}
 
 wac.hook("HUDPaint", "wac_seatswitch_hudpaint", function()
 	local screen = {w = ScrW(), h = ScrH()}
@@ -26,16 +26,16 @@ wac.hook("HUDPaint", "wac_seatswitch_hudpaint", function()
 		215, #self.seats*17+2, colorBackground
 	)
 	for k,s in pairs(self.seats) do
-		if passengers[k] != s:GetPassenger() then
-			passengers[k]=s:GetPassenger()
-			lastSwitch=CurTime()+1.5
+		if IsValid(s) and passengers[k] != s:GetPassenger() then
+			passengers[k] = s:GetPassenger()
+			lastSwitch = CurTime()+1.5
 		end
 		draw.RoundedBox(
 			2, screen.w-pos.x+2, screen.h-pos.y-#self.seats*17+k*17,
 			211, 15, colorBackground
 		)
-		local v = s:GetPassenger()
-		if IsValid(v) then
+		if IsValid(s) and IsValid(s:GetPassenger()) then
+			local v = s:GetPassenger()
 			local n = (v.Nick and v:Nick() or v:GetName())
 			draw.SimpleTextOutlined(
 				k..": "..n, "wac_seatswitcher_text", screen.w-pos.x+4,

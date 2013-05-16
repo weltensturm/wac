@@ -43,9 +43,10 @@ function ENT:Initialize()
 	end
 	self.RotorTime = 0
 
+	self.weapons = {}
 	self.weaponAttachments = {}
-	if self.Weapons and self.Weapons.attachments then
-		for name, info in pairs(self.Weapons.attachments) do
+	if self.WeaponAttachments then
+		for name, info in pairs(self.WeaponAttachments) do
 			if name != "BaseClass" and name != "seat" then
 				local t = table.Copy(info)
 				t.model = ClientsideModel(info.model, RENDERGROUP_OPAQUE)
@@ -53,11 +54,18 @@ function ENT:Initialize()
 				t.model:SetPos(self:LocalToWorld(info.pos))
 				t.model:SetParent(self)
 				table.insert(self.weaponAttachments, t)
-				if name == "camera" then
-					self.camera = t
-				end
 			end
 		end
+	end
+	if self.Camera then
+		local t = {}
+		self.camera = ClientsideModel(self.Camera.model)
+		self.camera:SetPos(self:LocalToWorld(self.Camera.pos))
+		self.camera:SetParent(self)
+		self.camera:Spawn()
+		t.info = self.Camera
+		t.model = self.camera
+		table.insert(self.weaponAttachments, t)
 	end
 end
 
@@ -144,16 +152,32 @@ end
 
 
 function ENT:attachmentThink()
-	if !self.Weapons or !self.Weapons.attachments or !self.weaponAttachments then return end
-	local p = self:getPassenger(self.Weapons.attachments.seat)
+	if !self.weaponAttachments then return end
+	local camAng
+	if !self.camera then return end
+	local p = self:getPassenger(self.Camera.seat)
 	if IsValid(p) then
-		local view = p:GetAimVector():Angle()
-		for _, t in pairs(self.weaponAttachments) do
-			local ang = Angle(t.restrictPitch and 0 or view.p, t.restrictYaw and 0 or view.y, self:GetAngles().r*(1-math.AngleDifference(view.y, self:GetAngles().y)/90))
-			t.model:SetAngles(ang)
-			if t.offset then
-				t.model:SetPos(self:LocalToWorld(t.pos) + ang:Forward()*t.offset.x + ang:Right() * t.offset.y + ang:Up() * t.offset.z)
-			end
+		local ang = self:WorldToLocalAngles(p:GetAimVector():Angle())
+		ang.r = 0
+		if self.Camera.minAng then
+			ang.p = (ang.p > self.Camera.minAng.p and ang.p or self.Camera.minAng.p)
+			ang.y = (ang.y > self.Camera.minAng.y and ang.y or self.Camera.minAng.y)
+		end
+		if self.Camera.maxAng then
+			ang.p = (ang.p < self.Camera.maxAng.p and ang.p or self.Camera.maxAng.p)
+			ang.y = (ang.y < self.Camera.maxAng.y and ang.y or self.Camera.maxAng.y)
+		end
+		camAng = self:LocalToWorldAngles(ang)
+	end
+
+	if !camAng then return end
+	local tr = util.QuickTrace(self:LocalToWorld(self.Camera.pos)+camAng:Forward()*20, camAng:Forward()*999999999, self)
+	for _, t in pairs(self.weaponAttachments) do
+		local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
+		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, 0)
+		t.model:SetAngles(self:LocalToWorldAngles(localAng))
+		if t.offset then
+			t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
 		end
 	end
 end
@@ -173,7 +197,7 @@ end
 function ENT:DrawHUD(k,p)
 	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
 	if p.wac.useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
-		self:drawCameraHUD(self.Weapons.attachments.seat)
+		self:drawCameraHUD(self.Camera.seat)
 	end
 end
 
@@ -200,7 +224,10 @@ function ENT:drawCameraHUD(seat)
 	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s-w, sh/2+s)
 	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s, sh/2+s-w)
 	
-	self:drawCameraCrosshair(seat)
+	local weapon = self.weapons[self.Seats[seat].weapons[self:GetNWInt("seat_" .. seat .. "_actwep")]]
+	if IsValid(weapon) and weapon.drawCrosshair then
+		weapon:drawCrosshair()
+	end
 
 	local count=0
 	for i, name in pairs(self.Seats[seat].weapons) do
@@ -219,16 +246,17 @@ function ENT:drawCameraHUD(seat)
 	surface.SetFont("wac_heli_small")
 	surface.SetTextColor(230,230,230,255)
 	local h = 1
-	for i, wep in pairs(self.Seats[seat].weapons) do
+	for i, name in pairs(self.Seats[seat].weapons) do
 		if i != "BaseClass" then
-			local ammo = self:GetNWInt("seat_"..seat.."_"..i.."_ammo")
+			local wep = self.weapons[name]
+			local ammo = wep:GetAmmo()
 			surface.SetTextPos(sw/2+w*2+5,sh/7+5+h*50)
-			surface.DrawText(wep)
+			surface.DrawText(name)
 			surface.SetTextPos(sw/2+w*4+5-string.len(ammo)*14,sh/7+5+h*50)
 			surface.DrawText(ammo)
 			surface.SetDrawColor(255,255,255,200)
-			local lastshot=self:GetNWFloat("seat_"..seat.."_"..i.."_lastshot")
-			local nextshot=self:GetNWFloat("seat_"..seat.."_"..i.."_nextshot")
+			local lastshot = wep:GetLastShot()
+			local nextshot = wep:GetNextShot()
 			surface.DrawRect(sw/2+w*2,sh/7+h*50+40,(w*2+10)*math.Clamp((nextshot-CurTime())/(nextshot-lastshot),0,1),10)
 			h=h+1
 		end
@@ -236,50 +264,10 @@ function ENT:drawCameraHUD(seat)
 end
 
 
-function ENT:drawCameraCrosshair(seat)
-
-	local sw = ScrW()
-	local sh = ScrH()
-	local width = 30
-	local height = 20
-	local lw = 30
-	local lh = 20
-
-	--[[local activeWeapon = self:GetNWInt("seat_"..seat.."_actwep")
-	local profile = self.Weapons.profiles[self.Seats[seat].weapons[activeWeapon] ]
-	local nexts = self:GetNWFloat("seat_"..seat.."_"..activeWeapon.."_nextshot")
-	local ammo = self:GetNWInt("seat_"..seat.."_"..activeWeapon.."_ammo")
-
-	if ammo == profile.Ammo and nexts > CurTime() then
-		surface.SetDrawColor(255,255,255,math.sin(CurTime()*10)*75+75)
-	else
-		surface.SetDrawColor(255,255,255,150)
-	end]]
-	
-	surface.SetDrawColor(255,255,255,150)
-
-	surface.DrawOutlinedRect(sw/2-width,sh/2-height,width*2,height*2)
-	surface.DrawOutlinedRect(sw/2-width-1,sh/2-height-1,width*2+2,height*2+2)
-	
-	surface.DrawLine(sw/2,sh/2-height,sw/2,sh/2-height-lh)
-	surface.DrawLine(sw/2-1,sh/2-height-1,sw/2-1,sh/2-height-lh)
-
-	surface.DrawLine(sw/2,sh/2+height,sw/2,sh/2+height+lh)
-	surface.DrawLine(sw/2-1,sh/2+height+1,sw/2-1,sh/2+height+lh)
-	
-	surface.DrawLine(sw/2-width-1,sh/2,sw/2-width-lw-1,sh/2)
-	surface.DrawLine(sw/2-width-1,sh/2-1,sw/2-width-lw-1,sh/2-1)
-	
-	surface.DrawLine(sw/2+width+1,sh/2,sw/2+width+lw+1,sh/2)
-	surface.DrawLine(sw/2+width+1,sh/2-1,sw/2+width+lw+1,sh/2-1)
-	
-end
-
-
 function ENT:DrawScreenSpaceEffects(k,p)
 	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
 	if p.wac.useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
-		self:renderCameraEffects(self.Weapons.attachments.seat)
+		self:renderCameraEffects(self.WeaponAttachments.seat)
 	end
 end
 
@@ -345,7 +333,7 @@ function ENT:viewCalcThirdPerson(k, p, view)
 			{self.Entity, self:GetNWEntity("wac_air_rotor_rear"), self:GetNWEntity("wac_air_rotor_main")}
 	)
 	self.viewTarget = {
-		origin = (tr.HitPos - tr.Normal*5) - view.origin,
+		origin = (tr.HitPos - tr.Normal*10) - view.origin,
 		angles = ang - self:GetAngles()
 	}
 	return view
@@ -403,8 +391,8 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	else
 		if p.wac.useCamera and self.camera then
 			--view = weapon.CalcView(self,weapon,p,pos,ang,view)
-			view.origin = self.camera.model:LocalToWorld(self.camera.viewPos)
-			view.angles = self.camera.model:GetAngles()
+			view.origin = self.camera:LocalToWorld(self.Camera.viewPos)
+			view.angles = self.camera:GetAngles()
 			if self.viewTarget then
 				self.viewTarget.angles = p:GetAimVector():Angle() - self:GetAngles()
 			end
@@ -590,3 +578,21 @@ function ENT:Draw()
 		end
 	end
 end
+
+
+net.Receive("wac.aircraft.updateWeapons", function(length)
+	local aircraft = net.ReadEntity()
+	local count = net.ReadInt(8)
+	for i = 1, count do
+		local name = net.ReadString()
+		local weapon = net.ReadEntity()
+		aircraft.weapons[name] = weapon
+		for index, value in pairs(aircraft.Weapons[name].info) do
+			weapon[index] = value
+		end
+		if weapon.clientUpdate then
+			weapon:clientUpdate()
+		end
+	end
+end)
+

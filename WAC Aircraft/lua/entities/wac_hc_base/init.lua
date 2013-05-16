@@ -6,27 +6,29 @@ AddCSLuaFile("shared.lua")
 
 include("wac/aircraft.lua")
 
-local NULLVEC=Vector(0,0,0)
 
-ENT.IgnoreDamage	= true
-ENT.wac_ignore		= true
+util.AddNetworkString("wac.aircraft.updateWeapons")
 
-ENT.UsePhysRotor	= true
-ENT.Submersible	= false
-ENT.CrRotorWash	= true
-ENT.RotorWidth	= 200
+
+ENT.IgnoreDamage = true
+ENT.wac_ignore = true
+
+ENT.UsePhysRotor = true
+ENT.Submersible = false
+ENT.CrRotorWash = true
+ENT.RotorWidth = 200
 ENT.TopRotorDir	= 1
-ENT.BackRotorDir	= 1
+ENT.BackRotorDir = 1
 ENT.TopRotorPos	= Vector(0,0,50)
-ENT.BackRotorPos	= Vector(-185,-3,13)
+ENT.BackRotorPos = Vector(-185,-3,13)
 ENT.EngineForce	= 20
-ENT.BrakeMul		= 1
+ENT.BrakeMul = 1
 ENT.AngBrakeMul	= 0.01
-ENT.Weight		= 1000
-ENT.SeatSwitcherPos= Vector(0,0,50)
+ENT.Weight = 1000
+ENT.SeatSwitcherPos = Vector(0,0,50)
 ENT.BullsEyePos	= Vector(20,0,50)
-ENT.MaxEnterDistance= 50
-ENT.WheelStabilize	=-400
+ENT.MaxEnterDistance = 50
+ENT.WheelStabilize = -400
 ENT.HatingNPCs={
 	"npc_strider",
 	"npc_combinegunship",
@@ -70,15 +72,14 @@ ENT.Aerodynamics = {
 	}
 }
 
+
 ENT.Agility = {
 	Rotate = Vector(1, 1, 1),
 	Thrust = 1
 }
 
-ENT.Weapons = {
-	pods = {},
-	profiles = {}
-}
+
+ENT.Weapons = {}
 
 
 
@@ -312,32 +313,31 @@ function ENT:addStuff() end
 
 
 function ENT:addWeapons()
-	self.weapons = {
-		pods = {},
-		profiles = {}
-	}
-	for i, w in pairs(self.Weapons.pods) do
+	self.weapons = {}
+	for i, w in pairs(self.Weapons) do
 		if i != "BaseClass" then
 			local pod = ents.Create(w.class)
-			pod:SetPos(self:LocalToWorld(w.pos))
+			pod:SetPos(self:GetPos())
 			pod:SetParent(self)
+			for index, value in pairs(w.info) do
+				pod[index] = value
+			end
+			pod.aircraft = self
 			pod:Spawn()
 			pod:Activate()
 			pod:SetNoDraw(true)
-			pod.aircraft = self
-			self.weapons.pods[i] = pod
+			pod.podIndex = i
+			self.weapons[i] = pod
 		end
 	end
-	for name, p in pairs(self.Weapons.profiles) do
-		if name != "BaseClass" then
-			local profile = table.Copy(p)
-			for i, n in pairs(profile.pods) do
-				if i != "BaseClass" then
-					profile.pods[i] = self.weapons.pods[n]
-				end
-			end
-			self.weapons.profiles[name] = profile
-		end
+
+	if self.Camera then
+		self.camera = ents.Create("prop_physics")
+		self.camera:SetModel("models/props_junk/popcan01a.mdl")
+		self.camera:SetNoDraw(true)
+		self.camera:SetPos(self:LocalToWorld(self.Camera.pos))
+		self.camera:SetParent(self)
+		self.camera:Spawn()
 	end
 end
 
@@ -359,6 +359,8 @@ function ENT:addSeats()
 			self.seats[k] = self:addEntity("prop_vehicle_prisoner_pod")
 			self.seats[k]:SetModel("models/nova/airboat_seat.mdl") 
 			self.seats[k]:SetPos(self:LocalToWorld(v.pos))
+			self.seats[k]:Spawn()
+			self.seats[k]:Activate()
 			self.seats[k]:SetNWInt("selectedWeapon", 0)
 			if v.ang then
 				local a = self:GetAngles()
@@ -369,19 +371,13 @@ function ENT:addSeats()
 				ang:RotateAroundAxis(self:GetUp(), -90)
 				self.seats[k]:SetAngles(ang)
 			end
-			self.seats[k]:Spawn()
-			self.seats[k]:Activate()
 			self.seats[k]:SetNoDraw(true)
-			self.seats[k].Phys = self.seats[k]:GetPhysicsObject()
-			self.seats[k].Phys:EnableGravity(true)
-			self.seats[k].Phys:SetMass(1)
 			self.seats[k]:SetNotSolid(true)
 			self.seats[k]:SetParent(self)
 			self.seats[k].wac_ignore = true
 			self.seats[k]:SetNWEntity("wac_aircraft", self)
 			self.seats[k]:SetKeyValue("limitview","0")
 			e:addVehicle(self.seats[k])
-			self:AddOnRemove(self.seats[k])
 		end
 	end
 end
@@ -411,53 +407,35 @@ end
 
 function ENT:fireWeapon(bool, seat, t)
 	if !t.weapons then return end
-	local profile = self.weapons.profiles[t.weapons[t.activeProfile]]
-	if !profile then return end
-	for _, pod in pairs(profile.pods) do
-		pod:trigger(bool, self.Passenger[seat])
-	end
+	local pod = self.weapons[t.weapons[t.activeProfile]]
+	if !pod then return end
+	pod.shouldFire = bool
+	pod:trigger(bool, self.seats[seat])
 end
+
 
 function ENT:nextWeapon(t,k,p)
 	if !t.weapons then return end
 
-	local profile = self.weapons.profiles[t.weapons[t.activeProfile]]
-	if profile then
-		for _, pod in pairs(profile.pods) do
-			pod:select(false)
-		end
+	local pod = self.weapons[t.weapons[t.activeProfile]]
+	if pod then
+		pod:select(false)
+		pod.seat = nil
 	end
 
 	if t.activeProfile == #t.weapons then
 		t.activeProfile = 0
 	else
 		t.activeProfile = t.activeProfile + 1
-		for _, pod in pairs(self.weapons.profiles[t.weapons[t.activeProfile]].pods) do
-			pod:select(true)
-		end
+	end
+	if t.weapons[t.activeProfile] then
+		local weapon = self.weapons[t.weapons[t.activeProfile]]
+		weapon:select(true)
+		weapon.seat = self.seats[k]
 	end
 	self:SetNWInt("seat_"..k.."_actwep", t.activeProfile)
 end
 
-function ENT:thinkWeapons()
-	for i, s in pairs(self.Seats) do
-		if s.weapons then
-			local profile = self.weapons.profiles[s.weapons[s.activeProfile]]
-			if profile then
-				local ammo = 0
-				local lastShot, nextShot
-				for _, pod in pairs(profile.pods) do
-					nextShot = pod:GetNextShot()
-					lastShot = pod:GetLastShot()
-					ammo = ammo + pod:GetAmmo()
-				end
-				self:SetNWFloat("seat_"..i.."_"..s.activeProfile.."_nextshot", nextShot)
-				self:SetNWFloat("seat_"..i.."_"..s.activeProfile.."_lastshot", lastShot)
-				self:SetNWInt("seat_"..i.."_"..s.activeProfile.."_ammo", ammo)
-			end
-		end
-	end
-end
 
 function ENT:EjectPassenger(ply,idx,t)
 	if !idx then
@@ -485,10 +463,10 @@ function ENT:Use(act, cal)
 		if veh and veh:IsValid() then
 			local psngr = veh:GetPassenger(0)
 			if !psngr or !psngr:IsValid() then
-				local dist=veh:GetPos():Distance(util.QuickTrace(act:GetShootPos(),act:GetAimVector()*self.MaxEnterDistance,act).HitPos)
-				if dist<d then
-					d=dist
-					v=veh
+				local dist = veh:GetPos():Distance(util.QuickTrace(act:GetShootPos(),act:GetAimVector()*self.MaxEnterDistance,act).HitPos)
+				if dist < d then
+					d = dist
+					v = veh
 				end
 			end
 		end
@@ -499,6 +477,7 @@ function ENT:Use(act, cal)
 	self:updateSeats()
 end
 
+
 function ENT:updateSeats()
 	for k, veh in pairs(self.seats) do
 		if !veh:IsValid() then return end
@@ -506,21 +485,27 @@ function ENT:updateSeats()
 		if self.Passenger[k] != p then
 			if IsValid(self.Passenger[k]) then
 				self.Passenger[k]:SetNWEntity("wac_aircraft", NULL)
-				--[[local t=self.seats[k].wep[self.seats[k].wep_act]
-				if t and t.DeSelect then
-					t.DeSelect(self,t,self.Passenger[k])
-				end]]
 			end
 			self:SetNWEntity("passenger_"..k, p)
 			p:SetNWInt("wac_passenger_id",k)
-			self.Passenger[k]=p
+			self.Passenger[k] = p
 			if IsValid(p) then
 				p.wac = p.wac or {}
 				p.wac.mouseInput = true
+				net.Start("wac.aircraft.updateWeapons")
+				net.WriteEntity(self)
+				net.WriteInt(table.Count(self.weapons), 8)
+				for name, weapon in pairs(self.weapons) do
+					net.WriteString(name)
+					net.WriteEntity(weapon)
+				end
+				net.Send(p)
 			end
 		end
 	end
+	self:GetSwitcher():updateSeats()
 end
+
 
 function ENT:StopAllSounds()
 	for k, s in pairs(self.sounds) do
@@ -558,10 +543,26 @@ end
 function ENT:Think()
 	local crt = CurTime()
 	if !self.disabled then
-		self:thinkWeapons()
 		if self.nextUpdate<crt then
 			if self.phys and self.phys:IsValid() then
 				self.phys:Wake()
+			end
+
+			if IsValid(self.camera) then
+				local p = self.seats[self.Camera.seat]:GetDriver()
+				if IsValid(p) then
+					local view = self:WorldToLocalAngles(p:GetAimVector():Angle())
+					local ang = Angle(self.Camera.restrictPitch and 0 or view.p, self.Camera.restrictYaw and 0 or view.y, 0)
+					if self.Camera.minAng then
+						ang.p = (ang.p > self.Camera.minAng.p and ang.p or self.Camera.minAng.p)
+						ang.y = (ang.y > self.Camera.minAng.y and ang.y or self.Camera.minAng.y)
+					end
+					if self.Camera.maxAng then
+						ang.p = (ang.p < self.Camera.maxAng.p and ang.p or self.Camera.maxAng.p)
+						ang.y = (ang.y < self.Camera.maxAng.y and ang.y or self.Camera.maxAng.y)
+					end
+					self.camera:SetAngles(self:LocalToWorldAngles(ang))
+				end
 			end
 
 			local target = math.floor(math.Clamp(self.rotorRpm, 0, 0.99)*3)

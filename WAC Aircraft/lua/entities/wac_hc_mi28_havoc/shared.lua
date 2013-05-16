@@ -33,23 +33,6 @@ ENT.Seats = {
 		pos = Vector(115.3,0,61),
 		exit = Vector(115.3,60,5),
 		weapons = {"2A42", "9M120", "Hydra 70"}
-			wac.aircraft.getWeapon("Hellfire",{
-				Name=,
-				ShootPos={
-					Vector(3.22,102.38,59.59),
-					Vector(3.22,-102.38,59.59),
-				},
-				CalcView=function(self,t,p,pos,ang,view)
-					if p:GetViewEntity()!=p then return view end
-					local e=self:GetNWEntity("wac_air_radar")
-					if IsValid(e) then
-						view.angles=e:GetAngles()
-						view.origin=e:GetPos()+e:GetForward()*15
-					end
-					return view
-				end,
-			}),
-		},
 	},
 }
 
@@ -58,8 +41,12 @@ ENT.Weapons = {
 	pods = {
 		{
 			class = "wac_pod_hydra",
-			
-		}		
+			pos = Vector(3.22, 102.38, 59.59),
+		},
+		{
+			class = "wac_pod_hydra",
+			pos = Vector(3.22, -102.38, 59.59),
+		},
 	}
 }
 

@@ -7,7 +7,7 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 	wac.aircraft.addControls("Flight Controls", {
 		Throttle = {{-1, 1}, KEY_W, KEY_S},
 		Pitch = {{-1, 1}, KEY_W, KEY_S},
-		Yaw = {{-1, 1}, KEY_Q, KEY_E},
+		Yaw = {{-1, 1}, KEY_D, KEY_A},
 		Roll = {{-1, 1}, KEY_D, KEY_A},
 		Start = {true, KEY_R},
 		Hover = {true, MOUSE_4},
@@ -16,7 +16,7 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 	wac.aircraft.addControls("Common", {
 		Exit = {true, KEY_E},
 		FreeView = {true, KEY_SPACE},
-		Camera = {true, KEY_ALT},
+		Camera = {true, KEY_X},
 	})
 
 	wac.aircraft.addControls("Weapons", {
@@ -117,13 +117,39 @@ else
 						vehicle:receiveInput(name, pressed and 1 or 0, LocalPlayer():GetNWInt("wac_passenger_id"))
 					end
 				else
+					local command, target
 					if GetConVar("wac_cl_air_key_" .. name .. "_Inc"):GetInt() == key then
-						RunConsoleCommand("wac_air_input", name, tostring(pressed and k[1][2] or "0"))
-						vehicle:receiveInput(name, pressed and k[1][2] or 0, LocalPlayer():GetNWInt("wac_passenger_id"))
+						command = name
+						target = (pressed and k[1][2] or 0)
 					elseif GetConVar("wac_cl_air_key_" .. name .. "_Dec"):GetInt() == key then
-						RunConsoleCommand("wac_air_input", name, tostring(pressed and k[1][1] or "0"))
-						vehicle:receiveInput(name, pressed and k[1][1] or 0, LocalPlayer():GetNWInt("wac_passenger_id"))
+						command = name
+						target = (pressed and k[1][1] or 0)
 					end
+					if command and target then
+						if GetConVar("wac_cl_air_smoothkeyboard"):GetBool() then
+							vehicle.inputCache = vehicle.inputCache or {}
+							vehicle.inputCache[command] = vehicle.inputCache[command] or {current = 0}
+							vehicle.inputCache[command].target = target
+						else
+							RunConsoleCommand("wac_air_input", command, tostring(target))
+							vehicle:receiveInput(command, target, LocalPlayer():GetNWInt("wac_passenger_id"))
+						end
+					end
+				end
+			end
+		end
+	end)
+
+
+	wac.hook("Think", "wac_cl_aircraft_smoothkeyboard", function()
+		if GetConVar("wac_cl_air_smoothkeyboard"):GetBool() then
+			local vehicle = LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft")
+			if !IsValid(vehicle) or !vehicle.inputCache then return end
+			for command, info in pairs(vehicle.inputCache) do
+				if info.current != info.target then
+					info.current = math.Approach(info.current, info.target, FrameTime()*5)
+					RunConsoleCommand("wac_air_input", command, info.current)
+					vehicle:receiveInput(command, info.current, LocalPlayer():GetNWInt("wac_passenger_id"))
 				end
 			end
 		end

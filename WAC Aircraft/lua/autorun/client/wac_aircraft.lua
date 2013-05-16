@@ -10,6 +10,7 @@ CreateClientConVar("wac_cl_air_mouse_invert_pitch", 0, true, true)
 CreateClientConVar("wac_cl_air_mouse_invert_yawroll", 0, true, true)
 CreateClientConVar("wac_cl_air_smoothview", 1, true, true)
 CreateClientConVar("wac_cl_air_shakeview", 1, true, true)
+CreateClientConVar("wac_cl_air_smoothkeyboard", 1, true, true)
 
 
 surface.CreateFont("wac_heli_big", {
@@ -112,7 +113,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 				wac_cl_air_key_Pitch_Dec = KEY_NONE,
 				wac_cl_air_key_Roll_Inc = KEY_NONE,
 				wac_cl_air_key_Roll_Dec = KEY_NONE,
-				wac_cl_air_key_FreeCamera = KEY_SPACE,
+				wac_cl_air_key_FreeView = KEY_SPACE,
 				wac_cl_air_key_Fire = MOUSE_LEFT,
 				wac_cl_air_key_NextWeapon = MOUSE_RIGHT,
 				wac_cl_air_key_Hover = MOUSE_4,
@@ -125,14 +126,14 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 				wac_cl_air_key_Exit = KEY_E,
 				wac_cl_air_key_Start = KEY_R,
 				wac_cl_air_key_Throttle_Inc = KEY_SPACE,
-				wac_cl_air_key_Throttle_Dec = KEY_SHIFT,
+				wac_cl_air_key_Throttle_Dec = KEY_LSHIFT,
 				wac_cl_air_key_Yaw_Inc = MOUSE_LEFT,
 				wac_cl_air_key_Yaw_Dec = MOUSE_RIGHT,
 				wac_cl_air_key_Pitch_Inc = KEY_W,
 				wac_cl_air_key_Pitch_Dec = KEY_S,
 				wac_cl_air_key_Roll_Inc = KEY_D,
 				wac_cl_air_key_Roll_Dec = KEY_A,
-				wac_cl_air_key_FreeCamera = KEY_ALT,
+				wac_cl_air_key_FreeView = KEY_X,
 				wac_cl_air_key_Fire = KEY_F,
 				wac_cl_air_key_NextWeapon = KEY_G,
 				wac_cl_air_key_Hover = MOUSE_4,

@@ -12,43 +12,43 @@ function ENT:Initialize()
 	self.phys = self.Entity:GetPhysicsObject()
 	if (self.phys:IsValid()) then
 		self.phys:SetMass(400)
-		--self.phys:EnableGravity(false)
+		self.phys:EnableGravity(false)
 		self.phys:EnableCollisions(true)
 		self.phys:EnableDrag(false)
 		self.phys:Wake()
 	end
-	self.Sounds=CreateSound(self.Entity, "WAC/rocket_idle.wav")
+	self.sound = CreateSound(self.Entity, "WAC/rocket_idle.wav")
+	self.matType = MAT_DIRT
+	self.hitAngle = Angle(270, 0, 0)
 end
 
 function ENT:Explode(tr)
 	if self.Exploded then return end
-	self.Exploded=true
-	if tr.HitSky then self:Remove() return end
-	util.BlastDamage(self, self.Owner or self, tr.HitPos+tr.HitNormal, self.Radius, self.Damage)
-	local explode=ents.Create("env_physexplosion")
-	explode:SetPos(tr.HitPos+tr.HitNormal)
+	self.Exploded = true
+	util.BlastDamage(self, self.Owner or self, self:GetPos(), self.Radius, self.Damage)
+	local explode = ents.Create("env_physexplosion")
+	explode:SetPos(self:GetPos())
 	explode:Spawn()
 	explode:SetKeyValue("magnitude", self.Damage)
 	explode:SetKeyValue("radius", self.Radius*0.75)
 	explode:SetKeyValue("spawnflags","19")
 	explode:Fire("Explode", 0, 0)
-	util.Decal("Scorch",tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
 	local ed = EffectData()
 	ed:SetEntity(self.Entity)
-	ed:SetOrigin(tr.HitPos+tr.HitNormal*10)
+	ed:SetOrigin(self:GetPos())
 	ed:SetScale(self.Scale or 10)
-	ed:SetRadius(tr.MatType)
-	ed:SetAngles(tr.HitNormal:Angle())
+	ed:SetRadius(self.matType)
+	ed:SetAngles(self.hitAngle)
 	util.Effect("wac_tankshell_impact",ed)
 	self.Entity:Remove()
 end
 
 function ENT:OnTakeDamage(dmginfo)
-	--self:Explode()		
+	self:Explode()
 end
 
 function ENT:OnRemove()
-	self.Sounds:Stop()
+	self.sound:Stop()
 end
 
 function ENT:StartRocket()
@@ -82,7 +82,7 @@ function ENT:StartRocket()
 	light:SetKeyValue("GlowProxySize", "50")
 	light:Spawn()
 	light:SetParent(self.Entity)
-	self.Sounds:Play()
+	self.sound:Play()
 	self.OldPos=self:GetPos()
 	self.phys:EnableCollisions(false)
 end
@@ -103,41 +103,36 @@ function ENT:PhysicsUpdate(ph)
 		filter = {self,self.Owner,self.Launcher},
 		mask = CONTENTS_SOLID + CONTENTS_MOVEABLE + CONTENTS_OPAQUE + CONTENTS_DEBRIS + CONTENTS_HITBOX + CONTENTS_MONSTER + CONTENTS_WINDOW + CONTENTS_WATER,
 	}
-	local tr=util.TraceLine(trd)
-	if tr.Hit then
-		self:Explode(tr)
+	local tr = util.TraceLine(trd)
+	if tr.Hit and !self.Exploded then
+		if tr.HitSky then self:Remove() return end
+		util.Decal("Scorch", tr.HitPos + tr.HitNormal, tr.HitPos - tr.HitNormal)
+		self.matType = tr.MatType
+		self.hitAngle = tr.HitNormal:Angle()
+		self:Explode()
 		return
 	end
-	self.OldPos=trd.endpos
-	local vel=self:WorldToLocal(self:GetPos()+self:GetVelocity())*0.4
-	vel.x=0
+	self.OldPos = trd.endpos
+	local vel = self:WorldToLocal(self:GetPos()+self:GetVelocity())*0.4
+	vel.x = 0
 	local m = self:GetFuelMul()
 	ph:AddVelocity(self:GetForward()*m*self.Speed-self:LocalToWorld(vel*Vector(0.1, 1, 1))+self:GetPos())
-	ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5 + Vector(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1)))
-	if self.Aimed==1 and IsValid(self.Owner) and IsValid(self.Launcher) then
-		local v=self.Launcher:WorldToLocal(self.Launcher:GetPos()+self.Owner:GetAimVector()*5)*m/2
-		local clamp=Vector(v.x,v.y,v.z)
-		clamp.x=0
-		clamp=clamp:Normalize()*5*m/2
-		clamp.y=math.abs(clamp.y)
-		clamp.z=math.abs(clamp.z)
-		v.y=math.Clamp(v.y,-clamp.y,clamp.y)
-		v.z=math.Clamp(v.z,-clamp.z,clamp.z)
-		if v:Length()>3 then
-			v=v:Normalize()*3
+	ph:AddAngleVelocity(
+		ph:GetAngleVelocity()*-0.4
+		+ Vector(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1))*5
+		+ Vector(0, -vel.z, vel.y)
+	)
+	if self.calcTarget then
+		local target = self:calcTarget()
+		local dist = self:GetPos():Distance(target)
+		if dist > 2000 then
+			target = target + Vector(0,0,200)
 		end
-		v.z=v.z*-1
-		v=v*10
-		self:TakeFuel(math.abs(v.y)*2)
-		self:TakeFuel(math.abs(v.z)*2)
-		ph:AddAngleVelocity(Vector(0,v.z,v.y))
-	elseif self.Aimed==2 and IsValid(self.Launcher) and self.TargetPos then
-		local dist=self:GetPos():Distance(self.TargetPos)
-		local v=self:WorldToLocal(self.TargetPos + Vector(
-			0, 0, math.Clamp((self:GetPos()*Vector(1,1,0)):Distance(self.TargetPos*Vector(1,1,0))/5 - 50, 0, 1000)
-	))
-		v.y=math.Clamp(v.y/dist,-10,10)*100
-		v.z=math.Clamp(v.z/dist,-10,10)*100
+		local v = self:WorldToLocal(target + Vector(
+			0, 0, math.Clamp((self:GetPos()*Vector(1,1,0)):Distance(target*Vector(1,1,0))/5 - 50, 0, 1000)
+		)):GetNormal()
+		v.y = math.Clamp(v.y*10,-0.5,0.5)*300
+		v.z = math.Clamp(v.z*10,-0.5,0.5)*300
 		self:TakeFuel(math.abs(v.y)*2)
 		self:TakeFuel(math.abs(v.z)*2)
 		ph:AddAngleVelocity(Vector(0,-v.z,v.y))

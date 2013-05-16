@@ -10,6 +10,7 @@ wac.aircraft.cvars = {
 	doubleTick = CreateConVar("wac_air_doubletick", 0, {FCVAR_ARCHIVE}),
 }
 
+
 wac.hook("SetPlayerAnimation", "wac_cl_heliseat_animation", function(pl, anim)
 	 if pl:InVehicle() then
 	 local v = pl:GetVehicle()
@@ -23,3 +24,9 @@ wac.hook("SetPlayerAnimation", "wac_cl_heliseat_animation", function(pl, anim)
 	end
 end)
 
+
+wac.hook("PlayerLeaveVehicle", "wac_aircraft_leavevehicle", function(player, vehicle)
+	if IsValid(vehicle.wac_aircraft) then
+		vehicle.wac_aircraft:playerExit(player, vehicle)
+	end
+end)

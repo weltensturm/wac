@@ -5,11 +5,11 @@ local function DrawLine(v1,v2)
 	surface.DrawLine(v1.y,v1.z,v2.y,v2.z)
 end
 
-local mHorizon0=Material("WeltEnSTurm/WAC/Helicopter/hud_line_0")
-local HudCol=Color(70,199,50,150)
-local Black=Color(0,0,0,200)
+local mHorizon0 = Material("WeltEnSTurm/WAC/Helicopter/hud_line_0")
+local HudCol = Color(70,199,50,150)
+local Black = Color(0,0,0,200)
 
-mat={
+local mat = {
 	Material("WeltEnSTurm/WAC/Helicopter/hud_line_0"),
 	Material("WeltEnSTurm/WAC/Helicopter/hud_line_high"),
 	Material("WeltEnSTurm/WAC/Helicopter/hud_line_low"),
@@ -83,10 +83,7 @@ function ENT:DrawPilotHud()
 	
 	if self:GetNWInt("seat_1_actwep") == 1 then
 		surface.SetTextPos(300,445)
-		local n = self:GetNWInt("seat_1_1_ammo")
-		if n == 14 and self:GetNWFloat("seat_1_1_nextshot")>CurTime() then
-			n = 0
-		end
+		local n = self.weapons["Hydra 70"]:GetAmmo()
 		surface.DrawText("Hydra 70" .. getspaces(n))
 	end
 	

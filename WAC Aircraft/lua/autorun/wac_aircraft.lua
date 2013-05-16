@@ -347,7 +347,7 @@ wac.aircraft.weapons = {
 		CrosshairWidth=10,
 		CrosshairLineh=20,
 		CrosshairLinew=20,
-		func=function(self, t, p)
+		func = function(self, t, p)
 			if t.NextShoot <= CurTime() then
 				local ph=self.Gun:GetPhysicsObject()
 				if t.Ammo>0 and ph:GetAngleVelocity().x>1000 then
