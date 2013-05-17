@@ -45,31 +45,23 @@ ENT.Sounds = {
 }
 
 ENT.Weapons = {
-	profiles = {
-		["M134"] = {
-			pods = {1, 2},
-		},
-		["Hydra 70"] = {
-			pods = {3, 4},
-			sequential = true
+	["M134"] = {
+		class = "wac_pod_gatling",
+		info = {
+			Pods = {
+				Vector(40,40,30),
+				Vector(40,-40,30),
+			},
 		}
 	},
-	pods = {
-		{
-			class = "wac_pod_gatling",
-			pos = Vector(40,40,30),
-		},
-		{
-			class = "wac_pod_gatling",
-			pos = Vector(40,-40,30),
-		},
-		{
-			class = "wac_pod_hydra",
-			pos = Vector(50,40,40),
-		},
-		{
-			class = "wac_pod_hydra",
-			pos = Vector(50,-40,40),
+	["Hydra 70"] = {
+		class = "wac_pod_hydra",
+		info = {
+			Pods = {
+				Vector(50,40,40),
+				Vector(50,-40,40),
+				Sequential = false,
+			},
 		}
 	}
 }

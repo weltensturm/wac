@@ -23,3 +23,4 @@ function ENT:SetupDataTables()
 	self:base("wac_pod_base").SetupDataTables(self)
 	self:NetworkVar("Float", 2, "SpinSpeed")
 end
+

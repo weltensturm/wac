@@ -95,7 +95,6 @@ end
 
 function ENT:Draw()
 	self:DrawModel()
-	self:DrawRotor()
 	if !self.Seats or self:GetNWBool("locked") then return end
 	self:DrawPilotHud()
 	self:DrawWeaponSelection()

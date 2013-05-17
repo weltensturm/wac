@@ -3,14 +3,19 @@ include("shared.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
+ENT.Sounds = {
+	shoot1p = "WAC/cannon/viper_cannon_1p.wav",
+	shoot3p = "WAC/cannon/viper_cannon_3p.wav",
+	spin = "WAC/cannon/viper_cannon_rotate.wav"
+}
+
 
 function ENT:Initialize()
 	self:base("wac_pod_base").Initialize(self)
-	self.sounds = {
-		shoot1p = CreateSound(self, "WAC/cannon/viper_cannon_1p.wav"),
-		shoot3p = CreateSound(self, "WAC/cannon/viper_cannon_3p.wav"),
-		spin = CreateSound(self, "WAC/cannon/viper_cannon_rotate.wav")
-	}
+	self.sounds = {}
+	for n, p in pairs(self.Sounds) do
+		self.sounds[n] = CreateSound(self, p)
+	end
 	self.sounds.spin:ChangePitch(0,0.1)
 	self.sounds.spin:ChangeVolume(0,0.1)
 	self.sounds.spin:Play()
@@ -24,7 +29,7 @@ function ENT:fire()
 	if !self:takeAmmo(1) then return end
 	local b = ents.Create("wac_hc_hebullet")
 	local pos = self.aircraft:LocalToWorld(self.ShootPos) + self:LocalToWorld(self.ShootOffset)-self:GetPos()
-	local ang = self.aircraft.camera:GetAngles() + Angle(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1))*self.Spray
+	local ang = self:GetAngles() + Angle(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1))*self.Spray
 	b:SetPos(pos)
 	b:SetAngles(ang)
 	b.col = Color(255,200,100)

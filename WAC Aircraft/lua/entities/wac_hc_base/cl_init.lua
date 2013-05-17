@@ -439,20 +439,9 @@ function ENT:MovePlayerView(k,p,md)
 end
 
 
-function ENT:DrawRotor()
-	if IsValid(self.BlurCModel) and self.rotorRpm>0.6 then
-		self.RotorTime=self.RotorTime+self.rotorRpm*FrameTime()
-		self.BlurCModel:SetPos(self:LocalToWorld(self.TopRotorPos))
-		local ang=self:GetAngles()
-		ang:RotateAroundAxis(self:GetUp(),-self.RotorTime*1000)
-		self.BlurCModel:SetAngles(ang)
-		self.BlurCModel:DrawModel()
-	end
-end
-
-local HudMat=Material("WeltEnSTurm/helihud/arrow")
-local HudCol=Color(70,199,50,150)
-local Black=Color(0,0,0,200)
+local HudMat = Material("WeltEnSTurm/helihud/arrow")
+local HudCol = Color(70,199,50,150)
+local Black = Color(0,0,0,200)
 function ENT:DrawPilotHud()
 	local pos = self:GetPos()
 	local fwd = self:GetForward()
@@ -526,9 +515,10 @@ function ENT:DrawWeaponSelection()
 			if t.weapons then
 				local active = self:GetNWInt("seat_"..k.."_actwep")
 				if t.weapons[active] then
-					local lastshot = self:GetNWFloat("seat_"..k.."_"..active.."_lastshot")
-					local nextshot = self:GetNWFloat("seat_"..k.."_"..active.."_nextshot")
-					local ammo=self:GetNWInt("seat_"..k.."_"..active.."_ammo")
+					local weapon = self.weapons[t.weapons[active]]
+					local lastshot = weapon:GetLastShot()
+					local nextshot = weapon:GetNextShot()
+					local ammo = weapon:GetAmmo()
 					surface.DrawRect(10, 40, math.Clamp((nextshot-CurTime())/(nextshot-lastshot), 0, 1)*480, 10)
 					draw.SimpleText(k.." "..t.weapons[active], "wac_heli_big", 0, -2.5, Black, 0)
 					draw.SimpleText(ammo, "wac_heli_big", 480, -2.5, Black, 2)
@@ -543,7 +533,6 @@ end
 
 function ENT:Draw()
 	self:DrawModel()
-	self:DrawRotor()
 	if !self.Seats or self:GetNWBool("locked") then return end
 	self:DrawPilotHud()
 	self:DrawWeaponSelection()

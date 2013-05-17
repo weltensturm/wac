@@ -14,5 +14,5 @@ ENT.AdminSpawnable = false
 
 
 ENT.Name = "M134"
-ENT.Ammo = 400
-ENT.FireRate = 2000
+ENT.Ammo = 800
+ENT.FireRate = 4000

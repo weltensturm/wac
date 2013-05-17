@@ -17,10 +17,10 @@ ENT.SmokePos = ENT.FirePos
 
 ENT.Weight = 800
 
-ENT.EngineWeight = {
+--[[ENT.EngineWeight = {
 	Weight = 300,
 	position = ENT.TopRotorPos
-}
+}]]
 
 ENT.Wheels = {
 	{

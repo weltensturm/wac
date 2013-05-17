@@ -13,16 +13,11 @@ function ENT:Initialize()
 end
 
 
-
-function ENT:fire()
-	if !self.shooting then
-		self.shooting = true
-		self.sounds.stop:Stop()
-		self.sounds.shoot:Play()
-	end
+function ENT:fireBullet(pos)
+	if !self:takeAmmo(1) then return end
 	local bullet = {}
 	bullet.Num = 1
-	bullet.Src = self.aircraft:LocalToWorld(self.info.pos)
+	bullet.Src = self.aircraft:LocalToWorld(pos)
 	bullet.Dir = self:GetForward()
 	bullet.Spread = Vector(0.015,0.015,0)
 	bullet.Tracer = 5
@@ -35,6 +30,19 @@ function ENT:fire()
 	effectdata:SetScale(1.5)
 	util.Effect("MuzzleEffect", effectdata)
 	self:FireBullets(bullet)
+end
+
+
+function ENT:fire()
+	if !self.shooting then
+		self.shooting = true
+		self.sounds.stop:Stop()
+		self.sounds.shoot:Play()
+	end
+	for _, v in pairs(self.Pods) do
+		self:fireBullet(self:LocalToWorld(v))
+	end
+	self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
 end
 
 

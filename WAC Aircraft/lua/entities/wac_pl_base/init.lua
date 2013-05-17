@@ -152,7 +152,7 @@ function ENT:PhysicsUpdate(ph)
 	local controlAng =
 		Vector(
 			(self.controls.roll+hover.r)*dvel/400,
-			(self.controls.pitch+hover.p)*dvel/400,
+			(self.controls.pitch+hover.p)*dvel/700,
 			self.controls.yaw*1.5*math.Clamp(lvel.x/20, 0, 1)
 		) / math.pow(realism,1.3) * 4.17
 
@@ -161,15 +161,14 @@ function ENT:PhysicsUpdate(ph)
 	ph:AddAngleVelocity((aeroAng + controlAng)*phm)
 	ph:AddVelocity((aeroVelocity + controlThrottle)*phm)
 
-	for _,e in pairs(self.Wheels) do
+	for _,e in pairs(self.wheels) do
 		if IsValid(e) and e:GetPhysicsObject():IsValid() then
 		local ph=e:GetPhysicsObject()
 			local lpos=self:WorldToLocal(e:GetPos())
 			
 			e:GetPhysicsObject():AddVelocity((self:LocalToWorld(Vector(0, 0,
-					lpos.y*(self.controls.roll*1.5+hover.r)/math.pow(realism,1.3) -
-					lpos.x*(self.controls.pitch+hover.p)/math.pow(realism,1.3) -
-					lpos.y
+					math.abs(lpos.y)*controlAng.x -
+					math.abs(lpos.x)*controlAng.y
 			)/4)-pos --+ up*ang.r*lpos.y/self.WheelStabilize
 			+ aeroVelocity)*phm)
 
@@ -180,12 +179,7 @@ function ENT:PhysicsUpdate(ph)
 	end
 	
 	if self.EngineWeight and IsValid(self.EngineWeight.Entity) then
-		self.EngineWeight.Entity:GetPhysicsObject():AddVelocity((
-			up * aeroAng.x
-			+ ri * aeroAng.z
-			+ aeroVelocity
-			- Vector(0,0, math.pow(lvel.x/100,3)*self:WorldToLocal(self.EngineWeight.Entity:GetPos()).x/100000)
-		)*phm)
+		self.EngineWeight.Entity:GetPhysicsObject():AddVelocity((Vector(0,0,9.81*math.Clamp(dvel*dvel/10000, 0, 1)))*phm)
 	end
 
 	self.Lastphys = CurTime()
