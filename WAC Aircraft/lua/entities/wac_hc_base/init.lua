@@ -1018,10 +1018,13 @@ function ENT:DamageEngine(amt)
 				self.Passenger={}
 				self:StopAllSounds()
 				self.IgnoreDamage = false
+				for name, vec in pairs(self.Aerodynamics.Rotation) do
+					vec = VectorRand()*100
+				end
 				local effectdata = EffectData()
-				effectdata:SetStart( self.Entity:GetPos())
-				effectdata:SetOrigin( self.Entity:GetPos())
-				effectdata:SetScale( 1 )
+				effectdata:SetStart(self.Entity:GetPos())
+				effectdata:SetOrigin(self.Entity:GetPos())
+				effectdata:SetScale(1)
 				util.Effect("Explosion", effectdata)
 				util.Effect("HelicopterMegaBomb", effectdata)
 				util.Effect("cball_explode", effectdata)

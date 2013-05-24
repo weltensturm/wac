@@ -1,13 +1,18 @@
 
 include("shared.lua")
 
+
 ENT.RenderGroup = RENDERGROUP_BOTH
+
 
 ENT.thirdPerson = {
 	distance = 600,
 	angle = 10,
 	position = Vector(-50,0,100)
 }
+
+
+ENT.Scale = 1 -- hud scaling and such
 
 
 function ENT:receiveInput(name, value, seat)
@@ -22,7 +27,7 @@ function ENT:receiveInput(name, value, seat)
 	elseif name == "Camera" then
 		local player = LocalPlayer()
 		if value > 0.5 then
-			player.wac.useCamera = !player.wac.useCamera
+			player:GetVehicle().useCamera = !player:GetVehicle().useCamera
 		end
 	end
 end
@@ -36,12 +41,6 @@ function ENT:Initialize()
 	self.Emitter = ParticleEmitter(self:GetPos())
 	self.IsOn = false
 	self.LastThink = CurTime()
-	self.AngVel = Angle(0,0,0)
-	if self.RotorBlurModel then
-		self.BlurCModel = ClientsideModel(self.RotorBlurModel,RENDERGROUP_OPAQUE)
-		self.BlurCModel:SetNoDraw(true)
-	end
-	self.RotorTime = 0
 
 	self.weapons = {}
 	self.weaponAttachments = {}
@@ -196,7 +195,7 @@ end
 
 function ENT:DrawHUD(k,p)
 	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
-	if p.wac.useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
+	if p:GetVehicle().useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
 		self:drawCameraHUD(self.Camera.seat)
 	end
 end
@@ -266,7 +265,7 @@ end
 
 function ENT:DrawScreenSpaceEffects(k,p)
 	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
-	if p.wac.useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
+	if p:GetVehicle().useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
 		self:renderCameraEffects(self.WeaponAttachments.seat)
 	end
 end
@@ -389,7 +388,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	if p:GetVehicle():GetThirdPersonMode() then
 		view = self:viewCalcThirdPerson(k, p, view)
 	else
-		if p.wac.useCamera and self.camera then
+		if p:GetVehicle().useCamera and self.camera then
 			--view = weapon.CalcView(self,weapon,p,pos,ang,view)
 			view.origin = self.camera:LocalToWorld(self.Camera.viewPos)
 			view.angles = self.camera:GetAngles()
@@ -412,7 +411,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 		if p:GetInfo("wac_cl_air_smoothview") == "1" then
 			view.angles = self:GetAngles()*2 + self.viewPos.angles - p.wac.lagAngles
 			if shakeEnabled then
-				view.origin = view.origin + (p.wac.lagAccel - p.wac.lagAccelDelta)/7
+				view.origin = view.origin + (p.wac.lagAccel - p.wac.lagAccelDelta)/7*self.Scale
 			end
 		else
 			view.angles = self:GetAngles() + self.viewPos.angles
@@ -452,7 +451,7 @@ function ENT:DrawPilotHud()
 	
 	local uptm = self.rotorRpm
 	local upm = self.SmoothUp
-	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)+self.Seats[1].pos), ang,0.015)
+	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)*self.Scale+self.Seats[1].pos), ang, 0.015*self.Scale)
 	surface.SetDrawColor(HudCol)
 	surface.DrawRect(235, 249, 10, 2)
 	surface.DrawRect(255, 249, 10, 2)
@@ -509,7 +508,7 @@ function ENT:DrawWeaponSelection()
 	ang:RotateAroundAxis(fwd, 90)
 	for k,t in pairs(self.Seats) do
 		if k != "BaseClass" and !t.NoHud then
-			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)+t.pos), ang, 0.02)
+			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)*self.Scale + t.pos), ang, 0.02*self.Scale)
 			surface.DrawRect(-10, 0, 500, 30)
 			surface.DrawRect(-10, 30, 10, 20)
 			if t.weapons then
@@ -545,8 +544,8 @@ function ENT:Draw()
 					particle:SetDieTime(0.1)
 					particle:SetStartAlpha(255)
 					particle:SetEndAlpha(255)
-					particle:SetStartSize(40)
-					particle:SetEndSize(20)
+					particle:SetStartSize(40*self.Scale)
+					particle:SetEndSize(20*self.Scale)
 					particle:SetColor(255,255,255)
 					particle:SetRoll(math.Rand(-50,50))
 					self.Emitter:Finish()
@@ -557,8 +556,8 @@ function ENT:Draw()
 				particle:SetDieTime(0.1)
 				particle:SetStartAlpha(255)
 				particle:SetEndAlpha(255)
-				particle:SetStartSize(40)
-				particle:SetEndSize(20)
+				particle:SetStartSize(40*self.Scale)
+				particle:SetEndSize(20*self.Scale)
 				particle:SetColor(255,255,255)
 				particle:SetRoll(math.Rand(-50,50))
 				self.Emitter:Finish()

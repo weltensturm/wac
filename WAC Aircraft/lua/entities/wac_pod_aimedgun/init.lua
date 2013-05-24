@@ -81,6 +81,11 @@ function ENT:fire()
 end
 
 
+function ENT:canFire()
+	return self:GetSpinSpeed() > 0.8
+end
+
+
 function ENT:Think()
 	if IsValid(self.aircraft.camera) then
 		local c = self.aircraft.camera
@@ -90,11 +95,7 @@ function ENT:Think()
 	end
 	local s = math.Clamp(self:GetSpinSpeed() + (self.shouldShoot and FrameTime() or -FrameTime())*6, 0, 1)
 	self:SetSpinSpeed(s)
-	self.sounds.spin:ChangeVolume(s, 0.1)
-	self.sounds.spin:ChangePitch(s, 0.1)
-	if s > 0.8 then
-		self:basePodThink()
-	end
-	self:NextThink(CurTime())
-	return true
+	self.sounds.spin:ChangeVolume(s*100, 0.1)
+	self.sounds.spin:ChangePitch(s*100, 0.1)
+	return self:basePodThink()
 end

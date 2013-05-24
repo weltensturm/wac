@@ -31,8 +31,12 @@ function ENT:SetupDataTables()
 end
 
 
+function ENT:canFire()
+	return IsValid(self:GetTarget())
+end
+
+
 function ENT:fireRocket(pos, ang)
-	if !IsValid(self:GetTarget()) then return end
 	if !self:takeAmmo(1) then return end
 	local rocket = ents.Create("wac_hc_rocket")
 	rocket:SetPos(self:LocalToWorld(pos))

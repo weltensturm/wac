@@ -60,7 +60,6 @@ ENT.Weapons = {
 			Pods = {
 				Vector(50,40,40),
 				Vector(50,-40,40),
-				Sequential = false,
 			},
 		}
 	}

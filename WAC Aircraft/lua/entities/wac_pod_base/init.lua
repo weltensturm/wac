@@ -23,6 +23,11 @@ function ENT:trigger(b, player)
 end
 
 
+function ENT:canFire()
+	return true
+end
+
+
 function ENT:fire()
 end
 
@@ -46,7 +51,7 @@ end
 
 
 function ENT:Think()
-	if self.shouldShoot and self:GetNextShot() <= CurTime() and self:GetAmmo() > 0 then
+	if self:canFire() and self.shouldShoot and self:GetNextShot() <= CurTime() and self:GetAmmo() > 0 then
 		self:fire()
 		self:SetLastShot(CurTime())
 		self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
