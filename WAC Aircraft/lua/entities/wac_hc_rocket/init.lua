@@ -54,7 +54,7 @@ end
 function ENT:StartRocket()
 	if self.Started then return end	
 	self.Owner = self.Owner or self.Entity
-	self.Fuel=self.Fuel or 100
+	self.Fuel=self.Fuel or 1000
 	self.Started = true
 	local pos = self:GetPos()
 	local ang = self:GetAngles()
@@ -133,20 +133,16 @@ function ENT:PhysicsUpdate(ph)
 		)):GetNormal()
 		v.y = math.Clamp(v.y*10,-0.5,0.5)*300
 		v.z = math.Clamp(v.z*10,-0.5,0.5)*300
-		self:TakeFuel(math.abs(v.y)*2)
-		self:TakeFuel(math.abs(v.z)*2)
+		self:TakeFuel(math.abs(v.y) + math.abs(v.z))
 		ph:AddAngleVelocity(Vector(0,-v.z,v.y))
 	end
 	self:TakeFuel(self.Speed)
 end
 
 function ENT:TakeFuel(amt)
-	self.MaxFuel=self.MaxFuel or self.Fuel
-	self.Fuel=self.Fuel-amt/10*FrameTime()
-	if self.Fuel<=0 then
-		if self.Aimed and self.Owner:GetViewEntity()==self then
-			self.Owner:SetViewEntity(self.Owner)
-		end
+	self.Fuel = self.Fuel-amt/10*FrameTime()
+	if self.Fuel < 0 then
+		self:Remove()
 	end
 end
 

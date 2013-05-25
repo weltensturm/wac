@@ -52,7 +52,7 @@ function ENT:Initialize()
 				t.model:Spawn()
 				t.model:SetPos(self:LocalToWorld(info.pos))
 				t.model:SetParent(self)
-				table.insert(self.weaponAttachments, t)
+				self.weaponAttachments[name] = t
 			end
 		end
 	end
@@ -173,7 +173,7 @@ function ENT:attachmentThink()
 	local tr = util.QuickTrace(self:LocalToWorld(self.Camera.pos)+camAng:Forward()*20, camAng:Forward()*999999999, self)
 	for _, t in pairs(self.weaponAttachments) do
 		local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
-		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, 0)
+		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.roll or 0)
 		t.model:SetAngles(self:LocalToWorldAngles(localAng))
 		if t.offset then
 			t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
@@ -341,6 +341,7 @@ end
 
 function ENT:viewCalcFirstPerson(k, p, view)
 	p.wac = p.wac or {}
+	view.origin = self:LocalToWorld(Vector(0,0,34.15)*self.Scale+self.Seats[k].pos)
 	if
 		k == 1
 		and p:GetInfo("wac_cl_air_mouse") == "1"

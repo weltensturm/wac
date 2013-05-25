@@ -32,7 +32,7 @@ ENT.Seats = {
 	{
 		pos = Vector(115.3,0,61),
 		exit = Vector(115.3,60,5),
-		weapons = {"2A42", "9M120", "S-8"}
+		weapons = {"2A42", "9M120"}
 	},
 }
 
@@ -57,7 +57,9 @@ ENT.Weapons = {
 			Pods = {
 				Vector(3.22,72.94,49),
 				Vector(3.22,-72.94,49),
-			}
+			},
+			Ammo = 40,
+			FireRate = 300,
 		}
 	},
 	["9M120"] = {
@@ -88,7 +90,7 @@ ENT.Camera = {
 	model = "models/BF2/helicopters/Mil Mi-28/mi28_w2.mdl",
 	pos = Vector(181.44,0,42),
 	offset = Vector(1,0,0),
-	viewPos = Vector(4, 0, 3.5),
+	viewPos = Vector(7, 0, 3.5),
 	maxAng = Angle(50, 90, 0),
 	minAng = Angle(-5, -90, 0),
 	seat = 2
