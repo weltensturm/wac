@@ -88,7 +88,7 @@ function ENT:DrawPilotHud()
 	local tr=util.QuickTrace(pos+self:GetUp()*10,Vector(0,0,-999999),self.Entity)
 	surface.DrawText("ALT  "..math.ceil((pos.z-tr.HitPos.z)*0.01905).."m")
 	
-	if self:GetNWInt("seat_1_actwep") == 1 then
+	if self:GetNWInt("seat_1_actwep") == 1 and self.weapons["Hydra 70"] then
 		surface.SetTextPos(300,445)
 		local n = self.weapons["Hydra 70"]:GetAmmo()
 		surface.DrawText("Hydra 70" .. getspaces(n))

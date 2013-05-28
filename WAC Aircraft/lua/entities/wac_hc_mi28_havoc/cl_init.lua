@@ -32,7 +32,7 @@ local function getspaces(n)
 	return n
 end
 
---[[
+
 function ENT:DrawPilotHud()
 	local pos = self:GetPos()
 	local ang = self:GetAngles()
@@ -81,12 +81,10 @@ function ENT:DrawPilotHud()
 		local tr=util.QuickTrace(pos+self:GetUp()*10,Vector(0,0,-999999),self.Entity)
 		surface.DrawText("ALT  "..math.ceil((pos.z-tr.HitPos.z)*0.01905).."m")
 		
-		surface.SetTextPos(330,445)
-		local n=self:GetNWInt("seat_1_1_ammo")
-		if n==14 and self:GetNWFloat("seat_1_1_nextshot")>CurTime() then
-			n=0
+		if self:GetNWInt("seat_1_actwep") == 1 and self.weapons["S-8"] then
+			surface.SetTextPos(330,445)
+			surface.DrawText("S-8"..getspaces(self.weapons["S-8"]:GetAmmo()))
 		end
-		surface.DrawText(self.Seats[1].wep[1].Name..getspaces(n))
 	cam.End3D2D()
 end
-]]
+

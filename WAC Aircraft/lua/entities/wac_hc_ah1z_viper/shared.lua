@@ -5,6 +5,7 @@ ENT.Author = wac.author
 ENT.Category = wac.aircraft.spawnCategory
 ENT.Spawnable = true
 ENT.AdminSpawnable = true
+ENT.isWacAircraft = true
 
 ENT.PrintName		= "Viper AH-1Z"
 
@@ -19,7 +20,6 @@ ENT.BackRotorPos	= Vector(-362.61,22.06,107.22)
 ENT.BackRotorDir	= -1
 ENT.SmokePos		= Vector(-116.21,0,79.51)
 ENT.FirePos			= Vector(-89.17,0,92.37)
-ENT.ThirdPDist		= 500
 
 ENT.Seats = {
 	{

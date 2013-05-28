@@ -58,8 +58,9 @@ ENT.Weapons = {
 		class = "wac_pod_hydra",
 		info = {
 			Pods = {
-				Vector(50,40,40),
-				Vector(50,-40,40),
+				Vector(50,50,40),
+				Vector(50,-50,40),
+				Sequential = false,
 			},
 		}
 	}

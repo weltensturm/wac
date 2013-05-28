@@ -508,7 +508,7 @@ function ENT:DrawWeaponSelection()
 	ang:RotateAroundAxis(ri, 90)
 	ang:RotateAroundAxis(fwd, 90)
 	for k,t in pairs(self.Seats) do
-		if k != "BaseClass" and !t.NoHud then
+		if k != "BaseClass" and t.weapons then
 			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)*self.Scale + t.pos), ang, 0.02*self.Scale)
 			surface.DrawRect(-10, 0, 500, 30)
 			surface.DrawRect(-10, 30, 10, 20)

@@ -12,3 +12,16 @@ function ENT:SpawnFunction(p, tr)
 	e:Activate()
 	return e
 end
+
+function ENT:Initialize()
+	self:base("wac_pl_base").Initialize(self)
+	self.basePhysicsUpdate = self:base("wac_pl_base").PhysicsUpdate
+end
+
+function ENT:PhysicsUpdate(ph)
+	self:basePhysicsUpdate(ph)
+	local lvel = self:WorldToLocal(self:GetPos() + self:GetVelocity())
+	self:GetPhysicsObject():AddAngleVelocity(Vector(
+		0, 5-math.Clamp(math.abs(lvel.x)/100, 0, 5), 0
+	))
+end

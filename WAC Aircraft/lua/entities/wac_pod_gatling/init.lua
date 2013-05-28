@@ -17,10 +17,10 @@ function ENT:fireBullet(pos)
 	if !self:takeAmmo(1) then return end
 	local bullet = {}
 	bullet.Num = 1
-	bullet.Src = self.aircraft:LocalToWorld(pos)
+	bullet.Src = pos
 	bullet.Dir = self:GetForward()
 	bullet.Spread = Vector(0.015,0.015,0)
-	bullet.Tracer = 5
+	bullet.Tracer = 0
 	bullet.Force = 10
 	bullet.Damage = 20
 	bullet.Attacker = self.seat:GetDriver() or self.aircraft

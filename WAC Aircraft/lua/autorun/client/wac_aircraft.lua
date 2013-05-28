@@ -20,7 +20,7 @@ surface.CreateFont("wac_heli_big", {
 
 surface.CreateFont("wac_heli_small", {
 	font = "monospace",
-	size = 24
+	size = 22
 })
 
 
