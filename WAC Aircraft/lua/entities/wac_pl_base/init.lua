@@ -34,7 +34,7 @@ ENT.Aerodynamics = {
 }
 
 ENT.Agility = {
-	Thrust = 200
+	Thrust = 5.7
 }
 
 
@@ -92,17 +92,6 @@ function ENT:addRotors()
 	constraint.Axis(self.Entity, self.rotor, 0, 0, self.rotorPos, Vector(0,0,1), 0,0,0.01,1)
 	self:AddOnRemove(self.rotor)
 	
-	if self.EngineWeight then
-		local e = ents.Create("prop_physics")
-		e:SetModel("models/props_junk/PopCan01a.mdl")
-		e:SetPos(self:LocalToWorld(self.rotorPos))
-		e:Spawn()
-		e:SetNotSolid(true)
-		e:GetPhysicsObject():SetMass(self.EngineWeight.Weight)
-		constraint.Weld(self.Entity, e, 0, 0, 0, true, false)
-		self:AddOnRemove(e)
-		self.EngineWeight.Entity = e
-	end
 end
 
 function ENT:PhysicsUpdate(ph)
@@ -154,9 +143,9 @@ function ENT:PhysicsUpdate(ph)
 			(self.controls.roll+hover.r)*dvel/400,
 			(self.controls.pitch+hover.p)*dvel/700,
 			self.controls.yaw*1.5*math.Clamp(lvel.x/20, 0, 1)
-		) / math.pow(realism,1.3) * 4.17
+		) / math.pow(realism,1.3) * 4.17 * self.Agility.Rotate
 
-	local controlThrottle = fwd * (throttle * self.rotorRpm + self.rotorRpm/10) * self.Agility.Thrust / 35
+	local controlThrottle = fwd * (throttle * self.rotorRpm + self.rotorRpm/10) * self.Agility.Thrust
 	
 	ph:AddAngleVelocity((aeroAng + controlAng)*phm)
 	ph:AddVelocity((aeroVelocity + controlThrottle)*phm)
@@ -178,10 +167,6 @@ function ENT:PhysicsUpdate(ph)
 		end
 	end
 	
-	if self.EngineWeight and IsValid(self.EngineWeight.Entity) then
-		self.EngineWeight.Entity:GetPhysicsObject():AddVelocity((Vector(0,0,9.81*math.Clamp(dvel*dvel/10000, 0, 1)))*phm)
-	end
-
 	self.Lastphys = CurTime()
 end
 

@@ -702,17 +702,19 @@ function ENT:calcHover(ph,pos,vel,ang)
 		local av=ph:GetAngleVelocity()
 		if !self.EasyMode then
 			return{
-				p=math.Clamp(-ang.p*0.6-av.y*0.6-v.x*0.025,-0.65,0.65),
-				r=math.Clamp(-ang.r*0.6-av.x*0.6+v.y*0.025,-0.65,0.65)
+				p = math.Clamp(-ang.p*0.6-av.y*0.6-v.x*0.025,-0.65,0.65),
+				r = math.Clamp(-ang.r*0.6-av.x*0.6+v.y*0.025,-0.65,0.65),
+				t = math.Clamp(-v.z*0.3, -0.65, 0.65)
 			}
 		else
 			return{
-				p=math.Clamp(-ang.p*0.3-av.y*0.1-v.x*0.005,-0.1,0.1),
-				r=math.Clamp(-ang.r*0.6-av.x*0.8+v.y*0.045,-0.6,0.6)
+				p = math.Clamp(-ang.p*0.3-av.y*0.1-v.x*0.005,-0.1,0.1),
+				r = math.Clamp(-ang.r*0.6-av.x*0.8+v.y*0.045,-0.6,0.6),
+				t = math.Clamp(-v.z*0.3, -0.65, 0.65)
 			}
 		end
 	else
-		return {p=0,r=0}
+		return {p=0,r=0,t=0}
 	end
 end
 
@@ -734,10 +736,10 @@ function ENT:PhysicsUpdate(ph)
 		realism = math.Clamp(tonumber(pilot:GetInfo("wac_cl_air_realism")), 1, 3)
 	end
 
-	local t = self:calcHover(ph,pos,vel,ang)
+	local hover = self:calcHover(ph,pos,vel,ang)
 	
-	local rotateX = (self.controls.roll*1.5+t.r)*self.rotorRpm
-	local rotateY = (self.controls.pitch+t.p)*self.rotorRpm
+	local rotateX = (self.controls.roll*1.5+hover.r)*self.rotorRpm
+	local rotateY = (self.controls.pitch+hover.p)*self.rotorRpm
 	local rotateZ = self.controls.yaw*1.5*self.rotorRpm
 	
 	--local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
@@ -794,7 +796,7 @@ function ENT:PhysicsUpdate(ph)
 				end
 			end
 
-			local throttle = self.Agility.Thrust*up*(self.controls.throttle*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
+			local throttle = self.Agility.Thrust*up*((self.controls.throttle+hover.t)*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
 			local brakez = self:LocalToWorld(Vector(0, 0, lvel.z*dvel*self.rotorRpm/100000*self.Aerodynamics.RailRotor)) - pos
 			ph:AddVelocity((throttle - brakez)*phm)
 			

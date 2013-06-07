@@ -4,12 +4,17 @@ AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
 
+ENT.Sounds = {
+	shoot = "Warkanum/minigun_shoot.wav",
+	stop = "Warkanum/minigun_wind_stop.wav",
+}
+
 function ENT:Initialize()
 	self:base("wac_pod_base").Initialize(self)
-	self.sounds = {
-		shoot = CreateSound(self,"Warkanum/minigun_shoot.wav"),
-		stop = CreateSound(self,"Warkanum/minigun_wind_stop.wav"),
-	}
+	self.sounds = {}
+	for n, p in pairs(self.Sounds) do
+		self.sounds[n] = CreateSound(self, p)
+	end
 end
 
 

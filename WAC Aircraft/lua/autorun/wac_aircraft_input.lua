@@ -7,8 +7,8 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 	wac.aircraft.addControls("Flight Controls", {
 		Throttle = {{-1, 1}, KEY_W, KEY_S},
 		Pitch = {{-1, 1}, KEY_W, KEY_S},
-		Yaw = {{-1, 1}, KEY_D, KEY_A},
-		Roll = {{-1, 1}, KEY_D, KEY_A},
+		Yaw = {{-1, 1}, KEY_A, KEY_D},
+		Roll = {{-1, 1}, KEY_A, KEY_D},
 		Start = {true, KEY_R},
 		Hover = {true, MOUSE_4},
 	})

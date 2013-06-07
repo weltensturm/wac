@@ -223,7 +223,7 @@ function ENT:drawCameraHUD(seat)
 	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s-w, sh/2+s)
 	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s, sh/2+s-w)
 	
-	local weapon = self.weapons[self.Seats[seat].weapons[self:GetNWInt("seat_" .. seat .. "_actwep")]]
+	local weapon = self:getWeapon(seat)
 	if IsValid(weapon) and weapon.drawCrosshair then
 		weapon:drawCrosshair()
 	end
@@ -426,7 +426,6 @@ end
 function ENT:MovePlayerView(k,p,md)
 	if p.wac_air_resetview then md:SetViewAngles(Angle(0,90,0)) p.wac_air_resetview=false end
 	local freeView = md:GetViewAngles()
-	local id = self:GetNWInt("seat_"..k.."_actwep")
 	if !self.Seats or !self.Seats[k] then return end
 	if (k==1 and p:GetInfo("wac_cl_air_mouse")=="1" and !p.wac.viewFree) then
 		freeView.p = freeView.p-freeView.p*FrameTime()*6
@@ -501,31 +500,33 @@ function ENT:DrawPilotHud()
 	cam.End3D2D()
 end
 
+
+function ENT:getWeapon(seatId)
+	local seat = self.Seats[seatId]
+	if !seat then return end
+	local active = self:GetNWInt("seat_"..seatId.."_actwep")
+	if !seat.weapons or !seat.weapons[active] or !self.weapons then return end
+	return self.weapons[seat.weapons[active]]
+end
+
+
 function ENT:DrawWeaponSelection()
 	local fwd = self:GetForward()
 	local ri = self:GetRight()
 	local ang = self:GetAngles()
 	ang:RotateAroundAxis(ri, 90)
 	ang:RotateAroundAxis(fwd, 90)
-	for k,t in pairs(self.Seats) do
-		if k != "BaseClass" and t.weapons then
+	for k, t in pairs(self.Seats) do
+		if k != "BaseClass" and self:getWeapon(k) then
 			cam.Start3D2D(self:LocalToWorld(Vector(20,5,25)*self.Scale + t.pos), ang, 0.02*self.Scale)
 			surface.DrawRect(-10, 0, 500, 30)
 			surface.DrawRect(-10, 30, 10, 20)
-			if t.weapons then
-				local active = self:GetNWInt("seat_"..k.."_actwep")
-				if t.weapons[active] then
-					local weapon = self.weapons[t.weapons[active]]
-					local lastshot = weapon:GetLastShot()
-					local nextshot = weapon:GetNextShot()
-					local ammo = weapon:GetAmmo()
-					surface.DrawRect(10, 40, math.Clamp((nextshot-CurTime())/(nextshot-lastshot), 0, 1)*480, 10)
-					draw.SimpleText(k.." "..t.weapons[active], "wac_heli_big", 0, -2.5, Black, 0)
-					draw.SimpleText(ammo, "wac_heli_big", 480, -2.5, Black, 2)
-				end
-			else
-				draw.SimpleText(k, "wac_heli_big", 0, -2.5, Black, 0)
-			end
+			local weapon = self:getWeapon(k)
+			local lastshot = weapon:GetLastShot()
+			local nextshot = weapon:GetNextShot()
+			local ammo = weapon:GetAmmo()
+			draw.SimpleText(k.." "..t.weapons[self:GetNWInt("seat_"..k.."_actwep")], "wac_heli_big", 0, -2.5, Black, 0)
+			draw.SimpleText(ammo, "wac_heli_big", 480, -2.5, Black, 2)
 			cam.End3D2D()
 		end
 	end

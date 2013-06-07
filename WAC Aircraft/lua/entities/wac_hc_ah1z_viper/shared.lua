@@ -5,7 +5,6 @@ ENT.Author = wac.author
 ENT.Category = wac.aircraft.spawnCategory
 ENT.Spawnable = true
 ENT.AdminSpawnable = true
-ENT.isWacAircraft = true
 
 ENT.PrintName		= "Viper AH-1Z"
 
