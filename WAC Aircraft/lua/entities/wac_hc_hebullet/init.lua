@@ -25,7 +25,7 @@ function ENT:Initialize()
 	self:SetNWInt("size", self.Size)
 	self:SetNWFloat("width", self.Width)
 	local col=Color(self.col.r,self.col.g,self.col.b,255)
-	self:SetColor(col.r,col.g,col.b,col.a)
+	self:SetColor(col)
 	col.a=50
 	local trail=util.SpriteTrail(self.Entity, 0, col, false, self.Size/2, self.Size/8, self.Size/40, 1/self.Size/2*0.5, "trails/smoke.vmt")	
 	self.startTime=CurTime()
