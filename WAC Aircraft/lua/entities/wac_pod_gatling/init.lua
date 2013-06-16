@@ -44,8 +44,14 @@ function ENT:fire()
 		self.sounds.stop:Stop()
 		self.sounds.shoot:Play()
 	end
-	for _, v in pairs(self.Pods) do
-		self:fireBullet(self:LocalToWorld(v))
+	if self.Sequential then
+		self.currentPod = self.currentPod or 1
+		self:fireBullet(self:LocalToWorld(self.Pods[self.currentPod]))
+		self.currentPod = (self.currentPod == #self.Pods and 1 or self.currentPod + 1)
+	else
+		for _, v in pairs(self.Pods) do
+			self:fireBullet(self:LocalToWorld(v))
+		end
 	end
 	self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
 end
