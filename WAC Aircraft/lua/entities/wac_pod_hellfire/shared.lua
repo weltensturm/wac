@@ -14,12 +14,12 @@ ENT.Ammo = 8
 ENT.FireRate = 10
 ENT.Sequential = true
 
+ENT.Sounds = {
+	fire = "HelicopterVehicle/MissileShoot.mp3"
+}
 
 function ENT:Initialize()
 	self:base("wac_pod_base").Initialize(self)
-	self.sounds = {
-		fire = CreateSound(self, "HelicopterVehicle/MissileShoot.mp3")
-	}
 	self.baseThink = self:base("wac_pod_base").Think
 end
 
@@ -41,7 +41,8 @@ function ENT:fireRocket(pos, ang)
 	local rocket = ents.Create("wac_hc_rocket")
 	rocket:SetPos(self:LocalToWorld(pos))
 	rocket:SetAngles(ang)
-	rocket.Owner = self.seat:GetDriver() or self.aircraft
+	local driver = self.seat:GetDriver()
+	rocket.Owner = IsPlayer(driver) and driver or self.aircraft
 	rocket.Damage = 150
 	rocket.Radius = 200
 	rocket.Speed = 500

@@ -16,3 +16,4 @@ ENT.AdminSpawnable = false
 ENT.Name = "M134"
 ENT.Ammo = 800
 ENT.FireRate = 4000
+ENT.Sequential = false

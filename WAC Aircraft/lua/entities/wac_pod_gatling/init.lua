@@ -9,20 +9,12 @@ ENT.Sounds = {
 	stop = "Warkanum/minigun_wind_stop.wav",
 }
 
-function ENT:Initialize()
-	self:base("wac_pod_base").Initialize(self)
-	self.sounds = {}
-	for n, p in pairs(self.Sounds) do
-		self.sounds[n] = CreateSound(self, p)
-	end
-end
-
 
 function ENT:fireBullet(pos)
 	if !self:takeAmmo(1) then return end
 	local bullet = {}
 	bullet.Num = 1
-	bullet.Src = pos
+	bullet.Src = self.aircraft:LocalToWorld(pos)
 	bullet.Dir = self:GetForward()
 	bullet.Spread = Vector(0.015,0.015,0)
 	bullet.Tracer = 0
@@ -44,9 +36,17 @@ function ENT:fire()
 		self.sounds.stop:Stop()
 		self.sounds.shoot:Play()
 	end
-	for _, v in pairs(self.Pods) do
-		self:fireBullet(self:LocalToWorld(v))
+
+	if self.Sequential then
+		self.currentPod = self.currentPod or 1
+		self:fireBullet(self.Pods[self.currentPod], self:GetAngles())
+		self.currentPod = (self.currentPod == #self.Pods and 1 or self.currentPod + 1)
+	else
+		for _, pos in pairs(self.Pods) do
+			self:fireBullet(pos, self:GetAngles())
+		end
 	end
+
 	self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
 end
 

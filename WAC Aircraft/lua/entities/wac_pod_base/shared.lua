@@ -17,6 +17,7 @@ ENT.Name = "Base"
 ENT.Ammo = 10
 ENT.FireRate = 100 -- rpm
 
+ENT.Sounds = {}
 
 function ENT:SetupDataTables()
 	self:NetworkVar("Int", 0, "Ammo");

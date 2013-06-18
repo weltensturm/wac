@@ -14,6 +14,19 @@ function ENT:Initialize()
 	self:SetNextShot(0)
 	self:SetLastShot(0)
 	self:SetAmmo(self.Ammo)
+	self.sounds = {}
+	for n, p in pairs(self.Sounds) do
+		if n != "BaseClass" then
+			self.sounds[n] = CreateSound(self, p)
+		end
+	end
+end
+
+
+function ENT:OnRemove()
+	for _, s in pairs(self.sounds) do
+		s:Stop()
+	end
 end
 
 

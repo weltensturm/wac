@@ -9,9 +9,18 @@ ENT.AdminSpawnable = true
 ENT.PrintName = "Black Hawk UH-60"
 
 ENT.Model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_b.mdl"
-ENT.RotorPhModel = "models/props_junk/sawblade001a.mdl"
-ENT.RotorModel = "models/BF2/helicopters/UH-60 BlackHawk/uh60_r.mdl"
-ENT.BackRotorModel = "models/BF2/helicopters/UH-60 BlackHawk/uh60_rr.mdl"
+
+ENT.TopRotor = {
+	dir = -1,
+	pos = Vector(0, 0, 100),
+	model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_r.mdl",
+}
+
+ENT.BackRotor = {
+	pos = Vector(-400,5,130),
+	model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_rr.mdl",
+	angles = Angle(0, 0, 10)
+}
 
 ENT.SmokePos = Vector(-80,40,90)--{Vector(-80,40,90), Vector(-80,-40,90)}
 ENT.FirePos = Vector(-25,0,130)

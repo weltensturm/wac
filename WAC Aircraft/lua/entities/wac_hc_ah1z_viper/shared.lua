@@ -8,15 +8,21 @@ ENT.AdminSpawnable = true
 
 ENT.PrintName		= "Viper AH-1Z"
 
+ENT.TopRotor = {
+	dir = -1,
+	pos = Vector(0,0,120),
+	model = "Models/BF2/helicopters/AH-1 Cobra/ah1z_r.mdl",
+}
+
+ENT.BackRotor = {
+	dir = -1,
+	pos = Vector(-362.61,22.06,107.22),
+	model = "Models/BF2/helicopters/AH-1 Cobra/ah1z_tr.mdl"
+}
+
 ENT.Model			= "Models/BF2/helicopters/AH-1 Cobra/ah1z_b.mdl"
 ENT.RotorPhModel	= "models/props_junk/sawblade001a.mdl"
-ENT.RotorModel		= "Models/BF2/helicopters/AH-1 Cobra/ah1z_r.mdl"
-ENT.BackRotorModel	= "Models/BF2/helicopters/AH-1 Cobra/ah1z_tr.mdl"
 
-ENT.TopRotorPos		= Vector(0,0,120)
-ENT.TopRotorDir		= -1
-ENT.BackRotorPos	= Vector(-362.61,22.06,107.22)
-ENT.BackRotorDir	= -1
 ENT.SmokePos		= Vector(-116.21,0,79.51)
 ENT.FirePos			= Vector(-89.17,0,92.37)
 

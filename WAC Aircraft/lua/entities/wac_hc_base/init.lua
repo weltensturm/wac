@@ -17,10 +17,21 @@ ENT.UsePhysRotor = true
 ENT.Submersible = false
 ENT.CrRotorWash = true
 ENT.RotorWidth = 200
-ENT.TopRotorDir	= 1
-ENT.BackRotorDir = 1
-ENT.TopRotorPos	= Vector(0,0,50)
-ENT.BackRotorPos = Vector(-185,-3,13)
+
+ENT.TopRotor = {
+	dir = 1,
+	pos = Vector(0,0,50),
+	angles = Angle(0, 0, 0),
+	model = "models/props_borealis/borealis_door001a.mdl",
+}
+
+ENT.BackRotor = {
+	dir = 1,
+	pos = Vector(-185,-3,13),
+	angles = Angle(0, 0, 0),
+	model = "models/props_borealis/borealis_door001a.mdl"
+}
+
 ENT.EngineForce	= 20
 ENT.BrakeMul = 1
 ENT.AngBrakeMul	= 0.01
@@ -178,26 +189,26 @@ end
 
 function ENT:addRotors()
 	if self.UsePhysRotor then
-		self.TopRotor = self:addEntity("prop_physics")
-		self.TopRotor:SetModel("models/props_junk/sawblade001a.mdl")
-		self.TopRotor:SetPos(self:LocalToWorld(self.TopRotorPos))
-		self.TopRotor:SetAngles(self:GetAngles())
-		self.TopRotor:SetOwner(self.Owner)
-		self.TopRotor:SetNotSolid(true)
-		self.TopRotor:Spawn()
-		self.TopRotor.Phys = self.TopRotor:GetPhysicsObject()
-		self.TopRotor.Phys:EnableGravity(false)
-		self.TopRotor.Phys:SetMass(5)
-		self.TopRotor.Phys:EnableDrag(false)
-		self.TopRotor:SetNoDraw(true)
-		self.TopRotor.fHealth = 100
-		self.TopRotor.wac_ignore = true
-		if self.RotorModel then
+		self.topRotor = self:addEntity("prop_physics")
+		self.topRotor:SetModel("models/props_junk/sawblade001a.mdl")
+		self.topRotor:SetPos(self:LocalToWorld(self.TopRotor.pos))
+		self.topRotor:SetAngles(self:LocalToWorldAngles(self.TopRotor.angles))
+		self.topRotor:SetOwner(self.Owner)
+		self.topRotor:SetNotSolid(true)
+		self.topRotor:Spawn()
+		self.topRotor.Phys = self.topRotor:GetPhysicsObject()
+		self.topRotor.Phys:EnableGravity(false)
+		self.topRotor.Phys:SetMass(5)
+		self.topRotor.Phys:EnableDrag(false)
+		self.topRotor:SetNoDraw(true)
+		self.topRotor.fHealth = 100
+		self.topRotor.wac_ignore = true
+		if self.TopRotor.model then
 			local e = self:addEntity("wac_hitdetector")
 			self:SetNWEntity("wac_air_rotor_main", e)
-			e:SetModel(self.RotorModel)
-			e:SetPos(self:LocalToWorld(self.TopRotorPos))
-			e:SetAngles(self:GetAngles())
+			e:SetModel(self.TopRotor.model)
+			e:SetPos(self.topRotor:GetPos())
+			e:SetAngles(self.topRotor:GetAngles())
 			
 			e.TouchFunc = function(touchedEnt, pos)
 				local ph = touchedEnt:GetPhysicsObject()
@@ -207,10 +218,10 @@ function ENT:addRotors()
 							and !table.HasValue(self.entities, touchedEnt)
 							and touchedEnt != self
 							and !string.find(touchedEnt:GetClass(), "func*")
-							and IsValid(self.TopRotor)
+							and IsValid(self.topRotor)
 							and touchedEnt:GetMoveType() != MOVETYPE_NOCLIP
 					then
-						local rotorVel = self.TopRotor:GetPhysicsObject():GetAngleVelocity():Length()
+						local rotorVel = self.topRotor:GetPhysicsObject():GetAngleVelocity():Length()
 						local dmg, mass;
 						if touchedEnt:GetClass() == "worldspawn" then
 							dmg = rotorVel*rotorVel/100000
@@ -219,8 +230,8 @@ function ENT:addRotors()
 							dmg=(rotorVel*rotorVel + ph:GetVelocity():Length()*ph:GetVelocity():Length())/100000
 							mass = touchedEnt:GetPhysicsObject():GetMass()
 						end
-						ph:AddVelocity((pos-self.TopRotor:GetPos())*dmg/mass)
-						self.phys:AddVelocity((self.TopRotor:GetPos() - pos)*dmg/mass)
+						ph:AddVelocity((pos-self.topRotor:GetPos())*dmg/mass)
+						self.phys:AddVelocity((self.topRotor:GetPos() - pos)*dmg/mass)
 						self:DamageBigRotor(dmg)
 						e.Entity:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self.Entity, self.Entity)
 					end
@@ -229,32 +240,32 @@ function ENT:addRotors()
 			
 			e:Spawn()
 			e:SetNotSolid(true)
-			e:SetParent(self.TopRotor)
+			e:SetParent(self.topRotor)
 			e.wac_ignore = true
-			local obb=e:OBBMaxs()
-			self.RotorWidth=(obb.x>obb.y and obb.x or obb.y)
-			self.RotorHeight=obb.z
-			self.TopRotorModel=e
+			local obb = e:OBBMaxs()
+			self.RotorWidth = (obb.x>obb.y and obb.x or obb.y)
+			self.RotorHeight = obb.z
+			self.topRotor.vis = e
 		end
-		self.BackRotor = self:AddBackRotor()
-		self:SetNWEntity("rotor_rear",self.BackRotor)
-		constraint.Axis(self.Entity, self.TopRotor, 0, 0, self.TopRotorPos, Vector(0,0,1),0,0,0,1)
+		self.backRotor = self:AddBackRotor()
+		self:SetNWEntity("rotor_rear",self.backRotor)
+		constraint.Axis(self.Entity, self.topRotor, 0, 0, self.TopRotor.pos, Vector(0,0,1), 0,0,0,1)
 		if self.TwinBladed then
-			constraint.Axis(self.Entity, self.BackRotor, 0, 0, self.BackRotorPos, Vector(0,0,1),0,0,0,1)
+			constraint.Axis(self.Entity, self.backRotor, 0, 0, self.BackRotor.pos, Vector(0,0,1),0,0,0,1)
 		else
-			constraint.Axis(self.Entity, self.BackRotor, 0, 0, self.BackRotorPos, Vector(0,1,0),0,0,0,1)
+			constraint.Axis(self.Entity, self.backRotor, 0, 0, self.BackRotor.pos, Vector(0, 1, 0), 0,0,0,1)
 		end
-		self:AddOnRemove(self.TopRotor)
-		self:AddOnRemove(self.BackRotor)
+		self:AddOnRemove(self.topRotor)
+		self:AddOnRemove(self.backRotor)
 	end
 end
 
 
 function ENT:AddBackRotor()
 	local e = self:addEntity("wac_hitdetector")
-	e:SetModel(self.BackRotorModel)
-	e:SetAngles(self:GetAngles())
-	e:SetPos(self:LocalToWorld(self.BackRotorPos))
+	e:SetModel(self.BackRotor.model)
+	e:SetAngles(self:LocalToWorldAngles(self.BackRotor.angles))
+	e:SetPos(self:LocalToWorld(self.BackRotor.pos))
 	e.Owner = self.Owner
 	e:SetNWFloat("rotorhealth", 100)
 	e.wac_ignore = true
@@ -266,10 +277,10 @@ function ENT:AddBackRotor()
 					and !table.HasValue(self.entities, touchedEnt)
 					and touchedEnt != self
 					and !string.find(touchedEnt:GetClass(), "func*")
-					and IsValid(self.TopRotor)
+					and IsValid(self.topRotor)
 					and touchedEnt:GetMoveType() != MOVETYPE_NOCLIP
 			then
-				local rotorVel = self.BackRotor:GetPhysicsObject():GetAngleVelocity():Length()
+				local rotorVel = self.backRotor:GetPhysicsObject():GetAngleVelocity():Length()
 				local dmg, mass;
 				if touchedEnt:GetClass() == "worldspawn" then
 					dmg = rotorVel*rotorVel/100000
@@ -278,8 +289,8 @@ function ENT:AddBackRotor()
 					dmg=(rotorVel*rotorVel + ph:GetVelocity():Length()*ph:GetVelocity():Length())/100000
 					mass = touchedEnt:GetPhysicsObject():GetMass()
 				end
-				ph:AddVelocity((pos-self.BackRotor:GetPos())*dmg/mass)
-				self.phys:AddVelocity((self.BackRotor:GetPos() - pos)*dmg/mass)
+				ph:AddVelocity((pos-self.backRotor:GetPos())*dmg/mass)
+				self.phys:AddVelocity((self.backRotor:GetPos() - pos)*dmg/mass)
 				self:DamageSmallRotor(dmg)
 				touchedEnt:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self, self)
 			end
@@ -568,11 +579,11 @@ function ENT:Think()
 			local target = math.floor(math.Clamp(self.rotorRpm, 0, 0.99)*3)
 			if self.bodyGroup != target then
 				self.bodyGroup = target
-				if IsValid(self.TopRotorModel) then
-					self.TopRotorModel:SetBodygroup(1, self.bodyGroup)
+				if IsValid(self.topRotor.vis) then
+					self.topRotor.vis:SetBodygroup(1, self.bodyGroup)
 				end
-				if IsValid(self.BackRotor) then
-					self.BackRotor:SetBodygroup(1, self.bodyGroup)
+				if IsValid(self.backRotor) then
+					self.backRotor:SetBodygroup(1, self.bodyGroup)
 				end
 			end
 
@@ -613,7 +624,7 @@ function ENT:Think()
 		self:setVar("engineRpm", self.engineRpm)
 		self:setVar("up", self.controls.throttle)
 
-		if self.TopRotor and self.TopRotor:WaterLevel() > 0 then
+		if self.topRotor and self.topRotor:WaterLevel() > 0 then
 			self:DamageEngine(FrameTime())
 		end
 	end
@@ -745,12 +756,12 @@ function ENT:PhysicsUpdate(ph)
 	--local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	local phm = FrameTime()*66
 	if self.UsePhysRotor then
-		if self.TopRotor and self.TopRotor.Phys and self.TopRotor.Phys:IsValid() then
+		if self.topRotor and self.topRotor.Phys and self.topRotor.Phys:IsValid() then
 			if self.RotorBlurModel then
-				self.TopRotorModel:SetColor(Color(255,255,255,math.Clamp(1.3-self.rotorRpm,0.1,1)*255))
+				self.topRotor.vis:SetColor(Color(255,255,255,math.Clamp(1.3-self.rotorRpm,0.1,1)*255))
 			end
 
-			if self.active and self.TopRotor:WaterLevel() <= 0 and !self.engineDead then
+			if self.active and self.topRotor:WaterLevel() <= 0 and !self.engineDead then
 				self.engineRpm = math.Clamp(self.engineRpm+FrameTime()*0.1*wac.aircraft.cvars.startSpeed:GetFloat(),0,1)
 			else
 				self.engineRpm = math.Clamp(self.engineRpm-FrameTime()*0.16*wac.aircraft.cvars.startSpeed:GetFloat(), 0, 1)
@@ -758,9 +769,9 @@ function ENT:PhysicsUpdate(ph)
 
 			-- top rotor physics
 			local rotor = {}
-			rotor.phys = self.TopRotor.Phys
+			rotor.phys = self.topRotor.Phys
 			rotor.angVel = rotor.phys:GetAngleVelocity()
-			rotor.upvel = self.TopRotor:WorldToLocal(self.TopRotor:GetVelocity()+self.TopRotor:GetPos()).z
+			rotor.upvel = self.topRotor:WorldToLocal(self.topRotor:GetVelocity()+self.topRotor:GetPos()).z
 			rotor.brake =
 				math.Clamp(math.abs(rotor.angVel.z) - 2950, 0, 100)/10 -- RPM cap
 				+ math.pow(math.Clamp(1500 - math.abs(rotor.angVel.z), 0, 1500)/900, 3)
@@ -768,28 +779,28 @@ function ENT:PhysicsUpdate(ph)
 				- (rotor.upvel - self.rotorRpm)*self.controls.throttle/1000
 
 			rotor.targetAngVel =
-				Vector(0, 0, math.pow(self.engineRpm,2)*self.TopRotorDir*10)
+				Vector(0, 0, math.pow(self.engineRpm,2)*self.TopRotor.dir*10)
 				- rotor.angVel*rotor.brake/200
 
 			rotor.phys:AddAngleVelocity(rotor.targetAngVel)
 
-			self.rotorRpm = math.Clamp(rotor.angVel.z/3000 * self.TopRotorDir, -1, 1)
+			self.rotorRpm = math.Clamp(rotor.angVel.z/3000 * self.TopRotor.dir, -1, 1)
 
 			-- body physics
-			local mind = (100-self.TopRotor.fHealth)/100
+			local mind = (100-self.topRotor.fHealth)/100
 			ph:AddAngleVelocity(VectorRand()*self.rotorRpm*mind*phm)
 
-			if IsValid(self.BackRotor) and self.BackRotor.Phys:IsValid() then
-				--self.BackRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotorDir-self.BackRotor.Phys:GetAngleVelocity().y/10,0)*phm)
+			if IsValid(self.backRotor) and self.backRotor.Phys:IsValid() then
+				--self.backRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotor.dir-self.backRotor.Phys:GetAngleVelocity().y/10,0)*phm)
 				if self.TwinBladed then
-					self.BackRotor.Phys:AddAngleVelocity(rotor.targetAngVel)
+					self.backRotor.Phys:AddAngleVelocity(rotor.targetAngVel)
 				else
-					self.BackRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotorDir-self.BackRotor.Phys:GetAngleVelocity().y/10,0)*phm)
+					self.backRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotor.dir-self.backRotor.Phys:GetAngleVelocity().y/10,0)*phm)
 				end
 
-				self.BackRotor.Phys:AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity() * rotorBrake / 10)
+				self.backRotor.Phys:AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity() * rotorBrake / 10)
 			else
-				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotorDir*2))*phm)
+				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotor.dir*2))*phm)
 				ph:AddAngleVelocity(VectorRand()*self.rotorRpm*mind*phm)
 				if !self.sounds.CrashAlarm:IsPlaying() and !self.disabled then
 					self.sounds.CrashAlarm:Play()
@@ -800,17 +811,17 @@ function ENT:PhysicsUpdate(ph)
 			local brakez = self:LocalToWorld(Vector(0, 0, lvel.z*dvel*self.rotorRpm/100000*self.Aerodynamics.RailRotor)) - pos
 			ph:AddVelocity((throttle - brakez)*phm)
 			
-		elseif IsValid(self.BackRotor) and self.BackRotor.Phys:IsValid() then
-			local backSpeed = (self.BackRotor.Phys:GetAngleVelocity() - ph:GetAngleVelocity()).y
+		elseif IsValid(self.backRotor) and self.backRotor.Phys:IsValid() then
+			local backSpeed = (self.backRotor.Phys:GetAngleVelocity() - ph:GetAngleVelocity()).y
 			ph:AddAngleVelocity(Vector(0,0,backSpeed/300))
-			self.BackRotor.Phys:AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity()*-0.01)
+			self.backRotor.Phys:AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity()*-0.01)
 		end
 	else
 		self.rotorRpm=math.Approach(self.rotorRpm, self.active and 1 or 0, self.EngineForce/1000)
 		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.controls.throttle+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
 	end
 
-	local controlAng = Vector(rotateX, rotateY, IsValid(self.BackRotor) and rotateZ or 0) / math.pow(realism, 1.3) * 4.17 * self.Agility.Rotate
+	local controlAng = Vector(rotateX, rotateY, IsValid(self.backRotor) and rotateZ or 0) / math.pow(realism, 1.3) * 4.17 * self.Agility.Rotate
 
 	local aeroVelocity, aeroAng = self:calcAerodynamics(ph)
 
@@ -867,17 +878,17 @@ end
 function ENT:DamageSmallRotor(amt)
 	if amt < 1 then return end
 	self.Entity:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,20,200))
-	if self.BackRotor and self.BackRotor:IsValid() then
-		self.BackRotor.fHealth = self.BackRotor.fHealth - amt
-		self.BackRotor.Phys:AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity()*-amt/50)
-		if self.BackRotor.fHealth < 0 then
+	if self.backRotor and self.backRotor:IsValid() then
+		self.backRotor.fHealth = self.backRotor.fHealth - amt
+		self.backRotor.Phys:AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity()*-amt/50)
+		if self.backRotor.fHealth < 0 then
 			self:KillBackRotor()
 			if !self.sounds.CrashAlarm:IsPlaying() and !self.disabled then
 				self.sounds.CrashAlarm:Play()
 			end
 		end
-		if self.BackRotor then
-			self:SetNWFloat("rotorhealth", self.BackRotor.fHealth)
+		if self.backRotor then
+			self:SetNWFloat("rotorhealth", self.backRotor.fHealth)
 		else
 			self:SetNWFloat("rotorhealth", -1)
 		end
@@ -886,18 +897,18 @@ function ENT:DamageSmallRotor(amt)
 end
 
 function ENT:KillBackRotor()
-	if !self.BackRotor then return end
+	if !self.backRotor then return end
 	local e = self:addEntity("prop_physics")
-	e:SetAngles(self.BackRotor:GetAngles())
-	e:SetPos(self.BackRotor:GetPos())
-	e:SetModel(self.BackRotor:GetModel())
-	e:SetSkin(self.BackRotor:GetSkin())
+	e:SetAngles(self.backRotor:GetAngles())
+	e:SetPos(self.backRotor:GetPos())
+	e:SetModel(self.backRotor:GetModel())
+	e:SetSkin(self.backRotor:GetSkin())
 	e:Spawn()
-	e:SetVelocity(self.BackRotor:GetVelocity())
-	e:GetPhysicsObject():AddAngleVelocity(self.BackRotor.Phys:GetAngleVelocity())
-	e:GetPhysicsObject():SetMass(self.BackRotor.Phys:GetMass())
-	self.BackRotor:Remove()
-	self.BackRotor=nil
+	e:SetVelocity(self.backRotor:GetVelocity())
+	e:GetPhysicsObject():AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity())
+	e:GetPhysicsObject():SetMass(self.backRotor.Phys:GetMass())
+	self.backRotor:Remove()
+	self.backRotor = nil
 	timer.Simple(10, function()
 		if e and e:IsValid() then
 			e:Remove()
@@ -908,19 +919,19 @@ end
 function ENT:DamageBigRotor(amt)
 	if amt < 1 then return end
 	self.Entity:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,0,100))
-	if self.TopRotor and self.TopRotor:IsValid() then
-		self.TopRotor.fHealth = self.TopRotor.fHealth - amt
-		self.TopRotor.Phys:AddAngleVelocity((self.TopRotor.Phys:GetAngleVelocity()*-amt)*0.001)
-		if self.TopRotor.fHealth < 0 then
+	if self.topRotor and self.topRotor:IsValid() then
+		self.topRotor.fHealth = self.topRotor.fHealth - amt
+		self.topRotor.Phys:AddAngleVelocity((self.topRotor.Phys:GetAngleVelocity()*-amt)*0.001)
+		if self.topRotor.fHealth < 0 then
 			self:KillTopRotor()
 			if !self.sounds.CrashAlarm:IsPlaying() and !self.disabled then
 				self.sounds.CrashAlarm:Play()
 			end
-		elseif self.TopRotor.fHealth < 50 and !self.sounds.MinorAlarm:IsPlaying() and !self.disabled then
+		elseif self.topRotor.fHealth < 50 and !self.sounds.MinorAlarm:IsPlaying() and !self.disabled then
 			self.sounds.MinorAlarm:Play()
 		end
-		if self.TopRotor then
-			self:SetNWFloat("rotorhealth", self.TopRotor.fHealth)
+		if self.topRotor then
+			self:SetNWFloat("rotorhealth", self.topRotor.fHealth)
 		else
 			self:SetNWFloat("rotorhealth", -1)
 		end
@@ -929,12 +940,12 @@ function ENT:DamageBigRotor(amt)
 end
 
 function ENT:KillTopRotor()
-	if !self.TopRotor then return end
+	if !self.topRotor then return end
 	local e = self:addEntity("prop_physics")
-	e:SetPos(self.TopRotor:GetPos())
-	e:SetAngles(self.TopRotor:GetAngles())
+	e:SetPos(self.topRotor:GetPos())
+	e:SetAngles(self.topRotor:GetAngles())
 	e:SetModel(self.RotorModel)
-	e:SetSkin(self.TopRotorModel:GetSkin())
+	e:SetSkin(self.topRotor.vis:GetSkin())
 	e:Spawn()
 	self:SetNWFloat("up",0)
 	self:SetNWFloat("uptime",0)
@@ -944,11 +955,11 @@ function ENT:KillTopRotor()
 	if ph:IsValid() then
 		ph:SetMass(1000)
 		ph:EnableDrag(false)
-		ph:AddAngleVelocity(self.TopRotor.Phys:GetAngleVelocity())
-		ph:SetVelocity(self.TopRotor.Phys:GetAngleVelocity():Length()*self.TopRotor:GetUp()*0.5 + self.TopRotor:GetVelocity())
+		ph:AddAngleVelocity(self.topRotor.Phys:GetAngleVelocity())
+		ph:SetVelocity(self.topRotor.Phys:GetAngleVelocity():Length()*self.topRotor:GetUp()*0.5 + self.topRotor:GetVelocity())
 	end
-	self.TopRotor:Remove()
-	self.TopRotor = nil
+	self.topRotor:Remove()
+	self.topRotor = nil
 	e:SetNotSolid(true)
 	timer.Simple(15, function()
 		if !e or !e:IsValid() then return end
@@ -966,10 +977,10 @@ function ENT:OnTakeDamage(dmg)
 	local rdmg = dmg:GetDamage()
 	self:DamageEngine(rdmg/3)
 	local pos=self:WorldToLocal(dmg:GetDamagePosition())
-	if pos:Distance(self.TopRotorPos)<40 then
+	if pos:Distance(self.TopRotor.pos)<40 then
 		self:DamageBigRotor(rdmg/15)	
 	end
-	if pos:Distance(self.BackRotorPos)<70 then
+	if pos:Distance(self.BackRotor.pos)<70 then
 		self:DamageSmallRotor(rdmg/2)
 	end
 	self.LastAttacker=dmg:GetAttacker()
@@ -1023,6 +1034,10 @@ function ENT:DamageEngine(amt)
 				for name, vec in pairs(self.Aerodynamics.Rotation) do
 					vec = VectorRand()*100
 				end
+				for name, vec in pairs(self.Aerodynamics.Lift) do
+					vec = VectorRand()
+				end
+				self.Aerodynamics.Rail = Vector(0.5, 0.5, 0.5)
 				local effectdata = EffectData()
 				effectdata:SetStart(self.Entity:GetPos())
 				effectdata:SetOrigin(self.Entity:GetPos())

@@ -12,10 +12,6 @@ ENT.Sounds = {
 
 function ENT:Initialize()
 	self:base("wac_pod_base").Initialize(self)
-	self.sounds = {}
-	for n, p in pairs(self.Sounds) do
-		self.sounds[n] = CreateSound(self, p)
-	end
 	self.sounds.spin:ChangePitch(0,0.1)
 	self.sounds.spin:ChangeVolume(0,0.1)
 	self.sounds.spin:Play()

@@ -90,7 +90,7 @@ if SERVER then
 					for i, category in pairs(wac.aircraft.controls) do
 						for name, control in pairs(category.list) do
 							local n = joystick.Get(p, "wac_air_"..name)
-							if n != wac.aircraft.joyCache[name] then
+							if n and n != wac.aircraft.joyCache[name] then
 								wac.aircraft.joyCache[name] = n
 								n = (n == true and 1 or (n == false and 0 or (n/127.5-1)))
 								e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
