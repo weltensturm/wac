@@ -33,13 +33,11 @@ function ENT:fire()
 	b.Size = 0
 	b.Width = 0
 	b:Spawn()
-	local attacker = (IsValid(self.seat:GetDriver()) and self.seat:GetDriver() or self.aircraft)
-	b.Owner = attacker
+	b.Owner = self:getAttacker()
 	b.Explode = function(self,tr)
 		if self.Exploded then return end
 		self.Exploded = true
 		if !tr.HitSky then
-			self.Owner = attacker
 			local bt = {}
 			bt.Src 		= self:GetPos()
 			bt.Dir 		= tr.Normal
@@ -55,7 +53,7 @@ function ENT:fire()
 			explode:SetKeyValue("spawnflags", "19")
 			explode:Fire("Explode", 0, 0)
 			timer.Simple(5,function() explode:Remove() end)
-			util.BlastDamage(self, attacker, tr.HitPos, 40, 20)
+			util.BlastDamage(self, self.Owner, tr.HitPos, 40, 20)
 			local ed = EffectData()
 			ed:SetEntity(self)
 			ed:SetAngles(tr.HitNormal:Angle())

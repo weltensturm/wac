@@ -41,8 +41,7 @@ function ENT:fireRocket(pos, ang)
 	local rocket = ents.Create("wac_hc_rocket")
 	rocket:SetPos(self:LocalToWorld(pos))
 	rocket:SetAngles(ang)
-	local driver = self.seat:GetDriver()
-	rocket.Owner = IsPlayer(driver) and driver or self.aircraft
+	rocket.Owner = self:getAttacker()
 	rocket.Damage = 150
 	rocket.Radius = 200
 	rocket.Speed = 500

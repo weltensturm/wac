@@ -9,13 +9,18 @@ ENT.AdminSpawnable = true
 ENT.PrintName = "Little Bird AH-6"
 
 ENT.Model = "models/Flyboi/LittleBird/littlebirda_fb.mdl"
-ENT.RotorPhModel = "models/props_junk/sawblade001a.mdl"
-ENT.RotorModel = "models/Flyboi/LittleBird/littlebirdrotorm_fb.mdl"
-ENT.BackRotorModel = "models/Flyboi/LittleBird/LittleBirdT_fb.mdl"
 
-ENT.BackRotorDir = -1
-ENT.TopRotorPos	= Vector(-10,0,100)
-ENT.BackRotorPos = Vector(-217,9,73)
+ENT.TopRotor = {
+	model = "models/Flyboi/LittleBird/littlebirdrotorm_fb.mdl",
+	pos = Vector(-10,0,100),
+}
+
+ENT.BackRotor = {
+	dir = -1,
+	model = "models/Flyboi/LittleBird/LittleBirdT_fb.mdl",
+	pos = Vector(-217,9,73), 
+}
+
 ENT.EngineForce = 20
 ENT.Weight = 1300
 

@@ -579,7 +579,7 @@ function ENT:Think()
 			local target = math.floor(math.Clamp(self.rotorRpm, 0, 0.99)*3)
 			if self.bodyGroup != target then
 				self.bodyGroup = target
-				if IsValid(self.topRotor.vis) then
+				if self.topRotor and IsValid(self.topRotor.vis) then
 					self.topRotor.vis:SetBodygroup(1, self.bodyGroup)
 				end
 				if IsValid(self.backRotor) then
@@ -944,7 +944,7 @@ function ENT:KillTopRotor()
 	local e = self:addEntity("prop_physics")
 	e:SetPos(self.topRotor:GetPos())
 	e:SetAngles(self.topRotor:GetAngles())
-	e:SetModel(self.RotorModel)
+	e:SetModel(self.TopRotor.model)
 	e:SetSkin(self.topRotor.vis:GetSkin())
 	e:Spawn()
 	self:SetNWFloat("up",0)
@@ -1019,6 +1019,8 @@ function ENT:DamageEngine(amt)
 
 			if self.engineHealth < 0 and !self.disabled then
 				self.disabled = true
+				self.engineRpm = 0
+				self.rotorRpm = 0
 				local lasta=(self.LastDamageTaken<CurTime()+6 and self.LastAttacker or self.Entity)
 				for k, p in pairs(self.Passenger) do
 					if p and p:IsValid() then

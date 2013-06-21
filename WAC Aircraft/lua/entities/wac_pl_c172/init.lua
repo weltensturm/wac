@@ -23,5 +23,5 @@ function ENT:PhysicsUpdate(ph)
 	local lvel = self:WorldToLocal(self:GetPos() + self:GetVelocity())
 	self:GetPhysicsObject():AddAngleVelocity(Vector(
 		0, 5-math.Clamp(math.abs(lvel.x)/100, 0, 5), 0
-	))
+	)*FrameTime()*60)
 end

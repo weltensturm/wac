@@ -20,7 +20,7 @@ function ENT:fireBullet(pos)
 	bullet.Tracer = 0
 	bullet.Force = 10
 	bullet.Damage = 20
-	bullet.Attacker = self.seat:GetDriver() or self.aircraft
+	bullet.Attacker = self:getAttacker()
 	local effectdata = EffectData()
 	effectdata:SetOrigin(bullet.Src)
 	effectdata:SetAngles(self:GetAngles())

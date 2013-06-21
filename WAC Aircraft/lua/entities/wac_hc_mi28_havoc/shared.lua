@@ -9,14 +9,17 @@ ENT.AdminSpawnable = true
 ENT.PrintName = "Havoc Mi-28"
 
 ENT.Model = "models/BF2/helicopters/Mil Mi-28/mi28_b.mdl"
-ENT.RotorPhModel = "models/props_junk/sawblade001a.mdl"
-ENT.RotorModel = "models/BF2/helicopters/Mil Mi-28/mi28_r.mdl"
-ENT.BackRotorModel = "models/BF2/helicopters/Mil Mi-28/mi28_tr.mdl"
 
-ENT.TopRotorPos = Vector(0,0,119)
-ENT.TopRotorDir = 1
-ENT.BackRotorPos = Vector(-435.09,18.46,164.91)
-ENT.BackRotorDir = 1
+ENT.TopRotor = {
+	pos = Vector(0,0,119),
+	model = "models/BF2/helicopters/Mil Mi-28/mi28_r.mdl",
+}
+
+ENT.BackRotor = {
+	pos = Vector(-435.09,18.46,164.91),
+	model = "models/BF2/helicopters/Mil Mi-28/mi28_tr.mdl",
+}
+
 ENT.SmokePos = Vector(-80,0,50)
 ENT.FirePos = Vector(-50,0,100)
 ENT.MaxEnterDistance = 100

@@ -30,9 +30,17 @@ function ENT:OnRemove()
 end
 
 
-function ENT:trigger(b, player)
+function ENT:getAttacker()
+	if IsValid(self.seat) and IsValid(self.seat:GetDriver()) then
+		return self.seat:GetDriver()
+	end
+	return self.aircraft
+end
+
+
+function ENT:trigger(b, seat)
 	self.shouldShoot = b
-	self.seat = player
+	self.seat = seat
 end
 
 
@@ -65,9 +73,13 @@ end
 
 function ENT:Think()
 	if self:canFire() and self.shouldShoot and self:GetNextShot() <= CurTime() and self:GetAmmo() > 0 then
-		self:fire()
-		self:SetLastShot(CurTime())
-		self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
+		if !IsValid(self.seat:GetDriver()) then
+			self.shouldShoot = false
+		else
+			self:fire()
+			self:SetLastShot(CurTime())
+			self:SetNextShot(self:GetLastShot() + 60/self.FireRate)
+		end
 	end
 	if self:GetNextShot() <= CurTime() then
 		self:stop()
