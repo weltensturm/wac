@@ -77,10 +77,7 @@ ENT.Aerodynamics = {
 	},
 	Rail = Vector(0.3, 3, 2),
 	RailRotor = 1, -- like Z rail but only active when moving and the rotor is turning
-	Drag = {
-		Directional = Vector(0.01, 0.01, 0.01),
-		Angular = Vector(0.01, 0.01, 0.01)
-	}
+	AngleDrag = Vector(0.01, 0.01, 0.01),
 }
 
 
@@ -701,7 +698,7 @@ function ENT:calcAerodynamics(ph)
 			lvel.y*self.Aerodynamics.Rotation.Right +
 			lvel.z*self.Aerodynamics.Rotation.Top
 		) / 10000
-		- ph:GetAngleVelocity()*self.Aerodynamics.Drag.Angular
+		- ph:GetAngleVelocity()*self.Aerodynamics.AngleDrag
 
 	return targetVelocity, targetAngVel
 end
@@ -741,11 +738,7 @@ function ENT:PhysicsUpdate(ph)
 	local dvel = vel:Length()
 	local lvel = self:WorldToLocal(pos+vel)
 
-	local realism = 2
 	local pilot = self.Passenger[1]
-	if IsValid(pilot) then
-		realism = math.Clamp(tonumber(pilot:GetInfo("wac_cl_air_realism")), 1, 3)
-	end
 
 	local hover = self:calcHover(ph,pos,vel,ang)
 	
@@ -821,7 +814,7 @@ function ENT:PhysicsUpdate(ph)
 		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.controls.throttle+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
 	end
 
-	local controlAng = Vector(rotateX, rotateY, IsValid(self.backRotor) and rotateZ or 0) / math.pow(realism, 1.3) * 4.17 * self.Agility.Rotate
+	local controlAng = Vector(rotateX, rotateY, IsValid(self.backRotor) and rotateZ or 0) * self.Agility.Rotate
 
 	local aeroVelocity, aeroAng = self:calcAerodynamics(ph)
 
@@ -833,12 +826,12 @@ function ENT:PhysicsUpdate(ph)
 			local ph=e:GetPhysicsObject()
 			if ph:IsValid() then
 				local lpos=self:WorldToLocal(e:GetPos())
-				e:GetPhysicsObject():AddVelocity(
+				e:GetPhysicsObject():AddVelocity((
 						Vector(0,0,6)+self:LocalToWorld(Vector(
-							0, 0, lpos.y*rotateX/math.pow(realism,1.3) - lpos.x*rotateY/math.pow(realism,1.3)
+							0, 0, lpos.y*rotateX - lpos.x*rotateY
 						)/4)-pos
-				)
-				e:GetPhysicsObject():AddVelocity(up*ang.r*lpos.y/self.WheelStabilize)
+				)*phm)
+				e:GetPhysicsObject():AddVelocity(up*ang.r*lpos.y/self.WheelStabilize*phm)
 				if self.controls.throttle < -0.8 then -- apply wheel brake
 					ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5)
 				end

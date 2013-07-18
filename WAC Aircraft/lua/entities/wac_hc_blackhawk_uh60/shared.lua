@@ -17,10 +17,11 @@ ENT.TopRotor = {
 }
 
 ENT.BackRotor = {
-	pos = Vector(-400,5,130),
+	pos = Vector(-400,17,134),
 	model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_rr.mdl",
-	angles = Angle(0, 0, 10)
+	angles = Angle(0, 0, 192)
 }
+
 
 ENT.SmokePos = Vector(-80,40,90)--{Vector(-80,40,90), Vector(-80,-40,90)}
 ENT.FirePos = Vector(-25,0,130)

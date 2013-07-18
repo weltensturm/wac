@@ -18,19 +18,16 @@ ENT.CrRotorWash = false
 ENT.Aerodynamics = {
 	Rotation = {
 		Front = Vector(0, 0, 0),
-		Right = Vector(0, 0, 70), -- Rotate towards flying direction
-		Top = Vector(0, -70, 0)
+		Right = Vector(0, 0, 50), -- Rotate towards flying direction
+		Top = Vector(0, -50, 0)
 	},
 	Lift = {
-		Front = Vector(0, 0, 70), -- Go up when flying forward
+		Front = Vector(0, 0, 50), -- Go up when flying forward
 		Right = Vector(0, 0, 0),
 		Top = Vector(0, 0, -0.5)
 	},
 	Rail = Vector(1, 5, 30),
-	Drag = {
-		Directional = Vector(0.01, 0.01, 0.01),
-		Angular = Vector(0.01, 0.01, 0.01)
-	}
+	AngleDrag = Vector(0.01, 0.01, 0.01),
 }
 
 ENT.Agility = {
@@ -109,18 +106,11 @@ function ENT:PhysicsUpdate(ph)
 
 	local throttle = self.controls.throttle/2 + 0.5
 
-	local realism = 3
 	local phm = FrameTime()*66 --(wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	
 	if !self.disabled then
-		if IsValid(self.Passenger[1]) and self.Passenger[1]:IsPlayer() then
-			realism = math.Clamp(tonumber(self.Passenger[1]:GetInfo("wac_cl_air_realism")),1,3)
-		end
 	
 		if self.rotor and self.rotor.phys and self.rotor.phys:IsValid() then
-			if self.RotorBlurModel then
-				self.rotorModel:SetColor(255,255,255,math.Clamp(1.3-self.rotorRpm,0.1,1)*255)
-			end
 			self.rotorRpm = math.Clamp(self.rotor.phys:GetAngleVelocity().z/3500*self.rotorDir*phm,-1,1)
 			if self.active and self.rotor:WaterLevel() <= 0 then
 				self.engineRpm = math.Clamp(self.engineRpm+FrameTime(),0,1)
@@ -143,13 +133,47 @@ function ENT:PhysicsUpdate(ph)
 			(self.controls.roll+hover.r)*dvel/400,
 			(self.controls.pitch+hover.p)*dvel/700,
 			self.controls.yaw*1.5*math.Clamp(lvel.x/20, 0, 1)
-		) / math.pow(realism,1.3) * 4.17 * self.Agility.Rotate
+		) * self.Agility.Rotate
 
 	local controlThrottle = fwd * (throttle * self.rotorRpm + self.rotorRpm/10) * self.Agility.Thrust
 	
 	ph:AddAngleVelocity((aeroAng + controlAng)*phm)
 	ph:AddVelocity((aeroVelocity + controlThrottle)*phm)
 
+	for _,e in pairs(self.wheels) do
+		if IsValid(e) then
+			local ph = e:GetPhysicsObject()
+			if ph:IsValid() then
+				ph:AddVelocity(Vector(0, 0, 6)*phm)
+				if self.controls.throttle < -0.8 then
+					ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5*phm)
+				end
+			end
+		end
+	end
+	
+	--[[
+	for _,e in pairs(self.wheels) do
+		if IsValid(e) then
+			local ph=e:GetPhysicsObject()
+			if ph:IsValid() then
+				local lpos = self:WorldToLocal(e:GetPos())
+				local mass = e:GetPhysicsObject():GetMass()
+				e:GetPhysicsObject():AddVelocity(
+						Vector(0,0,6)+self:LocalToWorld(Vector(
+							0, 0, lpos.x*controlAng.x/mass*10 + lpos.y*controlAng.y/mass*10
+						)/4)-pos
+				)
+				--e:GetPhysicsObject():AddVelocity(up*ang.r*lpos.y/self.WheelStabilize/mass*10)
+				if self.controls.throttle < -0.8 then -- apply wheel brake
+					ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5)
+				end
+			end
+		end
+	end
+	]]
+	
+	--[[ old
 	for _,e in pairs(self.wheels) do
 		if IsValid(e) and e:GetPhysicsObject():IsValid() then
 		local ph=e:GetPhysicsObject()
@@ -166,6 +190,7 @@ function ENT:PhysicsUpdate(ph)
 			end
 		end
 	end
+	]]
 	
 	self.Lastphys = CurTime()
 end

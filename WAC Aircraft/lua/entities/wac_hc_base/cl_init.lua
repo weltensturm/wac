@@ -82,13 +82,13 @@ function ENT:Think()
 
 		local mouseFlight = self:GetNWBool("active")
 		if self.sounds.Start then
-			if mouseFlight!=self.IsOn then
+			if mouseFlight != self.IsOn then
 				if mouseFlight then
 					self.sounds.Start:Play()
 				else
 					self.sounds.Start:Stop()
 				end
-				self.IsOn=mouseFlight
+				self.IsOn = mouseFlight
 			end
 		end
 		if !self.sounds.Engine:IsPlaying() then

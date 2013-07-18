@@ -7,7 +7,6 @@ AddCSLuaFile("autorun/client/wac_aircraft_dev.lua");
 
 wac.aircraft.cvars = {
 	startSpeed = CreateConVar("wac_air_startspeed", 1, {FCVAR_ARCHIVE}),
-	doubleTick = CreateConVar("wac_air_doubletick", 0, {FCVAR_ARCHIVE}),
 }
 
 
@@ -30,3 +29,4 @@ wac.hook("PlayerLeaveVehicle", "wac_aircraft_leavevehicle", function(player, veh
 		vehicle.wac_aircraft:playerExit(player, vehicle)
 	end
 end)
+

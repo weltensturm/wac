@@ -2,7 +2,6 @@
 
 include "wac/aircraft.lua"
 
-CreateClientConVar("wac_cl_air_realism", 3, true, true)
 CreateClientConVar("wac_cl_air_sensitivity", 1, true, true)
 CreateClientConVar("wac_cl_air_mouse", 1, true, true)
 CreateClientConVar("wac_cl_air_mouse_swap", 1, true, true)
