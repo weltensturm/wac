@@ -1,6 +1,5 @@
 
 include("shared.lua")
-include("entities/base_wire_entity/init.lua")
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 
@@ -511,6 +510,11 @@ function ENT:updateSeats()
 			end
 		end
 	end
+	if !IsValid(self.seats[1]:GetDriver()) then
+		self.controls.pitch = 0
+		self.controls.yaw = 0
+		self.controls.roll = 0
+	end
 	self:GetSwitcher():updateSeats()
 end
 
@@ -556,6 +560,7 @@ function ENT:Think()
 				self.phys:Wake()
 			end
 
+			--[[
 			if IsValid(self.camera) then
 				local p = self.seats[self.Camera.seat]:GetDriver()
 				if IsValid(p) then
@@ -572,6 +577,7 @@ function ENT:Think()
 					self.camera:SetAngles(self:LocalToWorldAngles(ang))
 				end
 			end
+			]]
 
 			local target = math.floor(math.Clamp(self.rotorRpm, 0, 0.99)*3)
 			if self.bodyGroup != target then
@@ -1026,13 +1032,15 @@ function ENT:DamageEngine(amt)
 				self.Passenger={}
 				self:StopAllSounds()
 				self.IgnoreDamage = false
-				for name, vec in pairs(self.Aerodynamics.Rotation) do
-					vec = VectorRand()*100
-				end
-				for name, vec in pairs(self.Aerodynamics.Lift) do
-					vec = VectorRand()
-				end
-				self.Aerodynamics.Rail = Vector(0.5, 0.5, 0.5)
+				--[[ this affects the base class
+					for name, vec in pairs(self.Aerodynamics.Rotation) do
+						vec = VectorRand()*100
+					end
+					for name, vec in pairs(self.Aerodynamics.Lift) do
+						vec = VectorRand()
+					end
+					self.Aerodynamics.Rail = Vector(0.5, 0.5, 0.5)
+				]]
 				local effectdata = EffectData()
 				effectdata:SetStart(self.Entity:GetPos())
 				effectdata:SetOrigin(self.Entity:GetPos())

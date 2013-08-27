@@ -13,6 +13,7 @@ ENT.AdminSpawnable = false
 ENT.Ammo = 8
 ENT.FireRate = 10
 ENT.Sequential = true
+ENT.MaxRange = 10000
 
 ENT.Sounds = {
 	fire = "HelicopterVehicle/MissileShoot.mp3"
@@ -88,19 +89,23 @@ end
 
 
 if SERVER then
+
 	function ENT:Think()
-		if !IsValid(self.aircraft.camera) then return end
-		local pos = self.aircraft.camera:GetPos()
-		local dir = self.aircraft.camera:GetAngles():Forward()
-		local tr = util.QuickTrace(pos+dir*20, dir*9999999999, self)
-		if tr.Hit and !tr.HitWorld then
-			self:SetTarget(tr.Entity)
-			self:SetTargetOffset(tr.Entity:WorldToLocal(tr.HitPos))
-		else
-			self:SetTarget(nil)
+		local ang = self.aircraft:getCameraAngles()
+		if ang then
+			local pos = self.aircraft:LocalToWorld(self.aircraft.Camera.pos)
+			local dir = ang:Forward()
+			local tr = util.QuickTrace(pos+dir*20, dir*self.MaxRange, self)
+			if tr.Hit and !tr.HitWorld then
+				self:SetTarget(tr.Entity)
+				self:SetTargetOffset(tr.Entity:WorldToLocal(tr.HitPos))
+			else
+				self:SetTarget(nil)
+			end
 		end
 		return self:baseThink()
 	end
+
 end
 
 
@@ -123,4 +128,13 @@ function ENT:drawCrosshair()
 	end
 	surface.DrawOutlinedRect(center.x-20, center.y-20, 40, 40)
 	surface.DrawOutlinedRect(center.x-21, center.y-21, 42, 42)
+	
+	draw.Text({
+		text = (IsValid(self:GetTarget()) and "LOCK" or "NO LOCK"),
+		font = "HudHintTextLarge",
+		pos = {center.x, center.y+45},
+		color = Color(255, 255, 255, 150),
+		xalign = TEXT_ALIGN_CENTER
+	})
+		
 end

@@ -35,7 +35,7 @@ end
 
 function ENT:Initialize()
 	self:addSounds()
-	self.SmoothUp = 0
+	self.smoothUp = 0
 	self.engineRpm = 0
 	self.rotorRpm = 0
 	self.Emitter = ParticleEmitter(self:GetPos())
@@ -106,22 +106,22 @@ function ENT:Think()
 		local spos = self:GetPos()
 		local doppler = (pos:Distance(spos+e:GetVelocity())-pos:Distance(spos+self:GetVelocity()))/200*self.rotorRpm
 
-		self.SmoothUp = self.SmoothUp - (self.SmoothUp-self:GetNWFloat("up"))*frt*10
+		local vehicle = LocalPlayer():GetVehicle()
+		local inVehicle = false
+		if IsValid(vehicle) and vehicle:GetNWEntity("wac_aircraft") == self then
+			if !vehicle:GetThirdPersonMode() then
+				inVehicle = true
+			end
+			doppler = 0
+		end
+
+		self.smoothUp = self.smoothUp - (self.smoothUp-self:GetNWFloat("up"))*frt*10
 		self.rotorRpm = self.rotorRpm - (self.rotorRpm-self:GetNWFloat("rotorRpm"))*frt*10
 		self.engineRpm = self.engineRpm - (self.engineRpm-self:GetNWFloat("engineRpm"))*frt*10
 
-		local engineVal = math.Clamp(self.engineRpm*100+self.engineRpm*self.SmoothUp*3+doppler, 0, 200)
-		local val = math.Clamp(self.rotorRpm*100 + doppler, 0, 200)
+		local engineVal = math.Clamp(self.engineRpm*100+self.engineRpm*self.smoothUp*3+doppler, 0, 200)
+		local val = math.Clamp(self.rotorRpm*100 + doppler + self:GetVelocity():Length()/50, 0, 200)
 
-		local vehicle = LocalPlayer():GetVehicle()
-		local inVehicle = false
-		if 
-			IsValid(vehicle)
-			and !vehicle:GetThirdPersonMode()
-			and vehicle:GetNWEntity("wac_aircraft") == self
-		then
-			inVehicle = true
-		end
 		self.sounds.Engine:ChangePitch(engineVal/1.1 + val/10, 0.1)
 		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5), 0.1)
 		self.sounds.Blades:ChangePitch(math.Clamp(val, 10, 150), 0.1)
@@ -151,29 +151,13 @@ end
 
 
 function ENT:attachmentThink()
-	if !self.weaponAttachments then return end
-	local camAng
-	if !self.camera then return end
-	local p = self:getPassenger(self.Camera.seat)
-	if IsValid(p) then
-		local ang = self:WorldToLocalAngles(p:GetAimVector():Angle())
-		ang.r = 0
-		if self.Camera.minAng then
-			ang.p = (ang.p > self.Camera.minAng.p and ang.p or self.Camera.minAng.p)
-			ang.y = (ang.y > self.Camera.minAng.y and ang.y or self.Camera.minAng.y)
-		end
-		if self.Camera.maxAng then
-			ang.p = (ang.p < self.Camera.maxAng.p and ang.p or self.Camera.maxAng.p)
-			ang.y = (ang.y < self.Camera.maxAng.y and ang.y or self.Camera.maxAng.y)
-		end
-		camAng = self:LocalToWorldAngles(ang)
-	end
-
+	if !self.weaponAttachments or !self.Camera then return end
+	local camAng = self:getCameraAngles()
 	if !camAng then return end
 	local tr = util.QuickTrace(self:LocalToWorld(self.Camera.pos)+camAng:Forward()*20, camAng:Forward()*999999999, self)
 	for _, t in pairs(self.weaponAttachments) do
 		local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
-		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.roll or 0)
+		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.r or 0)
 		t.model:SetAngles(self:LocalToWorldAngles(localAng))
 		if t.offset then
 			t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
@@ -266,7 +250,7 @@ end
 function ENT:DrawScreenSpaceEffects(k,p)
 	if !self.Seats or !self.Seats[k] or p:GetViewEntity()!=p then return end
 	if p:GetVehicle().useCamera and self.camera and !p:GetVehicle():GetThirdPersonMode() then
-		self:renderCameraEffects(self.WeaponAttachments.seat)
+		self:renderCameraEffects(self.Camera.seat)
 	end
 end
 
@@ -368,6 +352,18 @@ function ENT:viewCalcExit(p, view)
 	p.wac.air.vehicle = nil
 end
 
+function ENT:viewCalcCamera(k, p, view)
+	view.origin = self.camera:LocalToWorld(self.Camera.viewPos)
+	view.angles = self.camera:GetAngles()
+	if self.viewTarget then
+		self.viewTarget.angles = p:GetAimVector():Angle() - self:GetAngles()
+	end
+	self.viewPos = nil
+	p.wac.lagAngles = Angle(0, 0, 0)
+	p.wac.lagAccel = Vector(0, 0, 0)
+	p.wac.lagAccelDelta = Vector(0, 0, 0)
+	return view
+end
 
 function ENT:viewCalc(k, p, pos, ang, fov)
 	if !self.Seats[k] then return end
@@ -391,15 +387,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	else
 		if p:GetVehicle().useCamera and self.camera then
 			--view = weapon.CalcView(self,weapon,p,pos,ang,view)
-			view.origin = self.camera:LocalToWorld(self.Camera.viewPos)
-			view.angles = self.camera:GetAngles()
-			if self.viewTarget then
-				self.viewTarget.angles = p:GetAimVector():Angle() - self:GetAngles()
-			end
-			self.viewPos = nil
-			p.wac.lagAngles = Angle(0, 0, 0)
-			p.wac.lagAccel = Vector(0, 0, 0)
-			p.wac.lagAccelDelta = Vector(0, 0, 0)
+			view = self:viewCalcCamera(k, p, view)
 		else
 			view = self:viewCalcFirstPerson(k, p, view)
 		end
@@ -450,7 +438,7 @@ function ENT:DrawPilotHud()
 	ang:RotateAroundAxis(fwd, 90)
 	
 	local uptm = self.rotorRpm
-	local upm = self.SmoothUp
+	local upm = self.smoothUp
 	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)*self.Scale+self.Seats[1].pos), ang, 0.015*self.Scale)
 	surface.SetDrawColor(HudCol)
 	surface.DrawRect(235, 249, 10, 2)

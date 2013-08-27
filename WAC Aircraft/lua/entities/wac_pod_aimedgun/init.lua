@@ -22,10 +22,15 @@ end
 
 
 function ENT:fire()
-	if !self:takeAmmo(1) then return end
+	if not self:takeAmmo(1) then return end
+	
+	local dir = self.aircraft:getCameraAngles():Forward()
+	local pos = self.aircraft:LocalToWorld(self.ShootPos) + dir*self.ShootOffset.x
+	local tr = util.QuickTrace(self:LocalToWorld(self.aircraft.Camera.pos) + dir*20, dir*999999999, {self, self.aircraft})
+	local ang = (tr.HitPos - pos):Angle()
+	
 	local b = ents.Create("wac_hc_hebullet")
-	local pos = self.aircraft:LocalToWorld(self.ShootPos) + self:LocalToWorld(self.ShootOffset)-self:GetPos()
-	local ang = self:GetAngles() + Angle(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1))*self.Spray
+	ang = ang + Angle(math.Rand(-1,1), math.Rand(-1,1), math.Rand(-1,1))*self.Spray
 	b:SetPos(pos)
 	b:SetAngles(ang)
 	b.col = Color(255,200,100)
@@ -37,7 +42,7 @@ function ENT:fire()
 	b.Explode = function(self,tr)
 		if self.Exploded then return end
 		self.Exploded = true
-		if !tr.HitSky then
+		if not tr.HitSky then
 			local bt = {}
 			bt.Src 		= self:GetPos()
 			bt.Dir 		= tr.Normal
@@ -81,12 +86,6 @@ end
 
 
 function ENT:Think()
-	if IsValid(self.aircraft.camera) then
-		local c = self.aircraft.camera
-		local dir = c:GetAngles():Forward()
-		local tr = util.QuickTrace(c:GetPos()+dir*20, dir*999999999, {self, self.aircraft})
-		self:SetAngles((tr.HitPos - self.aircraft:LocalToWorld(self.ShootPos)):Angle())
-	end
 	local s = math.Clamp(self:GetSpinSpeed() + (self.shouldShoot and FrameTime() or -FrameTime())*6, 0, 1)
 	self:SetSpinSpeed(s)
 	self.sounds.spin:ChangeVolume(s*100, 0.1)

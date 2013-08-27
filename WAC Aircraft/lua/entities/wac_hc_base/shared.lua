@@ -84,3 +84,34 @@ function ENT:updateSkin(n)
 		end
 	end
 end
+
+
+function ENT:getPassenger(seat)
+	if !IsValid(self:GetSwitcher()) then return end
+	local s = self:GetSwitcher().seats[seat]
+	if IsValid(s) then
+		return s:GetDriver()
+	end
+end
+
+
+function ENT:getCameraAngles()
+	local ang = Angle(0, 0, 0)
+	if !self.Camera then return ang end
+	local p = self:getPassenger(self.Camera.seat)
+	if IsValid(p) then
+		local view = self:WorldToLocalAngles(p:GetAimVector():Angle())
+		ang = Angle(self.Camera.restrictPitch and 0 or view.p, self.Camera.restrictYaw and 0 or view.y, 0)
+		if self.Camera.minAng then
+			ang.p = (ang.p > self.Camera.minAng.p and ang.p or self.Camera.minAng.p)
+			ang.y = (ang.y > self.Camera.minAng.y and ang.y or self.Camera.minAng.y)
+		end
+		if self.Camera.maxAng then
+			ang.p = (ang.p < self.Camera.maxAng.p and ang.p or self.Camera.maxAng.p)
+			ang.y = (ang.y < self.Camera.maxAng.y and ang.y or self.Camera.maxAng.y)
+		end
+	end
+	return self:LocalToWorldAngles(ang)
+end
+
+

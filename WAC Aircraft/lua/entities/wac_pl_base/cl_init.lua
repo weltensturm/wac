@@ -30,11 +30,11 @@ function ENT:Think()
 		local spos=self:GetPos()
 		local doppler=(pos:Distance(spos+e:GetVelocity())-pos:Distance(spos+self:GetVelocity()))/200*self.rotorRpm
 
-		self.SmoothUp = self.SmoothUp - (self.SmoothUp-self:GetNWFloat("up"))*frt*10
+		self.smoothUp = self.smoothUp - (self.smoothUp-self:GetNWFloat("up"))*frt*10
 		self.rotorRpm = self.rotorRpm - (self.rotorRpm-self:GetNWFloat("rotorRpm"))*frt*10
 		self.engineRpm = self.engineRpm - (self.engineRpm-self:GetNWFloat("rotorRpm"))*frt*10
 
-		local engineVal = math.Clamp(self.engineRpm*100+self.engineRpm*self.SmoothUp*3+doppler, 0, 200)
+		local engineVal = math.Clamp(self.engineRpm*100+self.engineRpm*self.smoothUp*3+doppler, 0, 200)
 		local val = math.Clamp(self.rotorRpm*100 + doppler, 0, 200)
 
 		local vehicle = LocalPlayer():GetVehicle()

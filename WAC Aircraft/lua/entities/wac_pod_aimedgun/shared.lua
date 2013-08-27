@@ -15,7 +15,7 @@ ENT.AdminSpawnable = false
 ENT.Name = "M197"
 ENT.Ammo = 750
 ENT.FireRate = 730
-ENT.Spray = 0.1
+ENT.Spray = 0.3
 ENT.FireOffset = Vector(60, 0, 0)
 
 
