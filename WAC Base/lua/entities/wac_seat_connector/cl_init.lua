@@ -9,7 +9,7 @@ end
 
 
 wac.hook("wacKey", "wac_seatswitcher_input", function(key, pressed)
-	if !pressed or vgui.CursorVisible() then return end
+	if not pressed or vgui.CursorVisible() then return end
 	if key >= 2 and key <= 10 then
 		RunConsoleCommand("wac_setseat", key-1)
 	end

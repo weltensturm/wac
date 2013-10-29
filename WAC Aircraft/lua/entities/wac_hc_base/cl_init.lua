@@ -1,4 +1,6 @@
 
+
+
 include("shared.lua")
 
 
@@ -123,9 +125,9 @@ function ENT:Think()
 		local val = math.Clamp(self.rotorRpm*100 + doppler + self:GetVelocity():Length()/50, 0, 200)
 
 		self.sounds.Engine:ChangePitch(engineVal/1.1 + val/10, 0.1)
-		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5), 0.1)
+		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 20), 0.1)
 		self.sounds.Blades:ChangePitch(math.Clamp(val, 10, 150), 0.1)
-		self.sounds.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5), 0.1)
+		self.sounds.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 20), 0.1)
 		if self.sounds.Start then
 			self.sounds.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*110, 0, 100)/100, 0.1)
 			self.sounds.Start:ChangePitch(100 - self.engineRpm*20, 0.1)
@@ -441,23 +443,29 @@ function ENT:DrawPilotHud()
 	local upm = self.smoothUp
 	cam.Start3D2D(self:LocalToWorld(Vector(20,3.75,37.75)*self.Scale+self.Seats[1].pos), ang, 0.015*self.Scale)
 	surface.SetDrawColor(HudCol)
-	surface.DrawRect(235, 249, 10, 2)
-	surface.DrawRect(255, 249, 10, 2)
-	surface.DrawRect(249, 235, 2, 10)
-	surface.DrawRect(249, 255, 2, 10)
-	surface.DrawRect(-3, 0, 3, 500)
-	surface.DrawRect(500, 0, 3, 500)
-	surface.DrawRect(7, 0, 3, 500)
-	surface.DrawRect(490, 0, 3, 500)
+
+	local rects = {
+		{235, 249, 10, 2},
+		{255, 249, 10, 2},
+		{249, 235, 2, 10},
+		{249, 255, 2, 10},
+		{-3, 0, 3, 500},
+		{500, 0, 3, 500},
+		{7, 0, 3, 500},
+		{490, 0, 3, 500},
+		{-6,-3,19,3},
+		{-6,500,19,3},
+		{487,-3,19,3},
+		{487,500,19,3},
+		{9,248,5,3},
+		{485,248,5,3},
+		{1, 500-uptm*500, 5, uptm*500},
+	}
 	
-	surface.DrawRect(-6,-3,19,3)
-	surface.DrawRect(-6,500,19,3)
-	surface.DrawRect(487,-3,19,3)
-	surface.DrawRect(487,500,19,3)
-	surface.DrawRect(9,248,5,3)
-	surface.DrawRect(485,248,5,3)
-	
-	surface.DrawRect(1, 500-uptm*500, 5, uptm*500)
+	for _, e in pairs(rects) do
+		surface.DrawRect(e[1], e[2], e[3], e[4])
+	end
+
 	surface.DrawLine(30, 5*ang.r-200+2.77*ang.p, 220, 5*ang.r-200+2.77*(ang.p*0.12))
 	surface.DrawLine(30, 5*ang.r-200+2.77*ang.p+1, 220, 5*ang.r-200+2.77*(ang.p*0.12)+1)
 	surface.DrawLine(280, 5*ang.r-200-2.77*(ang.p*0.12), 470, 5*ang.r-200-2.77*ang.p)

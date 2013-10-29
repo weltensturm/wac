@@ -17,7 +17,7 @@ function ENT:Initialize()
 end
 
 function ENT:SpawnFunction(ply, tr)
-	if (!tr.Hit) then return end
+	if not tr.Hit then return end
 	local ent = ents.Create(ClassName)
 	ent:SetPos(tr.HitPos+tr.HitNormal*10)
 	ent:Spawn()
@@ -62,7 +62,7 @@ end
 function ENT:Use(p)
 	if IsValid(p) and p:IsPlayer() then
 		for _, v in pairs(self.seats) do
-			if !IsValid(v:GetPassenger(0)) and !p:InVehicle() then
+			if not IsValid(v:GetPassenger(0)) and not p:InVehicle() then
 				p:EnterVehicle(v)
 				break
 			end
@@ -72,7 +72,7 @@ end
 
 
 function ENT:switchSeat(p, int)
-	if !self.seats[int] or self.seats[int]:GetPassenger(0):IsValid() then return end
+	if not self.seats[int] or self.seats[int]:GetPassenger(0):IsValid() then return end
 	local oldang = p:GetAimVector():Angle()
 	oldang.y = oldang.y+90
 	p:ExitVehicle()
@@ -83,7 +83,7 @@ end
 
 
 concommand.Add("wac_setseat", function(p,c,a)
-	if !p:InVehicle() then return end
+	if not p:InVehicle() then return end
 	local veh = p:GetVehicle()
 	if veh.wac_seatswitcher then
 		veh.wac_seatswitcher:switchSeat(p, tonumber(a[1]))
@@ -93,7 +93,7 @@ end)
 
 function ENT:Think()
 	for k,v in pairs(self.seats) do
-		if !IsValid(v) or !v.wac_seatswitcher then
+		if not IsValid(v) or not v.wac_seatswitcher then
 			self:removeVehicle(k)
 		end
 	end
@@ -115,10 +115,10 @@ function ENT:ApplyDupeInfo(ply, ent, info, GetEntByID)
 		self.seats={}
 		for k,v in pairs(info.v) do
 			local e=GetEntByID(v)
-			if (!e) or e != GetEntByID(v) then
+			if not e or e ~= GetEntByID(v) then
 				e=ents.GetByIndex(v)
 			end
-			if !table.HasValue(self.seats,e) then
+			if not table.HasValue(self.seats,e) then
 				self:addVehicle(e)
 			end
 		end

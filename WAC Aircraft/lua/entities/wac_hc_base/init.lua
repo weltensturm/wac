@@ -118,7 +118,7 @@ function ENT:Initialize()
 	self.NextCamSwitch = 0
 	self.engineRpm = 0
 	self.LastPhys=0
-	self.Passenger={}
+	self.passengers={}
 	
 	self.controls = {
 		throttle = -1,
@@ -141,7 +141,7 @@ end
 
 function ENT:addEntity(name)
 	local e = ents.Create(name)
-	if !IsValid(e) then return nil end
+	if not IsValid(e) then return nil end
 	table.insert(self.entities, e)
 	e.Owner = self.Owner
 	e:SetNWString("Owner", "World")
@@ -210,7 +210,7 @@ function ENT:addRotors()
 				local ph = touchedEnt:GetPhysicsObject()
 				if ph:IsValid() then
 					if 
-							!table.HasValue(self.Passenger, touchedEnt)
+							not table.HasValue(self.passengers, touchedEnt)
 							and !table.HasValue(self.entities, touchedEnt)
 							and touchedEnt != self
 							and !string.find(touchedEnt:GetClass(), "func*")
@@ -229,7 +229,7 @@ function ENT:addRotors()
 						ph:AddVelocity((pos-self.topRotor:GetPos())*dmg/mass)
 						self.phys:AddVelocity((self.topRotor:GetPos() - pos)*dmg/mass)
 						self:DamageBigRotor(dmg)
-						e.Entity:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self.Entity, self.Entity)
+						e.Entity:TakeDamage(dmg, IsValid(self.passengers[1]) and self.passengers[1] or self.Entity, self.Entity)
 					end
 				end
 			end
@@ -243,8 +243,8 @@ function ENT:addRotors()
 			self.RotorHeight = obb.z
 			self.topRotor.vis = e
 		end
-		self.backRotor = self:AddBackRotor()
-		self:SetNWEntity("rotor_rear",self.backRotor)
+		self.backRotor = self:addBackRotor()
+		self:SetNWEntity("rotor_rear", self.backRotor)
 		constraint.Axis(self.Entity, self.topRotor, 0, 0, self.TopRotor.pos, Vector(0,0,1), 0,0,0,1)
 		if self.TwinBladed then
 			constraint.Axis(self.Entity, self.backRotor, 0, 0, self.BackRotor.pos, Vector(0,0,1),0,0,0,1)
@@ -257,7 +257,7 @@ function ENT:addRotors()
 end
 
 
-function ENT:AddBackRotor()
+function ENT:addBackRotor()
 	local e = self:addEntity("wac_hitdetector")
 	e:SetModel(self.BackRotor.model)
 	e:SetAngles(self:LocalToWorldAngles(self.BackRotor.angles))
@@ -265,11 +265,11 @@ function ENT:AddBackRotor()
 	e.Owner = self.Owner
 	e:SetNWFloat("rotorhealth", 100)
 	e.wac_ignore = true
-	e.TouchFunc = function(touchedEnt, pos)
+	e.TouchFunc = function(touchedEnt, pos) -- not colliding with world
 		local ph = touchedEnt:GetPhysicsObject()
 		if ph:IsValid() then
 			if
-					!table.HasValue(self.Passenger, touchedEnt)
+					!table.HasValue(self.passengers, touchedEnt)
 					and !table.HasValue(self.entities, touchedEnt)
 					and touchedEnt != self
 					and !string.find(touchedEnt:GetClass(), "func*")
@@ -288,7 +288,7 @@ function ENT:AddBackRotor()
 				ph:AddVelocity((pos-self.backRotor:GetPos())*dmg/mass)
 				self.phys:AddVelocity((self.backRotor:GetPos() - pos)*dmg/mass)
 				self:DamageSmallRotor(dmg)
-				touchedEnt:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self, self)
+				touchedEnt:TakeDamage(dmg, IsValid(self.passengers[1]) and self.passengers[1] or self, self)
 			end
 		end
 	end
@@ -361,9 +361,9 @@ function ENT:addSeats()
 	self:SetSwitcher(e)
 	for k, v in pairs(self.Seats) do
 		if k != "BaseClass" then
-			self.Seats[k].activeProfile = 0
 			local ang = self:GetAngles()
 			self.seats[k] = self:addEntity("prop_vehicle_prisoner_pod")
+			self.seats[k].activeProfile = 1
 			self.seats[k]:SetModel("models/nova/airboat_seat.mdl") 
 			self.seats[k]:SetPos(self:LocalToWorld(v.pos))
 			self.seats[k]:Spawn()
@@ -384,6 +384,7 @@ function ENT:addSeats()
 			self.seats[k].wac_ignore = true
 			self.seats[k]:SetNWEntity("wac_aircraft", self)
 			self.seats[k]:SetKeyValue("limitview","0")
+			self:SetNWInt("seat_"..k.."_actwep", 1)
 			e:addVehicle(self.seats[k])
 		end
 	end
@@ -412,41 +413,43 @@ function ENT:addWheels()
 end
 
 
-function ENT:fireWeapon(bool, seat, t)
-	if !t.weapons then return end
-	local pod = self.weapons[t.weapons[t.activeProfile]]
+function ENT:fireWeapon(bool, i)
+	if !self.Seats[i].weapons then return end
+	local pod = self.weapons[self.Seats[i].weapons[self.seats[i].activeProfile]]
 	if !pod then return end
 	pod.shouldFire = bool
-	pod:trigger(bool, self.seats[seat])
+	pod:trigger(bool, self.seats[i])
 end
 
 
-function ENT:nextWeapon(t,k,p)
-	if !t.weapons then return end
+function ENT:nextWeapon(i, p)
+	if !self.Seats[i].weapons then return end
+	local seat = self.seats[i]
+	local Seat = self.Seats[i]
 
-	local pod = self.weapons[t.weapons[t.activeProfile]]
+	local pod = self.weapons[Seat.weapons[seat.activeProfile]]
 	if pod then
 		pod:select(false)
 		pod.seat = nil
 	end
 
-	if t.activeProfile == #t.weapons then
-		t.activeProfile = 0
+	if seat.activeProfile == #Seat.weapons then
+		seat.activeProfile = 0
 	else
-		t.activeProfile = t.activeProfile + 1
+		seat.activeProfile = seat.activeProfile + 1
 	end
-	if t.weapons[t.activeProfile] then
-		local weapon = self.weapons[t.weapons[t.activeProfile]]
+	if Seat.weapons[seat.activeProfile] then
+		local weapon = self.weapons[Seat.weapons[seat.activeProfile]]
 		weapon:select(true)
-		weapon.seat = self.seats[k]
+		weapon.seat = seat
 	end
-	self:SetNWInt("seat_"..k.."_actwep", t.activeProfile)
+	self:SetNWInt("seat_"..i.."_actwep", seat.activeProfile)
 end
 
 
 function ENT:EjectPassenger(ply,idx,t)
 	if !idx then
-		for k,p in pairs(self.Passenger) do
+		for k,p in pairs(self.passengers) do
 			if p==ply then idx=k end
 		end
 		if !idx then
@@ -489,13 +492,13 @@ function ENT:updateSeats()
 	for k, veh in pairs(self.seats) do
 		if !veh:IsValid() then return end
 		local p = veh:GetPassenger(0)
-		if self.Passenger[k] != p then
-			if IsValid(self.Passenger[k]) then
-				self.Passenger[k]:SetNWEntity("wac_aircraft", NULL)
+		if self.passengers[k] != p then
+			if IsValid(self.passengers[k]) then
+				self.passengers[k]:SetNWEntity("wac_aircraft", NULL)
 			end
 			self:SetNWEntity("passenger_"..k, p)
 			p:SetNWInt("wac_passenger_id",k)
-			self.Passenger[k] = p
+			self.passengers[k] = p
 			if IsValid(p) then
 				p.wac = p.wac or {}
 				p.wac.mouseInput = true
@@ -651,21 +654,21 @@ function ENT:receiveInput(name, value, seat)
 		elseif name == "Hover" and value>0.5 then
 			self:SetHover(!self:GetHover())
 		elseif name == "FreeView" then
-			self.Passenger[seat].wac.mouseInput = (value < 0.5)
+			self.passengers[seat].wac.mouseInput = (value < 0.5)
 		end
 	end
 	if name == "Exit" and value>0.5 then
-		self:EjectPassenger(self.Passenger[seat])
+		self:EjectPassenger(self.passengers[seat])
 	elseif name == "Fire" then
-		self:fireWeapon(value > 0.5, seat, self.Seats[seat])
+		self:fireWeapon(value > 0.5, seat)
 	elseif name == "NextWeapon" and value > 0.5 then
-		self:nextWeapon(self.Seats[seat], seat, self.Passenger[seat])
+		self:nextWeapon(seat, self.passengers[seat])
 	end
 end
 
 
 function ENT:getSeat(player)
-	for i, p in pairs(self.Passenger) do
+	for i, p in pairs(self.passengers) do
 		if p == player then
 			return self.seats[i]
 		end
@@ -744,7 +747,7 @@ function ENT:PhysicsUpdate(ph)
 	local dvel = vel:Length()
 	local lvel = self:WorldToLocal(pos+vel)
 
-	local pilot = self.Passenger[1]
+	local pilot = self.passengers[1]
 
 	local hover = self:calcHover(ph,pos,vel,ang)
 	
@@ -799,7 +802,7 @@ function ENT:PhysicsUpdate(ph)
 
 				self.backRotor.Phys:AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity() * rotorBrake / 10)
 			else
-				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotor.dir*2))*phm)
+				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotor.dir/2))*phm)
 				ph:AddAngleVelocity(VectorRand()*self.rotorRpm*mind*phm)
 				if !self.sounds.CrashAlarm:IsPlaying() and !self.disabled then
 					self.sounds.CrashAlarm:Play()
@@ -865,7 +868,7 @@ function ENT:PhysicsCollide(cdat, phys)
 		if dmg > 2 then
 			self.Entity:EmitSound("vehicles/v8/vehicle_impact_heavy"..math.random(1,4)..".wav")
 			local lasta=(self.LastDamageTaken<CurTime()+6 and self.LastAttacker or self.Entity)
-			for k, p in pairs(self.Passenger) do
+			for k, p in pairs(self.passengers) do
 				if p and p:IsValid() then
 					p:TakeDamage(dmg/5, lasta, self.Entity)
 				end
@@ -876,8 +879,8 @@ end
 
 function ENT:DamageSmallRotor(amt)
 	if amt < 1 then return end
-	self.Entity:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,20,200))
 	if self.backRotor and self.backRotor:IsValid() then
+		self.backRotor:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,20,200))
 		self.backRotor.fHealth = self.backRotor.fHealth - amt
 		self.backRotor.Phys:AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity()*-amt/50)
 		if self.backRotor.fHealth < 0 then
@@ -1021,7 +1024,7 @@ function ENT:DamageEngine(amt)
 				self.engineRpm = 0
 				self.rotorRpm = 0
 				local lasta=(self.LastDamageTaken<CurTime()+6 and self.LastAttacker or self.Entity)
-				for k, p in pairs(self.Passenger) do
+				for k, p in pairs(self.passengers) do
 					if p and p:IsValid() then
 						p:TakeDamage(p:Health() + 20, lasta, self.Entity)
 					end
@@ -1029,7 +1032,7 @@ function ENT:DamageEngine(amt)
 				for k,v in pairs(self.seats) do
 					v:Remove()
 				end
-				self.Passenger={}
+				self.passengers={}
 				self:StopAllSounds()
 				self.IgnoreDamage = false
 				--[[ this affects the base class
@@ -1104,7 +1107,7 @@ end
 
 function ENT:OnRemove()
 	self:StopAllSounds()
-	for _,p in pairs(self.Passenger) do
+	for _,p in pairs(self.passengers) do
 		if IsValid(p) then
 			p:SetNWInt("wac_passenger_id",0)
 		end
@@ -1116,3 +1119,6 @@ function ENT:OnRemove()
 		if IsValid(e) then e:Remove() end
 	end
 end
+
+
+

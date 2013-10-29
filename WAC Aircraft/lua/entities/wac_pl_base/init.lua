@@ -60,7 +60,7 @@ function ENT:addRotors()
 			local ph = e:GetPhysicsObject()
 			if ph:IsValid() then
 				local pass=true
-				for k,p in pairs(self.Passenger) do
+				for k,p in pairs(self.passengers) do
 					if p==e then pass=false end
 				end
 				for _, ent in pairs(self.entities) do
@@ -71,7 +71,7 @@ function ENT:addRotors()
 					local dmg=(rotorVel*rotorVel + ph:GetVelocity():Length()*ph:GetVelocity():Length())/100000
 					ph:AddVelocity((e:GetPos()-self.rotor:GetPos())*dmg/e:GetPhysicsObject():GetMass()*10)
 					self:DamageBigRotor(dmg)
-					e:TakeDamage(dmg, IsValid(self.Passenger[1]) and self.Passenger[1] or self.Entity, self.Entity)
+					e:TakeDamage(dmg, IsValid(self.passengers[1]) and self.passengers[1] or self.Entity, self.Entity)
 				end
 			end
 		end

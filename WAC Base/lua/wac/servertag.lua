@@ -6,7 +6,7 @@ wac.tag = wac.tag or {
 	tags = {},
 
 	add = function(name)
-		if !table.HasValue(wac.tag.tags, name) then
+		if not table.HasValue(wac.tag.tags, name) then
 			table.insert(wac.tag.tags, name)
 		end
 	end,

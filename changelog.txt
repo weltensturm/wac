@@ -1,0 +1,12 @@
+
+---
+
+29.10.13
+
+Aircraft:
+~ Rotor sound can now be heard further away
+- Removed duplicate models
+
+SWEPs:
+~ Fixed GMod camera not being able to rotate
+- Removed data/WAC SWEPs (now in lua/wac/weapons)

@@ -130,7 +130,11 @@ function ENT:drawCrosshair()
 	surface.DrawOutlinedRect(center.x-21, center.y-21, 42, 42)
 	
 	draw.Text({
-		text = (IsValid(self:GetTarget()) and "LOCK" or "NO LOCK"),
+		text = (
+			self:GetNextShot() <= CurTime() and self:GetAmmo() > 0
+			and (IsValid(self:GetTarget()) and "LOCK" or "NO LOCK")
+			or "MSL NOT READY"
+		),
 		font = "HudHintTextLarge",
 		pos = {center.x, center.y+45},
 		color = Color(255, 255, 255, 150),

@@ -35,7 +35,7 @@ ENT.Seats = {
 	{
 		pos = Vector(120, 0, 42),
 		exit = Vector(120,70,0),
-		weapons = {"Hellfire", "M197"}
+		weapons = {"M197", "Hellfire"}
 	},
 }
 

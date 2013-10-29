@@ -3,14 +3,14 @@ include "wac/base.lua"
 
 wac.toolSettings = function(t, variables)
 
-	if !variables then error("No variables given.") end
+	if not variables then error("No variables given.") end
 
 	t.think = function(self, tool)
-		if !self.varsUpdate or self.varsUpdate < CurTime() then
+		if not self.varsUpdate or self.varsUpdate < CurTime() then
 			for name, var in pairs(variables) do
 				local temp = tool:GetClientInfo(name)
 				temp = (tonumber(temp) or temp)
-				if var != temp then
+				if var ~= temp then
 					variables[name] = temp
 					tool.ClientConVar[name] = temp
 					self:updateSetting(name, temp)
@@ -22,7 +22,7 @@ wac.toolSettings = function(t, variables)
 
 
 	t.updateSetting = t.updateSetting or function(self, name, var)
-		if !self.panel then return end
+		if not self.panel then return end
 		if table.HasValue(self.trigger or {}, name) then
 			self:buildPanel()
 		end

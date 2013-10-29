@@ -46,7 +46,7 @@ function EFFECT:Init(data)
  	self.vUp = self.vAng:Up()
  	self.vRi = self.vAng:Right()
 	self.Mat=math.ceil(data:GetRadius())
-	self.Mat=(self.Mat!=0 and self.Mat)and(self.Mat)or(MAT_DIRT)
+	self.Mat = (self.Mat ~= 0 and self.Mat) and (self.Mat) or (MAT_DIRT)
 	self.emitter = ParticleEmitter(self.vOffset)
 	local dlight = DynamicLight(self.vEntity:EntIndex()) 
 	if (dlight) then 

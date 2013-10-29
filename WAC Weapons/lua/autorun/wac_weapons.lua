@@ -42,6 +42,8 @@ local authors = {
 	
 }
 
+--[[
+
 local function checkZoom(w)
 	if !authors[w.Author] then
 		authors[w.Author] = authors[wac.author]
@@ -135,8 +137,6 @@ wac.hook("CalcView", "wac_weapons_calcview", function(p, pos, ang, fov)
 	fwd.z=math.Clamp(fwd.z,-1,(1-f_smSpr))
 	local m=(0.1*math.Clamp(1-f_smZ,0.01,1)*(p:KeyDown(IN_DUCK) and 0.1 or 1))
 	pos=pos+runsinx*up*3*math.Clamp(lvel*lvel*0.00001,m,10)*CVars.bounce:GetFloat()+ri*runsiny*3*math.Clamp(lvel*lvel*0.00001, m, 10)*CVars.bounce:GetFloat()
-	--[[local eyes=p:GetAttachment(p:LookupAttachment("eyes"))
-	pos=eyes.Pos]]
 	view.origin=pos
 	view.fov = math.Clamp(fov - (self.zoomStart+((f_smZol+20+(fov-90))*((f_smZ>=0.9 and self.zoomEnd) and 1 or 0)))*f_smZ+CVars.fov:GetFloat(), 1.5, 100)
 	if self.ScopeModel then
@@ -159,3 +159,4 @@ wac.hook("CalcView", "wac_weapons_calcview", function(p, pos, ang, fov)
 end)
 
 
+]]

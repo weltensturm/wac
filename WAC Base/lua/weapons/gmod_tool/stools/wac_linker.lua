@@ -20,7 +20,7 @@ end
 
 function TOOL:LeftClick(tr)
 	if tr.Hit and IsValid(tr.Entity) then
-		if !self.entity then
+		if not self.entity then
 			self.entity = tr.Entity
 			self:SetStage(1)
 			return true

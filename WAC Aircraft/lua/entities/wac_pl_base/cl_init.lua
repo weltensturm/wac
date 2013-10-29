@@ -3,10 +3,10 @@ include('shared.lua')
 include("wac/keyboard.lua")
 
 function ENT:Think()
-	if !self:GetNWBool("locked") then
+	if not self:GetNWBool("locked") then
 		local mouseFlight = self:GetNWBool("active")
 		if self.sounds.Start then
-			if mouseFlight!=self.IsOn then
+			if mouseFlight != self.IsOn then
 				if mouseFlight then
 					self.sounds.Start:Play()
 				else

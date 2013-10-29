@@ -1,4 +1,6 @@
 
+--[[
+
 include "wac/aircraft.lua"
 
 wac.aircraft.getWeapon = function(n,t2)
@@ -18,7 +20,6 @@ local dorandom=0
 if CLIENT then
 	mat=Material("pp/blurscreen")
 end
-
 
 wac.aircraft.weapons = {
 	["No Weapon"]={
@@ -656,3 +657,4 @@ wac.aircraft.weapons = {
 		end,
 	},
 }
+]]

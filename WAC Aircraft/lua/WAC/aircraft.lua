@@ -18,7 +18,7 @@ wac.aircraft = wac.aircraft or {
 				c = t
 			end
 		end
-		if !c then
+		if not c then
 			c = { name = category, list = {} }
 			table.insert(wac.aircraft.controls, c)
 		end
@@ -32,7 +32,7 @@ wac.aircraft = wac.aircraft or {
 	controls = {},
 
 	initialize = function()
-		if !wac.aircraft.initialized then
+		if not wac.aircraft.initialized then
 			wac.aircraft.initialized = true
 			hook.Run("wacAirAddInputs")
 		end

@@ -44,10 +44,15 @@ function ENT:addSounds()
 			sound.Add({
 				name = "wac."..self.ClassName.."."..name,
 				channel = CHAN_STATIC,
-				soundlevel = (name == "Blades" or name == "Engine") and 180 or 100,
+				soundlevel = (name == "Blades" or name == "Engine") and 200 or 100,
 				sound = value
 			})
 			self.sounds[name] = CreateSound(self, "wac."..self.ClassName.."."..name)
+			if name == "Blades" then
+				self.sounds[name]:SetSoundLevel(120)
+			elseif name == "Engine" then
+				self.sounds[name]:SetSoundLevel(110)
+			end
 		end
 	end
 end
