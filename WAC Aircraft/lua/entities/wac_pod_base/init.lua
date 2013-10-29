@@ -72,7 +72,7 @@ end
 
 
 function ENT:Think()
-	if self:canFire() and self.shouldShoot and self:GetNextShot() <= CurTime() and self:GetAmmo() > 0 then
+	if IsValid(self.seat) and self:canFire() and self.shouldShoot and self:GetNextShot() <= CurTime() and self:GetAmmo() > 0 then
 		if !IsValid(self.seat:GetDriver()) then
 			self.shouldShoot = false
 		else

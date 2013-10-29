@@ -274,6 +274,7 @@ function ENT:addBackRotor()
 					and touchedEnt != self
 					and !string.find(touchedEnt:GetClass(), "func*")
 					and IsValid(self.topRotor)
+					and IsValid(self.backRotor)
 					and touchedEnt:GetMoveType() != MOVETYPE_NOCLIP
 			then
 				local rotorVel = self.backRotor:GetPhysicsObject():GetAngleVelocity():Length()
@@ -335,6 +336,7 @@ function ENT:addWeapons()
 			pod:SetNoDraw(true)
 			pod.podIndex = i
 			self.weapons[i] = pod
+			self:AddOnRemove(pod)
 		end
 	end
 
@@ -778,7 +780,7 @@ function ENT:PhysicsUpdate(ph)
 				math.Clamp(math.abs(rotor.angVel.z) - 2950, 0, 100)/10 -- RPM cap
 				+ math.pow(math.Clamp(1500 - math.abs(rotor.angVel.z), 0, 1500)/900, 3)
 				+ math.abs(rotor.angVel.z/10000)
-				- (rotor.upvel - self.rotorRpm)*self.controls.throttle/1000
+				- (rotor.upvel - self.rotorRpm)*(self.controls.throttle - 0.5)/1000
 
 			rotor.targetAngVel =
 				Vector(0, 0, math.pow(self.engineRpm,2)*self.TopRotor.dir*10)
@@ -1029,11 +1031,17 @@ function ENT:DamageEngine(amt)
 						p:TakeDamage(p:Health() + 20, lasta, self.Entity)
 					end
 				end
+
 				for k,v in pairs(self.seats) do
 					v:Remove()
 				end
 				self.passengers={}
 				self:StopAllSounds()
+
+				self:setVar("rotorRpm", 0)
+				self:setVar("engineRpm", 0)
+				self:setVar("up", 0)
+
 				self.IgnoreDamage = false
 				--[[ this affects the base class
 					for name, vec in pairs(self.Aerodynamics.Rotation) do

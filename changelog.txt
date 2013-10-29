@@ -1,6 +1,15 @@
 
 ---
 
+30.10.13
+
+Aircraft:
+~ Fixed weapon spam after aircraft crashes (issue 73)
+~ Fixed issue 71 (I guess?)
+~ Tweaked autorotation (issue 72)
+
+---
+
 29.10.13
 
 Aircraft:
