@@ -1,6 +1,15 @@
 
 ---
 
+04.11.13
+
+Aircraft:
++ gatling gun damage setting (closes #76)
+- realism slider (closes #75)
+~ bullets colliding with aircraft (closes #74)
+
+---
+
 30.10.13
 
 Aircraft:

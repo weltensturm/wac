@@ -192,14 +192,6 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		Command = "wac_cl_air_sensitivity",
 	})
 	
-	panel:AddControl("Slider", {
-		Label = "Realism",
-		Type = "float",
-		Min = 1,
-		Max = 3,
-		Command = "wac_cl_air_realism",
-	})
-	
 	panel:CheckBox("Dynamic View Angle","wac_cl_air_smoothview")
 	
 	panel:CheckBox("Dynamic View Position","wac_cl_air_shakeview")

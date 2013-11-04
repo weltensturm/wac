@@ -17,3 +17,7 @@ ENT.Name = "M134"
 ENT.Ammo = 800
 ENT.FireRate = 4000
 ENT.Sequential = false
+
+ENT.Damage = 20
+ENT.Force = 10
+ENT.Tracer = 0

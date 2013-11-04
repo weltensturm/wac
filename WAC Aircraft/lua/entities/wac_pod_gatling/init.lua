@@ -17,16 +17,16 @@ function ENT:fireBullet(pos)
 	bullet.Src = self.aircraft:LocalToWorld(pos)
 	bullet.Dir = self:GetForward()
 	bullet.Spread = Vector(0.015,0.015,0)
-	bullet.Tracer = 0
-	bullet.Force = 10
-	bullet.Damage = 20
+	bullet.Tracer = self.Tracer
+	bullet.Force = self.Force
+	bullet.Damage = self.Damage
 	bullet.Attacker = self:getAttacker()
 	local effectdata = EffectData()
 	effectdata:SetOrigin(bullet.Src)
 	effectdata:SetAngles(self:GetAngles())
 	effectdata:SetScale(1.5)
 	util.Effect("MuzzleEffect", effectdata)
-	self:FireBullets(bullet)
+	self.aircraft:FireBullets(bullet)
 end
 
 
