@@ -3,6 +3,7 @@ include('shared.lua')
 include("wac/keyboard.lua")
 
 function ENT:Think()
+	if not self.valid then return end
 	if not self:GetNWBool("locked") then
 		local mouseFlight = self:GetNWBool("active")
 		if self.sounds.Start then
@@ -59,6 +60,7 @@ function ENT:Think()
 		end
 	end
 end
+
 function ENT:CalcThirdPersonView(k,p,pos,ang,view)
 	local a = wac.key.down(tonumber(p:GetInfo("wac_cl_air_key_15")))
 	local b=p:GetInfo("wac_cl_air_mouse")=="1"

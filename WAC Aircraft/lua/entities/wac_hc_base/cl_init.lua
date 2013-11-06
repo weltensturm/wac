@@ -68,12 +68,15 @@ function ENT:Initialize()
 		t.model = self.camera
 		table.insert(self.weaponAttachments, t)
 	end
+	self.valid = true
 end
 
 
 function ENT:Think()
 	
-	if self.skin != self:GetSkin() then
+	if not self.valid then return end
+
+	if self.skin ~= self:GetSkin() then
 		self.skin = self:GetSkin()
 		self:updateSkin(self.skin)
 	end

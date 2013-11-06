@@ -48,6 +48,8 @@ end)
 
 if SERVER then
 
+	util.AddNetworkString("wac_joyinput_usermessage")
+
 	AddCSLuaFile("autorun/wac_aircraft_input.lua")
 
 	concommand.Add("wac_air_input", function(p, c, a)
@@ -90,9 +92,17 @@ if SERVER then
 					for i, category in pairs(wac.aircraft.controls) do
 						for name, control in pairs(category.list) do
 							local n = joystick.Get(p, "wac_air_"..name)
-							if n and n != wac.aircraft.joyCache[name] then
+							if n ~= nil and n ~= wac.aircraft.joyCache[name] then
 								wac.aircraft.joyCache[name] = n
-								n = (n == true and 1 or (n == false and 0 or (n/127.5-1)))
+								if n == true or n == false then
+									net.Start("wac_joyinput_usermessage")
+									net.WriteString(name)
+									net.WriteBit(n) -- write takes boolean, read returns int. fuck yeah.
+									net.Send(p)
+									n = (n == true and 1 or 0)
+								else
+									n = n/127.5-1
+								end
 								e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
 							end
 						end
@@ -153,6 +163,16 @@ else
 				end
 			end
 		end
+	end)
+
+
+	net.Receive("wac_joyinput_usermessage", function(length)
+		local vehicle = LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft")
+		if !IsValid(vehicle) then return end
+		local s = net.ReadString()
+		local b = net.ReadBit()
+		MsgN(b)
+		vehicle:receiveInput(s, b, LocalPlayer():GetNWInt("wac_passenger_id"))
 	end)
 
 	

@@ -1,4 +1,13 @@
 
+
+
+## Version 331
+
+Aircraft:
+- Clientside think no longer runs when Initialize failed (closes #58)
+- Joystick buttons now keep working after they have been pressed (closes #79)
+- Joystick buttons now work for clientside events (closes #44)
+
 ---
 
 04.11.13
