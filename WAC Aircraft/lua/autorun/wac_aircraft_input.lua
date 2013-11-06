@@ -171,7 +171,6 @@ else
 		if !IsValid(vehicle) then return end
 		local s = net.ReadString()
 		local b = net.ReadBit()
-		MsgN(b)
 		vehicle:receiveInput(s, b, LocalPlayer():GetNWInt("wac_passenger_id"))
 	end)
 

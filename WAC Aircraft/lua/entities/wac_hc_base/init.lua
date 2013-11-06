@@ -469,6 +469,7 @@ end
 
 function ENT:Use(act, cal)
 	if self.disabled then return end
+	if act.wac and act.wac.lastEnter and act.wac.lastEnter+0.5 > CurTime() then return end
 	local d = self.MaxEnterDistance
 	local v
 	for k, veh in pairs(self.seats) do
@@ -483,6 +484,8 @@ function ENT:Use(act, cal)
 			end
 		end
 	end
+	act.wac = act.wac or {}
+	act.wac.lastEnter = CurTime()
 	if v then
 		act:EnterVehicle(v)
 	end
@@ -659,7 +662,7 @@ function ENT:receiveInput(name, value, seat)
 			self.passengers[seat].wac.mouseInput = (value < 0.5)
 		end
 	end
-	if name == "Exit" and value>0.5 then
+	if name == "Exit" and value>0.5 and self.passengers[seat].wac.lastEnter<CurTime()-0.5 then
 		self:EjectPassenger(self.passengers[seat])
 	elseif name == "Fire" then
 		self:fireWeapon(value > 0.5, seat)
