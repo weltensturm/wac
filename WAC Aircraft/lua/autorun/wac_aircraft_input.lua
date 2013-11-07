@@ -16,12 +16,12 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 	wac.aircraft.addControls("Common", {
 		Exit = {true, KEY_E},
 		FreeView = {true, KEY_SPACE},
-		Camera = {true, KEY_X},
+		Camera = {true, MOUSE_RIGHT},
 	})
 
 	wac.aircraft.addControls("Weapons", {
 		Fire = {true, MOUSE_LEFT},
-		NextWeapon = {true, MOUSE_RIGHT}
+		NextWeapon = {true, KEY_F}
 	})
 
 end)

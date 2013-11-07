@@ -1,4 +1,10 @@
 
+## Version 333
+
+#### Aircraft:
+- Removed WZ-10 models
+- Changed camera and switch weapon buttons to right mouse and F, respectively
+
 ## Version 332
 
 #### Aircraft:
