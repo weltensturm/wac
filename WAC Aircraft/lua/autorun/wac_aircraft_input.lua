@@ -66,7 +66,7 @@ if SERVER then
 		for _, p in pairs(player.GetAll()) do
 			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
 			if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
-				local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")
+				local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")/1.5
 				local v = e:WorldToLocal(e:GetPos() + p:GetAimVector())
 				local pid = p:GetNWInt("wac_passenger_id")
 				e:receiveInput(

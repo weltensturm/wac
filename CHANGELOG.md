@@ -1,4 +1,11 @@
 
+## Version 334
+
+#### Aircraft
+- Fixed #82
+- Added 'Arcade Mode'
+- Lowered sensitivity a little
+
 ## Version 333
 
 #### Aircraft:

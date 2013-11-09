@@ -18,6 +18,7 @@ end)
 
 net.Receive("wac.seatSwitcher.switch", function(length)
 	local switcher = net.ReadEntity()
+	if not switcher.seats then return end
 	local count = net.ReadInt(8)
 	for i = 1, count do
 		local e = net.ReadEntity()
