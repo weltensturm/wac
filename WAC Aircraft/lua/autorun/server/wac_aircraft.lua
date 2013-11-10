@@ -7,6 +7,7 @@ AddCSLuaFile("autorun/client/wac_aircraft_dev.lua");
 
 wac.aircraft.cvars = {
 	startSpeed = CreateConVar("wac_air_startspeed", 1, {FCVAR_ARCHIVE}),
+	nodamage = CreateConVar("wac_air_nodamage", 0, {FCVAR_ARCHIVE}),
 }
 
 

@@ -10,6 +10,7 @@ CreateClientConVar("wac_cl_air_mouse_invert_yawroll", 0, true, true)
 CreateClientConVar("wac_cl_air_smoothview", 1, true, true)
 CreateClientConVar("wac_cl_air_shakeview", 1, true, true)
 CreateClientConVar("wac_cl_air_smoothkeyboard", 1, true, true)
+CreateClientConVar("wac_cl_air_arcade", 0, true, true)
 
 
 surface.CreateFont("wac_heli_big", {
@@ -191,6 +192,8 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		Max = 1.9,
 		Command = "wac_cl_air_sensitivity",
 	})
+	
+	panel:CheckBox("Arcade Mode","wac_cl_air_arcade")
 	
 	panel:CheckBox("Dynamic View Angle","wac_cl_air_smoothview")
 	

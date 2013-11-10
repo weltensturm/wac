@@ -16,12 +16,12 @@ wac.hook("wacAirAddInputs", "wac_aircraft_baseinputs", function()
 	wac.aircraft.addControls("Common", {
 		Exit = {true, KEY_E},
 		FreeView = {true, KEY_SPACE},
-		Camera = {true, KEY_X},
+		Camera = {true, MOUSE_RIGHT},
 	})
 
 	wac.aircraft.addControls("Weapons", {
 		Fire = {true, MOUSE_LEFT},
-		NextWeapon = {true, MOUSE_RIGHT}
+		NextWeapon = {true, KEY_F}
 	})
 
 end)
@@ -66,7 +66,7 @@ if SERVER then
 		for _, p in pairs(player.GetAll()) do
 			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
 			if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
-				local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")
+				local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")/1.5
 				local v = e:WorldToLocal(e:GetPos() + p:GetAimVector())
 				local pid = p:GetNWInt("wac_passenger_id")
 				e:receiveInput(

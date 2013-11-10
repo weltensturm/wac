@@ -712,7 +712,7 @@ function ENT:calcAerodynamics(ph)
 			lvel.y*self.Aerodynamics.Rotation.Right +
 			lvel.z*self.Aerodynamics.Rotation.Top
 		) / 10000
-		- ph:GetAngleVelocity()*self.Aerodynamics.AngleDrag
+		- ph:GetAngleVelocity()*self.Aerodynamics.AngleDrag*(1+self.arcade*2)
 
 	return targetVelocity, targetAngVel
 end
@@ -752,14 +752,18 @@ function ENT:PhysicsUpdate(ph)
 	local dvel = vel:Length()
 	local lvel = self:WorldToLocal(pos+vel)
 
-	local pilot = self.passengers[1]
-
 	local hover = self:calcHover(ph,pos,vel,ang)
 	
 	local rotateX = (self.controls.roll*1.5+hover.r)*self.rotorRpm
 	local rotateY = (self.controls.pitch+hover.p)*self.rotorRpm
 	local rotateZ = self.controls.yaw*1.5*self.rotorRpm
-	
+
+	self.arcade = (
+		IsValid(self.passengers[1])
+		and self.passengers[1]:GetInfo("wac_cl_air_arcade")
+		or 0
+	)
+
 	--local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	local phm = FrameTime()*66
 	if self.UsePhysRotor then
@@ -828,12 +832,14 @@ function ENT:PhysicsUpdate(ph)
 		ph:SetVelocity(vel*0.999+(up*self.rotorRpm*(self.controls.throttle+1)*7 + (fwd*math.Clamp(ang.p*0.1, -2, 2) + ri*math.Clamp(ang.r*0.1, -2, 2))*self.rotorRpm)*phm)
 	end
 
-	local controlAng = Vector(rotateX, rotateY, IsValid(self.backRotor) and rotateZ or 0) * self.Agility.Rotate
+	local controlAng =
+			Vector(rotateX, rotateY, IsValid(self.backRotor) and rotateZ or 0)
+			* self.Agility.Rotate * (1+self.arcade)
 
 	local aeroVelocity, aeroAng = self:calcAerodynamics(ph)
 
 	ph:AddAngleVelocity((aeroAng + controlAng)*phm)
-	ph:AddVelocity((aeroVelocity)*phm)
+	ph:AddVelocity(aeroVelocity*phm)
 
 	for _,e in pairs(self.wheels) do
 		if IsValid(e) then
@@ -862,6 +868,9 @@ end
 --[###########]
 
 function ENT:PhysicsCollide(cdat, phys)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if cdat.DeltaTime > 0.5 then
 		local mass = cdat.HitObject:GetMass()
 		if cdat.HitEntity:GetClass() == "worldspawn" then
@@ -883,6 +892,9 @@ function ENT:PhysicsCollide(cdat, phys)
 end
 
 function ENT:DamageSmallRotor(amt)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if amt < 1 then return end
 	if self.backRotor and self.backRotor:IsValid() then
 		self.backRotor:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,20,200))
@@ -924,6 +936,9 @@ function ENT:KillBackRotor()
 end
 
 function ENT:DamageBigRotor(amt)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if amt < 1 then return end
 	self.Entity:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,0,100))
 	if self.topRotor and self.topRotor:IsValid() then
@@ -978,6 +993,9 @@ end
 
 
 function ENT:OnTakeDamage(dmg)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if !dmg:IsExplosionDamage() then
 		dmg:ScaleDamage(0.10)
 	end
@@ -996,6 +1014,9 @@ function ENT:OnTakeDamage(dmg)
 end
 
 function ENT:DamageEngine(amt)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if self.disabled then return end
 	self.engineHealth = self.engineHealth - amt
 

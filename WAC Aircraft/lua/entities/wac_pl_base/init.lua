@@ -108,6 +108,12 @@ function ENT:PhysicsUpdate(ph)
 
 	local phm = FrameTime()*66 --(wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	
+	self.arcade = (
+		IsValid(self.passengers[1])
+		and self.passengers[1]:GetInfo("wac_cl_air_arcade")
+		or 0
+	)
+
 	if !self.disabled then
 	
 		if self.rotor and self.rotor.phys and self.rotor.phys:IsValid() then
@@ -130,10 +136,10 @@ function ENT:PhysicsUpdate(ph)
 
 	local controlAng =
 		Vector(
-			(self.controls.roll+hover.r)*dvel/400,
-			(self.controls.pitch+hover.p)*dvel/700,
+			(self.controls.roll+hover.r)*lvel.x/400,
+			(self.controls.pitch+hover.p)*lvel.x/400,
 			self.controls.yaw*1.5*math.Clamp(lvel.x/20, 0, 1)
-		) * self.Agility.Rotate
+		) * self.Agility.Rotate * (1+self.arcade)
 
 	local controlThrottle = fwd * (throttle * self.rotorRpm + self.rotorRpm/10) * self.Agility.Thrust
 	
