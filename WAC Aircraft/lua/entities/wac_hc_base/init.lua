@@ -868,6 +868,9 @@ end
 --[###########]
 
 function ENT:PhysicsCollide(cdat, phys)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if cdat.DeltaTime > 0.5 then
 		local mass = cdat.HitObject:GetMass()
 		if cdat.HitEntity:GetClass() == "worldspawn" then
@@ -889,6 +892,9 @@ function ENT:PhysicsCollide(cdat, phys)
 end
 
 function ENT:DamageSmallRotor(amt)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if amt < 1 then return end
 	if self.backRotor and self.backRotor:IsValid() then
 		self.backRotor:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,20,200))
@@ -930,6 +936,9 @@ function ENT:KillBackRotor()
 end
 
 function ENT:DamageBigRotor(amt)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if amt < 1 then return end
 	self.Entity:EmitSound("physics/metal/metal_box_impact_bullet"..math.random(1,3)..".wav", math.Clamp(amt*40,0,100))
 	if self.topRotor and self.topRotor:IsValid() then
@@ -984,6 +993,9 @@ end
 
 
 function ENT:OnTakeDamage(dmg)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if !dmg:IsExplosionDamage() then
 		dmg:ScaleDamage(0.10)
 	end
@@ -1002,6 +1014,9 @@ function ENT:OnTakeDamage(dmg)
 end
 
 function ENT:DamageEngine(amt)
+	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
+		return
+	end
 	if self.disabled then return end
 	self.engineHealth = self.engineHealth - amt
 
