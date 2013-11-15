@@ -157,7 +157,7 @@ else
 			if !IsValid(vehicle) or !vehicle.inputCache then return end
 			for command, info in pairs(vehicle.inputCache) do
 				if info.current != info.target then
-					info.current = math.Approach(info.current, info.target, FrameTime()*5)
+					info.current = math.Approach(info.current, info.target, FrameTime()*3.5)
 					RunConsoleCommand("wac_air_input", command, info.current)
 					vehicle:receiveInput(command, info.current, LocalPlayer():GetNWInt("wac_passenger_id"))
 				end

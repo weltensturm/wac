@@ -1,4 +1,11 @@
 
+## Version 336
+#### Aircraft
+- Added menu option to disable damage
+- Added option to lower volume
+- Fixed camera when aircraft has no weapons (closes #89)
+- Changed key smoothing factor (speed 3.5 instead of 5)
+
 ## Version 335
 #### Aircraft:
 - Added option to disable damage (closes #86)

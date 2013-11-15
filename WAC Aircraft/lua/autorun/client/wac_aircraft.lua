@@ -11,6 +11,7 @@ CreateClientConVar("wac_cl_air_smoothview", 1, true, true)
 CreateClientConVar("wac_cl_air_shakeview", 1, true, true)
 CreateClientConVar("wac_cl_air_smoothkeyboard", 1, true, true)
 CreateClientConVar("wac_cl_air_arcade", 0, true, true)
+CreateClientConVar("wac_cl_air_volume", 1, true, true)
 
 
 surface.CreateFont("wac_heli_big", {
@@ -186,13 +187,13 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	end
 
 	panel:AddControl("Slider", {
-		Label = "Sensitivity",
-		Type = "float",
-		Min = 0.5,
-		Max = 1.9,
-		Command = "wac_cl_air_sensitivity",
+		Label="Engine Volume",
+		Type="float",
+		Min=0.1,
+		Max=1,
+		Command="wac_cl_air_volume",
 	})
-	
+
 	panel:CheckBox("Arcade Mode","wac_cl_air_arcade")
 	
 	panel:CheckBox("Dynamic View Angle","wac_cl_air_smoothview")
@@ -205,6 +206,13 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		panel:CheckBox(" - Invert Yaw/Roll","wac_cl_air_mouse_invert_yawroll")
 		panel:CheckBox(" - Swap Yaw/Roll","wac_cl_air_mouse_swap")
 		panel:AddControl("Label", {Text = ""})
+		panel:AddControl("Slider", {
+			Label = "Sensitivity",
+			Type = "float",
+			Min = 0.5,
+			Max = 1.9,
+			Command = "wac_cl_air_sensitivity",
+		})
 	end
 	
 	panel:AddControl("Button", {
@@ -216,6 +224,8 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	panel:AddControl("Label", {Text = "Admin Settings"})
 
 	--panel:CheckBox("Double Force","wac_air_doubletick")
+
+	panel:CheckBox("No Damage","wac_air_nodamage")
 
 	panel:AddControl("Slider", {
 		Label="Start Speed",

@@ -43,12 +43,15 @@ function ENT:Think()
 		if --[[GetConVar("gmod_vehicle_viewmode"):GetInt() == 0 and]] vehicle and vehicle:IsValid() and vehicle:GetNetworkedEntity("wac_aircraft") == self then
 			inVehicle = true
 		end
+
+		local volume = tonumber(LocalPlayer():GetInfo("wac_cl_air_volume"))
+
 		self.sounds.Engine:ChangePitch(engineVal,0.1)
-		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5),0.1)
+		self.sounds.Engine:ChangeVolume(volume*math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 5),0.1)
 		self.sounds.Blades:ChangePitch(math.Clamp(val, 50, 150),0.1)
-		self.sounds.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5),0.1)
+		self.sounds.Blades:ChangeVolume(volume*math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 5),0.1)
 		if self.sounds.Start then
-			self.sounds.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*150, 0, 100)/100,0.1)
+			self.sounds.Start:ChangeVolume(volume*math.Clamp(100 - self.engineRpm*150, 0, 100)/100,0.1)
 			self.sounds.Start:ChangePitch(100 - self.engineRpm*30,0.1)
 		end
 		self.LastThink=CurTime()
