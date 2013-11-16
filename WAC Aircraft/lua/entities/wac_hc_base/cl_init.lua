@@ -127,12 +127,14 @@ function ENT:Think()
 		local engineVal = math.Clamp(self.engineRpm*100+self.engineRpm*self.smoothUp*3+doppler, 0, 200)
 		local val = math.Clamp(self.rotorRpm*100 + doppler + self:GetVelocity():Length()/50, 0, 200)
 
+		local volume = tonumber(LocalPlayer():GetInfo("wac_cl_air_volume"))
+
 		self.sounds.Engine:ChangePitch(engineVal/1.1 + val/10, 0.1)
-		self.sounds.Engine:ChangeVolume(math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 20), 0.1)
+		self.sounds.Engine:ChangeVolume(volume*math.Clamp(engineVal*engineVal/4000, 0, inVehicle and 1 or 20), 0.1)
 		self.sounds.Blades:ChangePitch(math.Clamp(val, 10, 150), 0.1)
-		self.sounds.Blades:ChangeVolume(math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 20), 0.1)
+		self.sounds.Blades:ChangeVolume(volume*math.Clamp(val*val/5000, 0, inVehicle and 0.4 or 20), 0.1)
 		if self.sounds.Start then
-			self.sounds.Start:ChangeVolume(math.Clamp(100 - self.engineRpm*110, 0, 100)/100, 0.1)
+			self.sounds.Start:ChangeVolume(volume*math.Clamp(100 - self.engineRpm*110, 0, 100)/100, 0.1)
 			self.sounds.Start:ChangePitch(100 - self.engineRpm*20, 0.1)
 		end
 		self.LastThink=CurTime()
@@ -211,6 +213,10 @@ function ENT:drawCameraHUD(seat)
 	
 	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s-w, sh/2+s)
 	surface.DrawLine(sw/2+s, sh/2+s, sw/2+s, sh/2+s-w)
+	
+	if not self.Seats[seat].weapons then
+		return
+	end
 	
 	local weapon = self:getWeapon(seat)
 	if IsValid(weapon) and weapon.drawCrosshair then
