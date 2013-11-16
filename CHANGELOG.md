@@ -1,3 +1,8 @@
+## Version 337
+#### Aircraft
+- Fixed helicopter thrust being too high at lower tickrate
+- Fixed aircraft RPM being higher at lower tickrate
+- Fixed wheeled aircraft behaving weird
 
 ## Version 336
 #### Aircraft

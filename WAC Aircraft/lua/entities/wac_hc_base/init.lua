@@ -804,7 +804,7 @@ function ENT:PhysicsUpdate(ph)
 			if IsValid(self.backRotor) and self.backRotor.Phys:IsValid() then
 				--self.backRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotor.dir-self.backRotor.Phys:GetAngleVelocity().y/10,0)*phm)
 				if self.TwinBladed then
-					self.backRotor.Phys:AddAngleVelocity(rotor.targetAngVel)
+					self.backRotor.Phys:AddAngleVelocity(rotor.targetAngVel*phm)
 				else
 					self.backRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotor.dir-self.backRotor.Phys:GetAngleVelocity().y/10,0)*phm)
 				end
@@ -818,7 +818,7 @@ function ENT:PhysicsUpdate(ph)
 				end
 			end
 
-			local throttle = self.Agility.Thrust*up*((self.controls.throttle+hover.t)*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)*phm
+			local throttle = self.Agility.Thrust*up*((self.controls.throttle+hover.t)*self.rotorRpm*1.7*self.EngineForce/15+self.rotorRpm*9.15)
 			local brakez = self:LocalToWorld(Vector(0, 0, lvel.z*dvel*self.rotorRpm/100000*self.Aerodynamics.RailRotor)) - pos
 			ph:AddVelocity((throttle - brakez)*phm)
 			
@@ -853,7 +853,7 @@ function ENT:PhysicsUpdate(ph)
 				)*phm)
 				e:GetPhysicsObject():AddVelocity(up*ang.r*lpos.y/self.WheelStabilize*phm)
 				if self.controls.throttle < -0.8 then -- apply wheel brake
-					ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5)
+					ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5*phm)
 				end
 			end
 		end

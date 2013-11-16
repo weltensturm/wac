@@ -117,7 +117,7 @@ function ENT:PhysicsUpdate(ph)
 	if !self.disabled then
 	
 		if self.rotor and self.rotor.phys and self.rotor.phys:IsValid() then
-			self.rotorRpm = math.Clamp(self.rotor.phys:GetAngleVelocity().z/3500*self.rotorDir*phm,-1,1)
+			self.rotorRpm = math.Clamp(self.rotor.phys:GetAngleVelocity().z/3500*self.rotorDir,-1,1)
 			if self.active and self.rotor:WaterLevel() <= 0 then
 				self.engineRpm = math.Clamp(self.engineRpm+FrameTime(),0,1)
 				self.rotor.phys:AddAngleVelocity(Vector(0,0,self.engineRpm*30 + throttle*self.engineRpm*20)*self.rotorDir*phm)
@@ -147,10 +147,35 @@ function ENT:PhysicsUpdate(ph)
 	ph:AddVelocity((aeroVelocity + controlThrottle)*phm)
 
 	for _,e in pairs(self.wheels) do
+		if IsValid(e) and e:GetPhysicsObject():IsValid() then
+		local ph=e:GetPhysicsObject()
+			local wpos = self:WorldToLocal(e:GetPos())
+			
+			local xpositive = (wpos.x >= 0 and 1 or -1)
+			local ypositive = (wpos.y >= 0 and 1 or -1)
+
+			e:GetPhysicsObject():AddVelocity(
+				(self:LocalToWorld(Vector(0, 0,
+					(math.abs(wpos.y) ^ (1/3))*ypositive*controlAng.x
+					- (math.abs(wpos.x) ^ (1/3))*xpositive*controlAng.y
+					+ 7
+				)/4)-pos --+ up*ang.r*lpos.y/self.WheelStabilize
+				+ aeroVelocity*0.8
+				+ controlThrottle*0.8
+			)*phm)
+
+			if throttle < 0.5 then
+				ph:AddAngleVelocity(ph:GetAngleVelocity()*(throttle-0.5)*phm)
+			end
+		end
+	end
+	--[[
+
+
+	for _, e in pairs(self.wheels) do
 		if IsValid(e) then
 			local ph = e:GetPhysicsObject()
 			if ph:IsValid() then
-				ph:AddVelocity(Vector(0, 0, 6)*phm)
 				if self.controls.throttle < -0.8 then
 					ph:AddAngleVelocity(ph:GetAngleVelocity()*-0.5*phm)
 				end
@@ -158,7 +183,7 @@ function ENT:PhysicsUpdate(ph)
 		end
 	end
 	
-	--[[
+
 	for _,e in pairs(self.wheels) do
 		if IsValid(e) then
 			local ph=e:GetPhysicsObject()
