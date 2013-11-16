@@ -3,16 +3,10 @@
 - Fixed helicopter thrust being too high at lower tickrate
 - Fixed aircraft RPM being higher at lower tickrate
 - Fixed wheeled aircraft behaving weird
-
-## Version 336
-#### Aircraft
 - Added menu option to disable damage
 - Added option to lower volume
 - Fixed camera when aircraft has no weapons (closes #89)
 - Changed key smoothing factor (speed 3.5 instead of 5)
-
-## Version 335
-#### Aircraft:
 - Added option to disable damage (closes #86)
 
 ## Version 334
@@ -20,9 +14,6 @@
 - Fixed #82
 - Added 'Arcade Mode'
 - Lowered sensitivity a little
-
-## Version 333
-#### Aircraft:
 - Removed WZ-10 models
 - Changed camera and switch weapon buttons to right mouse and F, respectively
 
@@ -30,27 +21,15 @@
 #### Aircraft:
 - Player no longer ejects after entering (closes #46)
 - Removed joystick debug MsgN call (closes #81)
-
-## Version 331
-#### Aircraft:
 - Clientside think no longer runs when Initialize failed (closes #58)
 - Joystick buttons now keep working after they have been pressed (closes #79)
 - Joystick buttons now work for clientside events (closes #44)
-
-## Version 04.11.13
-#### Aircraft:
 - Added gatling gun damage setting (closes #76)
 - realism slider (closes #75)
 - Fixed bullets colliding with aircraft (closes #74)
-
-## Version 30.10.13
-#### Aircraft:
 - Fixed weapon spam after aircraft crashes (issue 73)
 - Fixed issue 71 (I guess?)
 - Tweaked autorotation (issue 72)
-
-## Version 29.10.13
-#### Aircraft:
 - Rotor sound can now be heard further away
 - Removed duplicate models
 #### SWEPs:
