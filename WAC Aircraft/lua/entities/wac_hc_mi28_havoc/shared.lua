@@ -8,16 +8,16 @@ ENT.AdminSpawnable = true
 
 ENT.PrintName = "Havoc Mi-28"
 
-ENT.Model = "models/BF2/helicopters/Mil Mi-28/mi28_b.mdl"
+ENT.Model = "models/bf2/helicopters/mil mi-28/mi28_b.mdl"
 
 ENT.TopRotor = {
 	pos = Vector(0,0,119),
-	model = "models/BF2/helicopters/Mil Mi-28/mi28_r.mdl",
+	model = "models/bf2/helicopters/mil mi-28/mi28_r.mdl",
 }
 
 ENT.BackRotor = {
 	pos = Vector(-435.09,18.46,164.91),
-	model = "models/BF2/helicopters/Mil Mi-28/mi28_tr.mdl",
+	model = "models/bf2/helicopters/mil mi-28/mi28_tr.mdl",
 }
 
 ENT.SmokePos = Vector(-80,0,50)
@@ -90,7 +90,7 @@ ENT.Sounds = {
 
 
 ENT.Camera = {
-	model = "models/BF2/helicopters/Mil Mi-28/mi28_w2.mdl",
+	model = "models/bf2/helicopters/mil mi-28/mi28_w2.mdl",
 	pos = Vector(181.44,0,42),
 	offset = Vector(1,0,0),
 	viewPos = Vector(7, 0, 3.5),
@@ -103,25 +103,25 @@ ENT.Camera = {
 ENT.WeaponAttachments = {
 
 	gunMount1 = {
-		model = "models/BF2/helicopters/Mil Mi-28/mi28_g2.mdl",
+		model = "models/bf2/helicopters/mil mi-28/mi28_g2.mdl",
 		pos = Vector(120,0,33),
 		restrictPitch = true
 	},
 	
 	gunMount2 = {
-		model = "models/BF2/helicopters/Mil Mi-28/mi28_g1.mdl",
+		model = "models/bf2/helicopters/mil mi-28/mi28_g1.mdl",
 		pos = Vector(120,0,20),
 		offset = Vector(2,0,0)
 	},
 
 	gun = {
-		model = "models/BF2/helicopters/Mil Mi-28/mi28_g1.mdl",
+		model = "models/bf2/helicopters/mil mi-28/mi28_g1.mdl",
 		pos = Vector(120,0,20),
 		offset = Vector(2,0,0)
 	},
 	
 	radar1 = {
-		model = "models/BF2/helicopters/Mil Mi-28/mi28_radar1.mdl",
+		model = "models/bf2/helicopters/mil mi-28/mi28_radar1.mdl",
 		pos = Vector(181.44,0,56.65),
 		restrictPitch = true
 	},

@@ -11,16 +11,16 @@ ENT.PrintName		= "Viper AH-1Z"
 ENT.TopRotor = {
 	dir = -1,
 	pos = Vector(0,0,120),
-	model = "Models/BF2/helicopters/AH-1 Cobra/ah1z_r.mdl",
+	model = "models/bf2/helicopters/ah-1 cobra/ah1z_r.mdl",
 }
 
 ENT.BackRotor = {
 	dir = -1,
 	pos = Vector(-362.61,22.06,107.22),
-	model = "Models/BF2/helicopters/AH-1 Cobra/ah1z_tr.mdl"
+	model = "models/bf2/helicopters/ah-1 cobra/ah1z_tr.mdl"
 }
 
-ENT.Model			= "Models/BF2/helicopters/AH-1 Cobra/ah1z_b.mdl"
+ENT.Model			= "models/bf2/helicopters/ah-1 cobra/ah1z_b.mdl"
 ENT.RotorPhModel	= "models/props_junk/sawblade001a.mdl"
 
 ENT.SmokePos		= Vector(-116.21,0,79.51)
@@ -71,7 +71,7 @@ ENT.Weapons = {
 
 
 ENT.Camera = {
-	model = "models/BF2/helicopters/AH-1 Cobra/ah1z_radar1.mdl",
+	model = "models/bf2/helicopters/ah-1 cobra/ah1z_radar1.mdl",
 	pos = Vector(175,0,42),
 	offset = Vector(-1,0,0),
 	viewPos = Vector(2, 0, 3.5),
@@ -84,25 +84,25 @@ ENT.Camera = {
 ENT.WeaponAttachments = {
 
 	gunMount1 = {
-		model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g1.mdl",
+		model = "models/bf2/helicopters/ah-1 cobra/ah1z_g1.mdl",
 		pos = Vector(137,0,29),
 		restrictPitch = true
 	},
 	
 	gunMount2 = {
-		model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g2.mdl",
+		model = "models/bf2/helicopters/ah-1 cobra/ah1z_g2.mdl",
 		pos = Vector(137,0,23),
 		offset = Vector(2,0,0)
 	},
 
 	gun = {
-		model = "models/BF2/helicopters/AH-1 Cobra/ah1z_g.mdl",
+		model = "models/bf2/helicopters/ah-1 cobra/ah1z_g.mdl",
 		pos = Vector(137, 0, 23),
 		offset = Vector(2,0,0)
 	},
 	
 	radar1 = {
-		model = "models/BF2/helicopters/AH-1 Cobra/ah1z_radar2.mdl",
+		model = "models/bf2/helicopters/ah-1 cobra/ah1z_radar2.mdl",
 		pos = Vector(175,0,52),
 		restrictPitch = true
 	},

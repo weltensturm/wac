@@ -5,7 +5,7 @@ include("shared.lua")
 ENT.Radius = 500
 
 function ENT:Initialize()
-	self.Entity:SetModel("models/Items/ammocrate_ar2.mdl")		
+	self.Entity:SetModel("models/items/ammocrate_ar2.mdl")		
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)

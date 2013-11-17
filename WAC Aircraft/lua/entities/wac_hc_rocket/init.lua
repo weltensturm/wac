@@ -5,7 +5,7 @@ include("shared.lua")
 
 function ENT:Initialize()
 	math.randomseed(CurTime())
-	self.Entity:SetModel("models/WeltEnSTurm/WAC/Rockets/rocket01.mdl")
+	self.Entity:SetModel("models/weltensturm/wac/rockets/rocket01.mdl")
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)

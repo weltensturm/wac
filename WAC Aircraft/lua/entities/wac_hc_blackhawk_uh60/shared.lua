@@ -8,17 +8,17 @@ ENT.AdminSpawnable = true
 
 ENT.PrintName = "Black Hawk UH-60"
 
-ENT.Model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_b.mdl"
+ENT.Model = "models/bf2/helicopters/uh-60 blackhawk/uh60_b.mdl"
 
 ENT.TopRotor = {
 	dir = -1,
 	pos = Vector(0, 0, 100),
-	model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_r.mdl",
+	model = "models/bf2/helicopters/uh-60 blackhawk/uh60_r.mdl",
 }
 
 ENT.BackRotor = {
 	pos = Vector(-400,17,134),
-	model = "models/BF2/helicopters/UH-60 BlackHawk/uh60_rr.mdl",
+	model = "models/bf2/helicopters/uh-60 blackhawk/uh60_rr.mdl",
 	angles = Angle(0, 0, 192)
 }
 
