@@ -22,14 +22,18 @@ ENT.TopRotor = {
 	pos = Vector(0,0,50),
 	angles = Angle(0, 0, 0),
 	model = "models/props_borealis/borealis_door001a.mdl",
+	health = 100
 }
 
 ENT.BackRotor = {
 	dir = 1,
 	pos = Vector(-185,-3,13),
 	angles = Angle(0, 0, 0),
-	model = "models/props_borealis/borealis_door001a.mdl"
+	model = "models/props_borealis/borealis_door001a.mdl",
+	health = 40
 }
+
+ENT.EngineHealth = 100
 
 ENT.EngineForce	= 20
 ENT.BrakeMul = 1
@@ -866,6 +870,22 @@ end
 --[###########]
 --[###] DAMAGE
 --[###########]
+
+function ENT:maintenance()
+	if IsValid(self.backRotor) then
+		self.backRotor.fHealth = math.Approach(self.backRotor.fHealth, self.BackRotor.health, 5)
+	end
+	if IsValid(self.topRotor) then
+		self.topRotor.fHealth = math.Approach(self.topRotor.fHealth, self.TopRotor.health, 6)
+	end
+	self.engineHealth = math.Approach(self.engineHealth, self.EngineHealth, 10)
+	if self.weapons then
+		for _, w in pairs(self.weapons) do
+			w:SetAmmo(math.Approach(w:GetAmmo(), w.Ammo, w.FireRate/60))
+		end
+	end
+end
+
 
 function ENT:PhysicsCollide(cdat, phys)
 	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
