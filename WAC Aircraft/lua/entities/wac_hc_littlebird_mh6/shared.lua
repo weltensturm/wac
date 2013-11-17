@@ -8,16 +8,16 @@ ENT.AdminSpawnable = true
 
 ENT.PrintName			= "Little Bird MH-6"
 
-ENT.Model			= "models/Flyboi/LittleBird/littlebird_fb.mdl"
+ENT.Model			= "models/flyboi/littlebird/littlebird_fb.mdl"
 
 ENT.TopRotor = {
-	model = "models/Flyboi/LittleBird/littlebirdrotorm_fb.mdl",
+	model = "models/flyboi/littlebird/littlebirdrotorm_fb.mdl",
 	pos = Vector(-10,0,100),
 }
 
 ENT.BackRotor = {
 	dir = -1,
-	model = "models/Flyboi/LittleBird/LittleBirdT_fb.mdl",
+	model = "models/flyboi/littlebird/littlebirdt_fb.mdl",
 	pos = Vector(-217,9,73), 
 }
 
