@@ -40,13 +40,13 @@ ENT.Seats = {
 }
 
 ENT.Sounds = {
-	Start = "WAC/Heli/h6_start.wav",
-	Blades = "WAC/Heli/heli_loop_ext.wav",
-	Engine = "WAC/Heli/heli_loop_int.wav",
-	MissileAlert = "HelicopterVehicle/MissileNearby.mp3",
-	MinorAlarm = "HelicopterVehicle/MinorAlarm.mp3",
-	LowHealth = "HelicopterVehicle/LowHealth.mp3",
-	CrashAlarm = "HelicopterVehicle/CrashAlarm.mp3",
+	Start = "wac/heli/h6_start.wav",
+	Blades = "wac/heli/heli_loop_ext.wav",
+	Engine = "wac/heli/heli_loop_int.wav",
+	MissileAlert = "helicoptervehicle/missilenearby.mp3",
+	MinorAlarm = "helicoptervehicle/minoralarm.mp3",
+	LowHealth = "helicoptervehicle/lowhealth.mp3",
+	CrashAlarm = "helicoptervehicle/crashalarm.mp3",
 }
 
 ENT.Weapons = {

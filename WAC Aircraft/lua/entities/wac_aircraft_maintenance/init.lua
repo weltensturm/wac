@@ -5,7 +5,7 @@ include("shared.lua")
 ENT.Radius = 500
 
 function ENT:Initialize()
-	self.Entity:SetModel("models/items/ammocrate_ar2.mdl")		
+	self.Entity:SetModel("models/props_vehicles/generatortrailer01.mdl")
 	self.Entity:PhysicsInit(SOLID_VPHYSICS)
 	self.Entity:SetMoveType(MOVETYPE_VPHYSICS)
 	self.Entity:SetSolid(SOLID_VPHYSICS)
@@ -18,5 +18,6 @@ function ENT:Think()
 			e:maintenance()
 		end
 	end
-	self:NextThink(CurTime()+2)
+	self:NextThink(CurTime()+1)
+	return true
 end
