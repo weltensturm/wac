@@ -2,7 +2,7 @@
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
 include("shared.lua")
-include("entities/base_wire_entity/init.lua")
+include("entities/base_wire_entity.lua")
 
 function ENT:Initialize()
 	math.randomseed(CurTime())	

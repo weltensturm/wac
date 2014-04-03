@@ -1,7 +1,7 @@
 
 AddCSLuaFile("cl_init.lua")
 AddCSLuaFile("shared.lua")
-include("entities/base_wire_entity/init.lua")
+include("entities/base_wire_entity.lua")
 include("shared.lua")
 
 function ENT:Initialize()
