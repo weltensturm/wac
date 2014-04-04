@@ -1,6 +1,5 @@
 
 
-
 include("shared.lua")
 
 
@@ -180,6 +179,7 @@ function ENT:OnRemove()
 	for _, t in pairs(self.weaponAttachments) do
 		t.model:Remove()
 	end
+	self.Emitter:Finish()
 end
 
 
@@ -555,7 +555,6 @@ function ENT:Draw()
 					particle:SetEndSize(20*self.Scale)
 					particle:SetColor(255,255,255)
 					particle:SetRoll(math.Rand(-50,50))
-					self.Emitter:Finish()
 				end
 			else
 				local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(self.SmokePos))
@@ -567,7 +566,6 @@ function ENT:Draw()
 				particle:SetEndSize(20*self.Scale)
 				particle:SetColor(255,255,255)
 				particle:SetRoll(math.Rand(-50,50))
-				self.Emitter:Finish()
 			end
 			self.lastHeatDrawn = CurTime()
 		end
@@ -590,4 +588,5 @@ net.Receive("wac.aircraft.updateWeapons", function(length)
 		end
 	end
 end)
+
 

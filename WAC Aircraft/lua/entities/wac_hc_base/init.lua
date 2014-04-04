@@ -702,20 +702,21 @@ function ENT:calcAerodynamics(ph)
 	local dvel = self:GetVelocity():Length()
 	local lvel = self:WorldToLocal(self:GetPos() + self:GetVelocity())
 
-	local targetVelocity = 
+	local targetVelocity = (
 		- self:LocalToWorld(self.Aerodynamics.Rail * lvel * dvel * dvel / 1000000000) + self:GetPos()
 		+ self:LocalToWorld(
 			self.Aerodynamics.Lift.Front * lvel.x * dvel / 10000000 +
 			self.Aerodynamics.Lift.Right * lvel.y * dvel / 10000000 +
 			self.Aerodynamics.Lift.Top * lvel.z * dvel / 10000000
 		) - self:GetPos()
+	) * (1 + self.arcade)
 
 	local targetAngVel =
 		(
 			lvel.x*self.Aerodynamics.Rotation.Front +
 			lvel.y*self.Aerodynamics.Rotation.Right +
 			lvel.z*self.Aerodynamics.Rotation.Top
-		) / 10000
+		) / 10000 / (1 + self.arcade)
 		- ph:GetAngleVelocity()*self.Aerodynamics.AngleDrag*(1+self.arcade*2)
 
 	return targetVelocity, targetAngVel
