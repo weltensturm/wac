@@ -1,3 +1,8 @@
+## Version 339
+#### Aircraft Version 31
+- Arcade mode is now easier
+- Fixed clientside emitter error
+
 ## Version 338
 #### Aircraft
 - Added maintenance station

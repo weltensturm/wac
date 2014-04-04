@@ -7,7 +7,7 @@ wac.menu.aircraft = "Aircraft"
 
 wac.aircraft = wac.aircraft or {
 	
-	version = "338",
+	version = "339",
 	
 	spawnCategory = "WAC Aircraft",
 
