@@ -22,14 +22,18 @@ ENT.TopRotor = {
 	pos = Vector(0,0,50),
 	angles = Angle(0, 0, 0),
 	model = "models/props_borealis/borealis_door001a.mdl",
+	health = 100
 }
 
 ENT.BackRotor = {
 	dir = 1,
 	pos = Vector(-185,-3,13),
 	angles = Angle(0, 0, 0),
-	model = "models/props_borealis/borealis_door001a.mdl"
+	model = "models/props_borealis/borealis_door001a.mdl",
+	health = 40
 }
+
+ENT.EngineHealth = 100
 
 ENT.EngineForce	= 20
 ENT.BrakeMul = 1
@@ -698,20 +702,21 @@ function ENT:calcAerodynamics(ph)
 	local dvel = self:GetVelocity():Length()
 	local lvel = self:WorldToLocal(self:GetPos() + self:GetVelocity())
 
-	local targetVelocity = 
+	local targetVelocity = (
 		- self:LocalToWorld(self.Aerodynamics.Rail * lvel * dvel * dvel / 1000000000) + self:GetPos()
 		+ self:LocalToWorld(
 			self.Aerodynamics.Lift.Front * lvel.x * dvel / 10000000 +
 			self.Aerodynamics.Lift.Right * lvel.y * dvel / 10000000 +
 			self.Aerodynamics.Lift.Top * lvel.z * dvel / 10000000
 		) - self:GetPos()
+	) * (1 + self.arcade)
 
 	local targetAngVel =
 		(
 			lvel.x*self.Aerodynamics.Rotation.Front +
 			lvel.y*self.Aerodynamics.Rotation.Right +
 			lvel.z*self.Aerodynamics.Rotation.Top
-		) / 10000
+		) / 10000 / (1 + self.arcade)
 		- ph:GetAngleVelocity()*self.Aerodynamics.AngleDrag*(1+self.arcade*2)
 
 	return targetVelocity, targetAngVel
@@ -767,15 +772,17 @@ function ENT:PhysicsUpdate(ph)
 	--local phm = (wac.aircraft.cvars.doubleTick:GetBool() and 2 or 1)
 	local phm = FrameTime()*66
 	if self.UsePhysRotor then
+	    
+		if self.active and !self.engineDead then
+			self.engineRpm = math.Clamp(self.engineRpm+FrameTime()*0.1*wac.aircraft.cvars.startSpeed:GetFloat(), 0, 1)
+		else
+			self.engineRpm = math.Clamp(self.engineRpm-FrameTime()*0.16*wac.aircraft.cvars.startSpeed:GetFloat(), 0, 1)
+		end
+
+	    
 		if self.topRotor and self.topRotor.Phys and self.topRotor.Phys:IsValid() then
 			if self.RotorBlurModel then
 				self.topRotor.vis:SetColor(Color(255,255,255,math.Clamp(1.3-self.rotorRpm,0.1,1)*255))
-			end
-
-			if self.active and self.topRotor:WaterLevel() <= 0 and !self.engineDead then
-				self.engineRpm = math.Clamp(self.engineRpm+FrameTime()*0.1*wac.aircraft.cvars.startSpeed:GetFloat(),0,1)
-			else
-				self.engineRpm = math.Clamp(self.engineRpm-FrameTime()*0.16*wac.aircraft.cvars.startSpeed:GetFloat(), 0, 1)
 			end
 
 			-- top rotor physics
@@ -867,6 +874,40 @@ end
 --[###] DAMAGE
 --[###########]
 
+-- wac_aircraft_maintenance within 500 units calls this every second
+function ENT:maintenance()
+    if self.disabled then return end
+	local repaired = false
+	local rearmed = false
+	if IsValid(self.backRotor) and self.backRotor.fHealth < self.BackRotor.health then
+		self.backRotor.fHealth = math.Approach(self.backRotor.fHealth, self.BackRotor.health, 5)
+		repaired = true
+	end
+	if IsValid(self.topRotor) and self.topRotor.fHealth < self.BackRotor.health then
+		self.topRotor.fHealth = math.Approach(self.topRotor.fHealth, self.TopRotor.health, 6)
+		repaired = true
+	end
+	if self.engineHealth < self.EngineHealth then
+		self.engineHealth = math.Approach(self.engineHealth, self.EngineHealth, 10)
+		repaired = true
+	end
+	if self.weapons then
+		for _, w in pairs(self.weapons) do
+			if w:GetAmmo() != w.Ammo then
+				w:SetAmmo(math.Approach(w:GetAmmo(), w.Ammo, w.FireRate/60))
+				rearmed = true
+			end
+		end
+    end
+    if rearmed then
+        self:EmitSound("items/ammo_pickup.wav", 100, 100)
+    end
+    if repaired then
+        self:EmitSound("wac/repair_loop.wav", 100, 100)
+    end
+end
+
+
 function ENT:PhysicsCollide(cdat, phys)
 	if wac.aircraft.cvars.nodamage:GetInt() == 1 then
 		return
@@ -877,7 +918,7 @@ function ENT:PhysicsCollide(cdat, phys)
 			mass = 5000
 		end
 		local dmg = (cdat.Speed*cdat.Speed*math.Clamp(mass, 0, 5000))/10000000
-		if !dmg then return end
+		if !dmg or dmg < 1 then return end
 		self:TakeDamage(dmg*15)
 		if dmg > 2 then
 			self.Entity:EmitSound("vehicles/v8/vehicle_impact_heavy"..math.random(1,4)..".wav")
@@ -963,6 +1004,7 @@ end
 
 function ENT:KillTopRotor()
 	if !self.topRotor then return end
+	self:setEngine(false)
 	local e = self:addEntity("prop_physics")
 	e:SetPos(self.topRotor:GetPos())
 	e:SetAngles(self.topRotor:GetAngles())
@@ -987,7 +1029,6 @@ function ENT:KillTopRotor()
 		if !e or !e:IsValid() then return end
 		e:Remove()
 	end)
-	self:setEngine(false)
 end
 --[###] Rotor Damage
 

@@ -8,16 +8,16 @@ ENT.AdminSpawnable = true
 
 ENT.PrintName = "Little Bird AH-6"
 
-ENT.Model = "models/Flyboi/LittleBird/littlebirda_fb.mdl"
+ENT.Model = "models/flyboi/littlebird/littlebirda_fb.mdl"
 
 ENT.TopRotor = {
-	model = "models/Flyboi/LittleBird/littlebirdrotorm_fb.mdl",
+	model = "models/flyboi/littlebird/littlebirdrotorm_fb.mdl",
 	pos = Vector(-10,0,100),
 }
 
 ENT.BackRotor = {
 	dir = -1,
-	model = "models/Flyboi/LittleBird/LittleBirdT_fb.mdl",
+	model = "models/flyboi/littlebird/littlebirdt_fb.mdl",
 	pos = Vector(-217,9,73), 
 }
 
@@ -40,13 +40,13 @@ ENT.Seats = {
 }
 
 ENT.Sounds = {
-	Start = "WAC/Heli/h6_start.wav",
-	Blades = "WAC/Heli/heli_loop_ext.wav",
-	Engine = "WAC/Heli/heli_loop_int.wav",
-	MissileAlert = "HelicopterVehicle/MissileNearby.mp3",
-	MinorAlarm = "HelicopterVehicle/MinorAlarm.mp3",
-	LowHealth = "HelicopterVehicle/LowHealth.mp3",
-	CrashAlarm = "HelicopterVehicle/CrashAlarm.mp3",
+	Start = "wac/heli/h6_start.wav",
+	Blades = "wac/heli/heli_loop_ext.wav",
+	Engine = "wac/heli/heli_loop_int.wav",
+	MissileAlert = "helicoptervehicle/missilenearby.mp3",
+	MinorAlarm = "helicoptervehicle/minoralarm.mp3",
+	LowHealth = "helicoptervehicle/lowhealth.mp3",
+	CrashAlarm = "helicoptervehicle/crashalarm.mp3",
 }
 
 ENT.Weapons = {
