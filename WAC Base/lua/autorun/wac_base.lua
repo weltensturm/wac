@@ -66,7 +66,7 @@ else
 	local view = {}
 	local lastCalcView = 0
 	wac.calcView = function(player, pos, ang, fov)
-		if lastCalcView == CurTime() then return view end
+		if lastCalcView == CurTime() then return end
 		player.wac = player.wac or {}
 		lastCalcView = CurTime()
 		view.origin = pos
