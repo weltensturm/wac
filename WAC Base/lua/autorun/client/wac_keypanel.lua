@@ -132,7 +132,7 @@ wac.hook("Initialize", "wac_key_panel_initgm", function()
 	function GAMEMODE:OnContextMenuOpen()
 		if IsValid(current) and current.editing or !contextOpen then return end
 		wac.contextMenuOpen=true
-		contextOpen()
+		contextOpen(self)
 	end
 	
 	function GAMEMODE:OnSpawnMenuClose()
