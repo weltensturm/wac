@@ -183,7 +183,7 @@ function ENT:OnRemove()
 			t.model:Remove()
 		end
 	end
-	if IsValid(t.model) then
+	if IsValid(self.Emitter) then
 		self.Emitter:Finish()
 	end
 end
