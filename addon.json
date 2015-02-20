@@ -1,0 +1,14 @@
+
+{
+	"title"		:	"WAC Aircraft",
+	"type"		:	"vehicle",
+	"tags"		:	[ "roleplay", "realism" ],
+	"ignore"	:
+	[
+		"materials/panel/*",
+		"*.gitignore",
+		"*.psd",
+		"*.vcproj",
+		"*.svn*"
+	]
+}
