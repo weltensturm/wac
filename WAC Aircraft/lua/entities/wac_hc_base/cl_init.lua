@@ -382,7 +382,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	if !self.Seats[k] then return end
 	local view = {origin = pos, angles = ang, fov = fov}
 
-	if IsValid(p:GetVehicle()) and p:GetVehicle():GetNWEntity("wac_aircraft") != self then
+	if (IsValid(p:GetVehicle()) and p:GetVehicle():GetNWEntity("wac_aircraft") != self) or (not IsValid(p:GetVehicle())) then
 		return self:viewCalcExit(p, view)
 	end
 
