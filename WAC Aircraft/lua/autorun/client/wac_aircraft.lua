@@ -52,7 +52,7 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 		else
 			p.wac.air.vehicle = nil
 			p.wac.air.lastView = {origin=pos, angles=ang, fov=fov}
-			return false
+			return
 		end
 	end
 	
@@ -64,37 +64,35 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 end)
 
 wac.hook("RenderScreenspaceEffects", "wac_air_weaponcam",function()
-	local p = LocalPlayer()
+	local p=LocalPlayer()
 	if !IsValid(p) then return end
 	local v=p:GetVehicle()
-	if IsValid(v) then
-		if IsValid(e) then
-			local e=v:GetNWEntity("wac_aircraft")
-			e:DrawScreenSpaceEffects(p:GetNWInt("wac_passenger_id"),p)
-		end
+	if !IsValid(v) then return end
+	local e=v:GetNWEntity("wac_aircraft")
+	if IsValid(e) then
+		e:DrawScreenSpaceEffects(p:GetNWInt("wac_passenger_id"),p)
 	end
 end)
 
 wac.hook("HUDPaint", "wac_air_weaponhud", function()
-	local p = LocalPlayer()
+	local p=LocalPlayer()
 	if !IsValid(p) then return end
 	local v=p:GetVehicle()
-	if IsValid(v) then
-		local e=v:GetNWEntity("wac_aircraft")
-		if IsValid(e) then
-			e:DrawHUD(p:GetNWInt("wac_passenger_id"),p)
-		end
+	if !IsValid(v) then return end
+	local e=v:GetNWEntity("wac_aircraft")
+	if IsValid(e) then
+		e:DrawHUD(p:GetNWInt("wac_passenger_id"),p)
 	end
 end)
 
 wac.hook("CreateMove", "wac_cl_air_mouseinput", function(md)
 	local p=LocalPlayer()
+	if !IsValid(p) then return end
 	local v=p:GetVehicle()
-	if IsValid(v) then
-		local e=v:GetNWEntity("wac_aircraft")
-		if IsValid(e) then
-			e:MovePlayerView(p:GetNWInt("wac_passenger_id"),p,md)
-		end
+	if !IsValid(v) then return end
+	local e=v:GetNWEntity("wac_aircraft")
+	if IsValid(e) then
+		e:MovePlayerView(p:GetNWInt("wac_passenger_id"),p,md)
 	end
 end)
 
