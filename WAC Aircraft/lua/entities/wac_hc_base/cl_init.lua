@@ -162,11 +162,13 @@ function ENT:attachmentThink()
 	if !camAng then return end
 	local tr = util.QuickTrace(self:LocalToWorld(self.Camera.pos)+camAng:Forward()*20, camAng:Forward()*999999999, self)
 	for _, t in pairs(self.weaponAttachments) do
-		local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
-		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.r or 0)
-		t.model:SetAngles(self:LocalToWorldAngles(localAng))
-		if t.offset then
-			t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
+		if IsValid(t.model) then
+			local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
+			localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.r or 0)
+			t.model:SetAngles(self:LocalToWorldAngles(localAng))
+			if t.offset then
+				t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
+			end
 		end
 	end
 end
@@ -380,7 +382,7 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 	if !self.Seats[k] then return end
 	local view = {origin = pos, angles = ang, fov = fov}
 
-	if p:GetVehicle():GetNWEntity("wac_aircraft") != self then
+	if IsValid(p:GetVehicle()) and p:GetVehicle():GetNWEntity("wac_aircraft") != self then
 		return self:viewCalcExit(p, view)
 	end
 
@@ -393,14 +395,17 @@ function ENT:viewCalc(k, p, pos, ang, fov)
 		wac.smoothApproachVector(p.wac.lagAccelDelta, p.wac.lagAccel, 20)
 	end
 
-	if p:GetVehicle():GetThirdPersonMode() then
-		view = self:viewCalcThirdPerson(k, p, view)
-	else
-		if p:GetVehicle().useCamera and self.camera then
-			--view = weapon.CalcView(self,weapon,p,pos,ang,view)
-			view = self:viewCalcCamera(k, p, view)
+	local v=p:GetVehicle()
+	if IsValid(v) then
+		if v:GetThirdPersonMode() then
+			view = self:viewCalcThirdPerson(k, p, view)
 		else
-			view = self:viewCalcFirstPerson(k, p, view)
+			if v.useCamera and self.camera then
+				--view = weapon.CalcView(self,weapon,p,pos,ang,view)
+				view = self:viewCalcCamera(k, p, view)
+			else
+				view = self:viewCalcFirstPerson(k, p, view)
+			end
 		end
 	end
 	if self.viewTarget then

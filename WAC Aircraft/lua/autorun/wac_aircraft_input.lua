@@ -64,21 +64,24 @@ if SERVER then
 
 	wac.hook("Think", "wac_aircraft_mouseinput", function()
 		for _, p in pairs(player.GetAll()) do
-			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
-				local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")/1.5
-				local v = e:WorldToLocal(e:GetPos() + p:GetAimVector())
-				local pid = p:GetNWInt("wac_passenger_id")
-				e:receiveInput(
-					"Pitch",
-					math.Clamp(v.z*m*(p:GetInfo("wac_cl_air_mouse_invert_pitch")=="1" and 1 or -1)*10, -1, 1),
-					pid
-				)
-				e:receiveInput(
-					p:GetInfo("wac_cl_air_mouse_swap")=="0" and "Yaw" or "Roll",
-					math.Clamp(v.y*m*(p:GetInfo("wac_cl_air_mouse_invert_yawroll")=="1" and 1 or -1)*10, -1, 1),
-					pid
-				)
+			local v = p:GetVehicle()
+			if IsValid(v) then
+				local e = v:GetNWEntity("wac_aircraft")
+				if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
+					local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")/1.5
+					local v = e:WorldToLocal(e:GetPos() + p:GetAimVector())
+					local pid = p:GetNWInt("wac_passenger_id")
+					e:receiveInput(
+						"Pitch",
+						math.Clamp(v.z*m*(p:GetInfo("wac_cl_air_mouse_invert_pitch")=="1" and 1 or -1)*10, -1, 1),
+						pid
+					)
+					e:receiveInput(
+						p:GetInfo("wac_cl_air_mouse_swap")=="0" and "Yaw" or "Roll",
+						math.Clamp(v.y*m*(p:GetInfo("wac_cl_air_mouse_invert_yawroll")=="1" and 1 or -1)*10, -1, 1),
+						pid
+					)
+				end
 			end
 		end
 	end)
@@ -87,23 +90,26 @@ if SERVER then
 	wac.hook("Think", "wac_aircraft_joyinput", function() 
 		if wac.aircraft.joyInitialized then
 			for _, p in pairs(player.GetAll()) do
-				local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-				if IsValid(e) then
-					for i, category in pairs(wac.aircraft.controls) do
-						for name, control in pairs(category.list) do
-							local n = joystick.Get(p, "wac_air_"..name)
-							if n ~= nil and n ~= wac.aircraft.joyCache[name] then
-								wac.aircraft.joyCache[name] = n
-								if n == true or n == false then
-									net.Start("wac_joyinput_usermessage")
-									net.WriteString(name)
-									net.WriteBit(n) -- write takes boolean, read returns int. fuck yeah.
-									net.Send(p)
-									n = (n == true and 1 or 0)
-								else
-									n = n/127.5-1
+				local v = p:GetVehicle()
+				if IsValid(v) then
+					local e = p:GetVehicle():GetNWEntity("wac_aircraft")
+					if IsValid(e) then
+						for i, category in pairs(wac.aircraft.controls) do
+							for name, control in pairs(category.list) do
+								local n = joystick.Get(p, "wac_air_"..name)
+								if n ~= nil and n ~= wac.aircraft.joyCache[name] then
+									wac.aircraft.joyCache[name] = n
+									if n == true or n == false then
+										net.Start("wac_joyinput_usermessage")
+										net.WriteString(name)
+										net.WriteBit(n) -- write takes boolean, read returns int. fuck yeah.
+										net.Send(p)
+										n = (n == true and 1 or 0)
+									else
+										n = n/127.5-1
+									end
+									e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
 								end
-								e:receiveInput(name, n, p:GetNWInt("wac_passenger_id"))
 							end
 						end
 					end
@@ -116,7 +122,9 @@ if SERVER then
 else
 
 	wac.hook("wacKey", "wac_cl_aircraft_keyboard", function(key, pressed)
-		local vehicle = LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft")
+		local v=LocalPlayer():GetVehicle()
+		if !IsValid(v) then return end
+		local vehicle = v:GetNWEntity("wac_aircraft")
 		if !IsValid(vehicle) or vgui.CursorVisible() then return end
 		local k = 0
 		for i, category in pairs(wac.aircraft.controls) do
@@ -153,7 +161,9 @@ else
 
 	wac.hook("Think", "wac_cl_aircraft_smoothkeyboard", function()
 		if GetConVar("wac_cl_air_smoothkeyboard"):GetBool() then
-			local vehicle = LocalPlayer():GetVehicle():GetNWEntity("wac_aircraft")
+			local v=LocalPlayer():GetVehicle()
+			if !IsValid(v) then return end
+			local vehicle = v:GetNWEntity("wac_aircraft")
 			if !IsValid(vehicle) or !vehicle.inputCache then return end
 			for command, info in pairs(vehicle.inputCache) do
 				if info.current != info.target then
@@ -197,9 +207,12 @@ else
 	-- block player use button and menu when in vehicle
 	wac.hook("PlayerBindPress", "wac_cl_air_exit", function(p,bind)
 		if bind == "+use" then
-			local heli = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(heli) then
-				return true
+			local v = p:GetVehicle()
+			if IsValid(v) then
+				local heli = p:GetVehicle():GetNWEntity("wac_aircraft")
+				if IsValid(heli) then
+					return true
+				end
 			end
 		end
 	end)
