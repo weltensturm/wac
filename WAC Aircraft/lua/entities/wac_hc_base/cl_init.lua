@@ -162,11 +162,13 @@ function ENT:attachmentThink()
 	if !camAng then return end
 	local tr = util.QuickTrace(self:LocalToWorld(self.Camera.pos)+camAng:Forward()*20, camAng:Forward()*999999999, self)
 	for _, t in pairs(self.weaponAttachments) do
-		local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
-		localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.r or 0)
-		t.model:SetAngles(self:LocalToWorldAngles(localAng))
-		if t.offset then
-			t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
+		if IsValid(t.model) then
+			local localAng = self:WorldToLocalAngles((tr.HitPos - t.model:GetPos()):Angle())
+			localAng = Angle(t.restrictPitch and 0 or localAng.p, t.restrictYaw and 0 or localAng.y, t.r or 0)
+			t.model:SetAngles(self:LocalToWorldAngles(localAng))
+			if t.offset then
+				t.model:SetPos(self:LocalToWorld(t.pos) + t.model:LocalToWorld(t.offset) - t.model:GetPos())
+			end
 		end
 	end
 end
@@ -177,9 +179,13 @@ function ENT:OnRemove()
 		s:Stop()
 	end
 	for _, t in pairs(self.weaponAttachments) do
-		t.model:Remove()
+		if IsValid(t.model) then
+			t.model:Remove()
+		end
 	end
-	self.Emitter:Finish()
+	if IsValid(self.Emitter) then
+		self.Emitter:Finish()
+	end
 end
 
 
