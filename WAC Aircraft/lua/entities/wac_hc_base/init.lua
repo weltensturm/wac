@@ -506,9 +506,9 @@ function ENT:updateSeats()
 				self.passengers[k]:SetNWEntity("wac_aircraft", NULL)
 			end
 			self:SetNWEntity("passenger_"..k, p)
-			p:SetNWInt("wac_passenger_id",k)
 			self.passengers[k] = p
 			if IsValid(p) then
+				p:SetNWInt("wac_passenger_id",k)
 				p.wac = p.wac or {}
 				p.wac.mouseInput = true
 				net.Start("wac.aircraft.updateWeapons")

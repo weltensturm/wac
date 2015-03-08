@@ -44,7 +44,7 @@ surface.CreateFont("wac_heli_small", {
 
 wac.hook("ShouldDrawLocalPlayer", "wac_air_showplayerthirdperson", function()
 	local v = LocalPlayer():GetVehicle()
-	if IsValid(v:GetNWEntity("wac_aircraft")) then
+	if IsValid(v) and IsValid(v:GetNWEntity("wac_aircraft")) then
 		return v:GetThirdPersonMode()
 	end
 end)
@@ -57,7 +57,8 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 
 	local aircraft = p.wac.air.vehicle --p:GetVehicle():GetNWEntity("wac_aircraft")
 	if !IsValid(aircraft) then
-		if IsValid(p:GetVehicle():GetNWEntity("wac_aircraft")) then
+		local v=p:GetVehicle()
+		if IsValid(v) and IsValid(v:GetNWEntity("wac_aircraft")) then
 			aircraft = p:GetVehicle():GetNWEntity("wac_aircraft")
 			aircraft.viewPos = {
 				origin = p.wac.air.lastView.origin - pos,
@@ -68,7 +69,7 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 		else
 			p.wac.air.vehicle = nil
 			p.wac.air.lastView = {origin=pos, angles=ang, fov=fov}
-			return false
+			return
 		end
 	end
 	
@@ -80,18 +81,22 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 end)
 
 wac.hook("RenderScreenspaceEffects", "wac_air_weaponcam",function()
-	local p = LocalPlayer()
+	local p=LocalPlayer()
 	if !IsValid(p) then return end
-	local e = p:GetVehicle():GetNWEntity("wac_aircraft")
+	local v=p:GetVehicle()
+	if !IsValid(v) then return end
+	local e=v:GetNWEntity("wac_aircraft")
 	if IsValid(e) then
 		e:DrawScreenSpaceEffects(p:GetNWInt("wac_passenger_id"),p)
 	end
 end)
 
 wac.hook("HUDPaint", "wac_air_weaponhud", function()
-	local p = LocalPlayer()
+	local p=LocalPlayer()
 	if !IsValid(p) then return end
-	local e = p:GetVehicle():GetNWEntity("wac_aircraft")
+	local v=p:GetVehicle()
+	if !IsValid(v) then return end
+	local e=v:GetNWEntity("wac_aircraft")
 	if IsValid(e) then
 		e:DrawHUD(p:GetNWInt("wac_passenger_id"),p)
 	end
@@ -99,7 +104,10 @@ end)
 
 wac.hook("CreateMove", "wac_cl_air_mouseinput", function(md)
 	local p=LocalPlayer()
-	local e=p:GetVehicle():GetNWEntity("wac_aircraft")
+	if !IsValid(p) then return end
+	local v=p:GetVehicle()
+	if !IsValid(v) then return end
+	local e=v:GetNWEntity("wac_aircraft")
 	if IsValid(e) then
 		e:MovePlayerView(p:GetNWInt("wac_passenger_id"),p,md)
 	end

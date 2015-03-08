@@ -18,6 +18,9 @@ local mats={				--sound,effect,colormod
 	[MAT_SAND]			={2,2,{0,0,0}},
 	[MAT_WOOD]			={2,2,{0,0,0}},
 	[MAT_GLASS]			={2,2,{0,0,0}},
+	[MAT_GRASS]			={2,2,{0,0,0}},
+	[MAT_SNOW]			={2,2,{0,0,0}},
+	[MAT_DEFAULT]		={2,2,{0,0,0}}
 }
 
 local sounds={
