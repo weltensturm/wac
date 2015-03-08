@@ -76,6 +76,9 @@ function ENT:switchSeat(p, int)
 	local oldang = p:GetAimVector():Angle()
 	oldang.y = oldang.y+90
 	p:ExitVehicle()
+	if VCMod1 then
+		p.VC_CanEnterTime = CurTime()
+	end
 	p:EnterVehicle(self.seats[int])
 	--p:SnapEyeAngles(self.seats[int]:GetAngles())
 	self:updateSeats()
