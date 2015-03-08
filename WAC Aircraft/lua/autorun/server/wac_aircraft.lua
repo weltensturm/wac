@@ -11,6 +11,27 @@ wac.aircraft.cvars = {
 }
 
 
+if not game.SinglePlayer() then
+	util.AddNetworkString("wac_admin_setting")
+	net.Receive("wac_admin_setting", function(len,pl)
+		if pl:IsAdmin() or pl:IsSuperAdmin() then
+			local name=net.ReadString()
+			local found=false
+			for k,v in pairs(wac.aircraft.cvars) do
+				if v:GetName()==name then
+					found=true
+					break
+				end
+			end
+			if found then
+				local val=net.ReadFloat()
+				RunConsoleCommand(name,val)
+			end
+		end
+	end)
+end
+
+
 wac.hook("SetPlayerAnimation", "wac_cl_heliseat_animation", function(pl, anim)
 	 if pl:InVehicle() then
 	 local v = pl:GetVehicle()

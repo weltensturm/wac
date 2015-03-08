@@ -14,6 +14,23 @@ CreateClientConVar("wac_cl_air_arcade", 0, true, true)
 CreateClientConVar("wac_cl_air_volume", 1, true, true)
 
 
+if not game.SinglePlayer() then
+	CreateClientConVar("wac_air_startspeed", 1, false)
+	CreateClientConVar("wac_air_nodamage", 0, false)
+	
+	local function onchange( name, oldval, val )
+		if LocalPlayer():IsAdmin() or LocalPlayer():IsSuperAdmin() then
+			net.Start("wac_admin_setting")
+				net.WriteString(name)
+				net.WriteFloat(val)
+			net.SendToServer()
+		end
+	end
+	cvars.AddChangeCallback("wac_air_startspeed",onchange)
+	cvars.AddChangeCallback("wac_air_nodamage",onchange)
+end
+
+
 surface.CreateFont("wac_heli_big", {
 	font = "monospace",
 	size = 32
