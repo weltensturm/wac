@@ -54,9 +54,12 @@ if SERVER then
 
 	concommand.Add("wac_air_input", function(p, c, a)
 		if IsValid(p) and p:Alive() then
-			local e = p:GetVehicle():GetNWEntity("wac_aircraft")
-			if IsValid(e) then
-				e:receiveInput(a[1], tonumber(a[2]), p:GetNWInt("wac_passenger_id"))
+			local v = p:GetVehicle()
+			if IsValid(v) then
+				local e = v:GetNWEntity("wac_aircraft")
+				if IsValid(e) then
+					e:receiveInput(a[1], tonumber(a[2]), p:GetNWInt("wac_passenger_id"))
+				end
 			end
 		end
 	end)
