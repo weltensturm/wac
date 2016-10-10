@@ -815,8 +815,6 @@ function ENT:PhysicsUpdate(ph)
 				else
 					self.backRotor.Phys:AddAngleVelocity(Vector(0,self.rotorRpm*300*self.BackRotor.dir-self.backRotor.Phys:GetAngleVelocity().y/10,0)*phm)
 				end
-
-				self.backRotor.Phys:AddAngleVelocity(self.backRotor.Phys:GetAngleVelocity() * rotorBrake / 10)
 			else
 				ph:AddAngleVelocity((Vector(0,0,0-self.rotorRpm*self.TopRotor.dir/2))*phm)
 				ph:AddAngleVelocity(VectorRand()*self.rotorRpm*mind*phm)
