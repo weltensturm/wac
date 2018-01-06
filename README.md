@@ -14,3 +14,9 @@ Installation
 ------------
 
 Download the .zip file and put the folders inside into your garrysmod/garrysmod/addons folder.
+
+
+Discord
+-------
+
+Wanna talk? Join our discord: https://discord.gg/bzZQJEe
