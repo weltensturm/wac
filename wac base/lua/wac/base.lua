@@ -15,6 +15,11 @@
   http://www.gnu.org/licenses/gpl.html
 ]]
 
+
+
+WAC_STEAL_HOOKS = {CalcView=true, CreateMove=true}
+
+
 wac = wac or {
 	
 	version = "331",
@@ -69,12 +74,13 @@ wac = wac or {
 		return begin
 	end,
 
-
 	hooks = {},
-	hooksCalcView = {},
+	hooksOverride = {},
+	stolenHooks = {},
 	hook = function(gmhook, name, func, unload)
-		if gmhook == "CalcView" then
-			wac.hooksCalcView[name] = {f = func, u = unload, g = gmhook}
+		if WAC_STEAL_HOOKS[gmhook] then
+			wac.hooksOverride[gmhook] = wac.hooksOverride[gmhook] or {}
+			wac.hooksOverride[gmhook][name] = {f = func, u = unload, g = gmhook}
 		else
 			wac.hooks[name] = {f = func, u = unload, g = gmhook}
 			hook.Add(gmhook, name, func)
