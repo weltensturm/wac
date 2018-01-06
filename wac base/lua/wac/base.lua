@@ -15,6 +15,11 @@
   http://www.gnu.org/licenses/gpl.html
 ]]
 
+
+
+WAC_STEAL_HOOKS = {CalcView=true, CreateMove=true}
+
+
 wac = wac or {
 	
 	version = "331",
