@@ -17,7 +17,11 @@
 
 
 
+if CLIENT then
 WAC_STEAL_HOOKS = {CalcView=true, CreateMove=true}
+else
+	WAC_STEAL_HOOKS = {}
+end
 
 
 wac = wac or {
