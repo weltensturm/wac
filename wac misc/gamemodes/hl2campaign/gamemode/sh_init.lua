@@ -1,6 +1,6 @@
 
 include("sh_config.lua")
-include("sh_player.lua")
+include("player_sh.lua")
 
 
 GM.Author = "WeltEnSTurm"

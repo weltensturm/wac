@@ -18,25 +18,6 @@ end
 
 function ENT:StartTouch(ent)
 	if ent && ent:IsValid() && ent:IsPlayer() && ent:Team() == TEAM_ALIVE then
-		ent:SetTeam(TEAM_COMPLETED_MAP)
-		ent:SetCollisionGroup(COLLISION_GROUP_WEAPON)
-		if ent:GetVehicle() && ent:GetVehicle():IsValid() then
-			ent:GetVehicle():Remove()
-			ent:ExitVehicle()
-		end
-		local p = ent:EyePos()
-		ent:SetNoTarget(true)
-		ent:StripWeapons()
-		ent:Flashlight(false)
-		ent:Spectate(OBS_MODE_ROAMING)
-		ent:SetPos(p)
-		PrintMessage(HUD_PRINTTALK, Format("%s completed the map (%s) [%i of %i].", ent:Nick(), string.ToMinutesSeconds(CurTime() - ent.startTime), team.NumPlayers(TEAM_COMPLETED_MAP), self.playersAlive))
-	end
-end
-
-function ENT:Think()
-	self.playersAlive = team.NumPlayers(TEAM_ALIVE) + team.NumPlayers(TEAM_COMPLETED_MAP)	
-	if self.playersAlive > 0 && team.NumPlayers(TEAM_COMPLETED_MAP) >= (self.playersAlive * (NEXT_MAP_PERCENT / 100)) then
-		GAMEMODE:NextMap()
+		GAMEMODE:PlayerFinishedMap(ent)
 	end
 end

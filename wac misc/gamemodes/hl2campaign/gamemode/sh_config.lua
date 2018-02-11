@@ -1,29 +1,24 @@
-// Allow admins to noclip [0 = No, 1 = Yes] (Default: 0)
-ADMIN_NOCLIP = 0
 
-
-// Give admins the physgun [0 = No, 1 = Yes] (Default: 0)
-ADMIN_PHYSGUN = 0
-
-
-// Range the difficulty scale can be in [{Min, Max}] (Default: {0, 3 })
-DIFFICULTY_RANGE = {0, 3}
-
-
-// If all players die, one of these will be played
-// Leave blank to disable
-FAILURE_SOUNDS = {
-	"vo/announcer_failure.wav",
-	"vo/announcer_you_failed.wav"
+CONVARS = {
+	maxdeaths = CreateConVar("game_maxdeaths", 	"3", {FCVAR_REPLICATED, FCVAR_ARCHIVE}),
+	difficulty = CreateConVar("hl2c_difficulty", "1", {FCVAR_REPLICATED, FCVAR_ARCHIVE}),
+	physgun = CreateConVar("hl2c_admin_physgun", "0", {FCVAR_REPLICATED, FCVAR_ARCHIVE}),
+	noclip = CreateConVar("hl2c_admin_noclip", "0", {FCVAR_REPLICATED, FCVAR_ARCHIVE}),
 }
 
+concommand.Add("hl2c_next_map", function(pl) if SERVER and pl and pl:IsAdmin() then GAMEMODE:NextMap() end end)
+concommand.Add("hl2c_restart_map", function(pl, command, arguments) if SERVER and pl and pl:IsAdmin() then GAMEMODE:RestartMap() end end)
+concommand.Add("hl2c_start_hl2", function(pl, command, arguments) if SERVER and pl and pl:IsAdmin() then GAMEMODE:FirstMap() end end)
 
-// Percent of players that need to be in the loading section for the next map to load (Default: 60)
+PLAYER_SPEED = {160, 250}
+
+FAILURE_SOUNDS = {
+	"sound/You Failed.wav"
+}
+
 NEXT_MAP_PERCENT = 60
 
-
-// Seconds before the next map loads (Default: 15)
-NEXT_MAP_TIME = 15
+NEXT_MAP_TIME = 5
 
 
 // Points to give a player for killing an NPC (if non-one)
@@ -49,7 +44,7 @@ PLAY_EPISODE_2 = 0
 
 
 // Seconds before the map is restarted (Default: 10)
-RESTART_MAP_TIME = 10
+RESTART_MAP_TIME = 2
 
 
 // Models the player can be
