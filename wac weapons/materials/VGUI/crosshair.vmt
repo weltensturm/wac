@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "VGUI/crosshair"
+	"$basetexture" "vgui/crosshair"
 	"$nolod" 1
 	"$translucent" 1
 	"$vertexalpha" 1

@@ -1,6 +1,6 @@
 "UnlitGeneric"
 {
-	"$basetexture" "VGUI/entities/colt_weapon"
+	"$basetexture" "vgui/entities/colt_weapon"
 	"$nolod" 1
 	"$vertexalpha" 1
 	"$vertexcolor" 1

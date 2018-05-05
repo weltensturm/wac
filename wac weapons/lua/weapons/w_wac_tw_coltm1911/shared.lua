@@ -12,7 +12,7 @@ SWEP.AdminSpawnable		= true
 SWEP.PrintName			= "Colt M1911"
 
 SWEP.AimAng				= Angle(-0.08, 0, 0)
-SWEP.AimPos				= Vector(2.83, 0, 1.33)
+SWEP.AimPos				= Vector(-2.83, 2, 1.33)
 SWEP.RunAng				= Angle(20, -0, 0)
 SWEP.RunPos				= Vector(0,0,0)
 

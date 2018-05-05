@@ -7,16 +7,14 @@ end
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.Category				= wac.menu.category .. " Modern Warfare"
+SWEP.Category				= wac.menu.category
 
 SWEP.PrintName			= "Cheytac Intervention"
 
 SWEP.AimAng				= Angle(0,0,0)
-SWEP.AimPos				= Vector(3.46,-3.27,0.3)
+SWEP.AimPos				= Vector(3.46, -3.27, 0.3)
 SWEP.RunPos				= Vector(-5,2,1)
-SWEP.zoomStages			= {45, 60, 65}
-SWEP.zoomStart			= 45
-SWEP.zoomEnd				= 67
+SWEP.ZoomStages			= {40, 30, 20}
 SWEP.ViewPunch			= 5
 
 SWEP.Slot					= 3

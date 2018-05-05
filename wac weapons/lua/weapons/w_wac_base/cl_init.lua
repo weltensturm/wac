@@ -36,10 +36,10 @@ function SWEP:CLThink()
 			self.Weapon:EmitSound(cyclesound)
 		end
 		if !self.ScopeModel then
-			self.ScopeModel=ClientsideModel("models/WeltEnSTurm/weapons/v_scope01.mdl", RENDERGROUP_TRANSLUCENT)
+			self.ScopeModel=ClientsideModel("models/weltensturm/weapons/v_scope01.mdl", RENDERGROUP_TRANSLUCENT)
 			self.ScopeModel:Spawn()
 		end
-		self.zoomBlack = WAC.SmoothApproach(self.zoomBlack, 0, 30)
+		self.zoomBlack = wac.smoothApproach(self.zoomBlack, 0, 30)
 	else
 		if self.ScopeModel then
 			self.ScopeModel:Remove()
@@ -51,6 +51,6 @@ end
 function SWEP:DrawHUD()
 	if self.zmFull then
 		surface.SetDrawColor(0,0,0,self.zoomBlack)
-		surface.DrawRect(0,0, self.SW, self.SH)
+		surface.DrawRect(0,0, ScrW(), ScrH())
 	end
 end
