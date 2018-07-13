@@ -12,8 +12,8 @@ SWEP.AdminSpawnable		= true
 SWEP.PrintName			= "Ares Shrike"
 
 SWEP.AimAng				= Angle(-0.28, 0, 0)
-SWEP.AimPos				= Vector(-3.8, -1.21, 0.45)
-SWEP.RunPos				= Vector(-5,0,2)
+SWEP.AimPos				= Vector(-3.8, -3, 0.46)
+SWEP.RunPos				= Vector(-3,0,-1)
 
 SWEP.Slot					= 2
 SWEP.IconLetter			= "z"

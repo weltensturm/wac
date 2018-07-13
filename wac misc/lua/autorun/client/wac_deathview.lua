@@ -29,16 +29,17 @@ wac.hook("CalcView", "wac_cl_deathview", function(pl, origin, angles, fov)
 		local eyes = ragdoll:GetAttachment(ragdoll:LookupAttachment("eyes"))
 		if IsValid(ragdoll) then
 			local bone = ragdoll:LookupBone("ValveBiped.Bip01_Head1")
-			local matrix = ragdoll:GetBoneMatrix(bone)
-			if !matrix then return end
-			matrix:Scale(NULLVEC)
-			ragdoll:SetBoneMatrix(bone,matrix)		
+			if bone then
+				ragdoll:ManipulateBoneScale(bone, Vector(0,0,0)) 
+			end
 		end
-		view = {
-			origin = eyes.Pos + eyes.Ang:Forward()*eyepos.x + eyes.Ang:Up()*eyepos.z,
-			angles = eyes.Ang
-		}
-		return view
+		if eyes then
+			view = {
+				origin = eyes.Pos + eyes.Ang:Forward()*eyepos.x + eyes.Ang:Up()*eyepos.z,
+				angles = eyes.Ang
+			}
+			return view
+		end
 	end
 end)
 
@@ -70,7 +71,7 @@ end)
 
 wac.hook("HUDShouldDraw","wac_cl_hidestuff",function(n)
 	local p=LocalPlayer()
-	if IsValid(p) and !p:Alive() and n!="CHudChat" then
+	if IsValid(p) and !p:Alive() and n=="CHudDamageIndicator" then
 		return false
 	end
 end)

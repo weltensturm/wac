@@ -43,14 +43,14 @@ function EFFECT:Think()
 		particle:SetVelocity(80*self.Forward + 20*VectorRand() + 1.05*AddVel)
 		particle:SetDieTime(math.Rand(0.18,0.25))
 		particle:SetStartSize(math.random(5,10))
-		particle:SetEndSize(3)
+		particle:SetEndSize(1)
 		particle:SetRoll(math.Rand(180,480))
 		particle:SetRollDelta(math.Rand(-1,1))
-		particle:SetGravity(Vector(0,0,100))
+		particle:SetGravity(Vector(0,0,0))
 		particle:SetAirResistance(160)
 		local particle = emitter:Add("particle/particle_smokegrenade", start)
 		particle:SetVelocity(80*self.Forward + 1.1*AddVel)
-		particle:SetDieTime(math.Rand(0.36,0.38))
+		particle:SetDieTime(0.1)
 		particle:SetStartAlpha(math.Rand(50,60))
 		particle:SetStartSize(math.random(3,4))
 		particle:SetEndSize(math.Rand(17,28))
@@ -61,14 +61,14 @@ function EFFECT:Think()
 		particle:SetAirResistance(80)
 	end
 	
-	for i=1,2 do
+	if math.random(1,4) > 3 then
 		local particle = emitter:Add("effects/muzzleflash"..math.random(1,4), start - 3*self.Forward)
-		particle:SetVelocity(40*(10-i)*self.Forward + AddVel)
+		particle:SetVelocity(40*(10)*self.Forward + AddVel)
 		particle:SetGravity(AddVel)
 		particle:SetDieTime(0.1)
 		particle:SetStartAlpha(150)
-		particle:SetStartSize((8-i)/1.3)
-		particle:SetEndSize((12-i)/1.3)
+		particle:SetStartSize((8)/1.3)
+		particle:SetEndSize((12)/1.3)
 		particle:SetRoll(math.Rand(180,480))
 		particle:SetRollDelta(math.Rand(-1,1))
 		particle:SetColor(255,255,255)	
@@ -77,7 +77,7 @@ function EFFECT:Think()
 	if !self.Table then return false end
 	for k, v in pairs(self.Table) do
 		if type(v) == "Vector" then
-			v = v:Normalize()
+			v = v:GetNormalized()
 			if cm:GetInt()==0 then
 				for j=1, 2 do
 					local particle = emitter:Add("particle/particle_smokegrenade", start)
@@ -93,7 +93,7 @@ function EFFECT:Think()
 					particle:SetAirResistance(160)
 				end
 			end
-			if math.random(1,4) > 1 then
+			if math.random(1,4) > 3 then
 				for j=1,2 do
 					local particle = emitter:Add("effects/muzzleflash"..math.random(1,4), start - 3*self.Forward)
 					particle:SetVelocity(self.Table.Speed*self.Right*v.x*j*2 + self.Table.Speed*v.y*self.Forward*j*2 + self.Table.Speed*v.z*self.Angle:Up()*j*2 + 1.1*AddVel)

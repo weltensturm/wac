@@ -4,15 +4,14 @@ if SERVER then
 	AddCSLuaFile ("shared.lua")	
 end
 
-SWEP.Category				=wac.menu.category .. " Tactical Weapons"
+SWEP.Category				=wac.menu.category
 
 SWEP.PrintName			= "F2000"
 
 SWEP.AimAng				= Angle(0.23, 0, 0)
-SWEP.AimPos				= Vector(3.6, -2.62, 1)
+SWEP.AimPos				= Vector(2.62, 3.6, 1)
 --SWEP.RunPos				= Vector(-5,1,3)
-SWEP.zoomStart			= 40
-SWEP.zoomEnd				= 40
+SWEP.ZoomStages 		= {40}
 SWEP.ZoomOverlay			= "weltensturm/weapons/scope/scope01"
 
 SWEP.Slot					= 2
@@ -27,7 +26,7 @@ SWEP.SendZoomedAnim		= false
 
 SWEP.SendZoomedAnim		= false
 
-SWEP.Primary.Sound		= Sound("weapons/F2000/f2000_fire.wav")
+SWEP.Primary.Sound		= Sound("weapons/f2000/f2000_fire.wav")
 SWEP.Primary.Damage		= 14
 SWEP.Primary.NumShots	= 1
 SWEP.Primary.Cone			= 0.01

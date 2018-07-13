@@ -4,12 +4,12 @@ if SERVER then
 	AddCSLuaFile ("shared.lua")	
 end
 
-SWEP.Category				=wac.menu.category .. " Tactical Weapons"
+SWEP.Category				=wac.menu.category
 
 SWEP.PrintName			= "M3"
 
 SWEP.AimAng				= Angle(-0.08, 0, 0)
-SWEP.AimPos				= Vector(5.72, -2.62, 3.06)
+SWEP.AimPos				= Vector(-2.62, 5.72, 3.06)
 
 SWEP.Slot					= 2
 SWEP.IconLetter			= "z"

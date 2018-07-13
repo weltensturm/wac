@@ -1,4 +1,5 @@
 
+
 --[[
 	WAC (WeltEnSTurm's Addon Compilation)
 	Copyright (C) 2012 Robert Luger
@@ -16,9 +17,43 @@
 ]]
 
 
+local rip = function(dist, a, b, delta)
+    -- t(dist) = cbrt(dist+a)/b
+    -- dist = (t*b)**3-a
+    -- jump = dist(t) - dist(t-delta)
+    local negative = dist < 0
+    dist = math.abs(dist)
+    b = b / 4
+    return math.min(
+    			math.max(
+					(
+						math.pow(
+							(math.pow(dist, 1.0/6)/b+delta)*b,
+							6
+						) - dist
+					),
+					a*delta
+				),
+			dist)*(negative and -1 or 1)
+end
+
+local ripTarget = function(current, target, a, b, delta)
+    return current + rip(math.abs(current-target), a, b, delta)*(current < target and 1 or -1)
+end
+
+local ripVector = function(current, target, a, b, delta)
+    local dir = target - current
+    local normalized = dir:GetNormalized()
+    local jump = rip(dir:Length(), a, b, delta)
+    local finish = current + normalized*jump
+    current.x = finish.x
+    current.y = finish.y
+    current.z = finish.z
+    return current
+end
 
 if CLIENT then
-WAC_STEAL_HOOKS = {CalcView=true, CreateMove=true}
+	WAC_STEAL_HOOKS = {CalcView=true, CreateMove=true}
 else
 	WAC_STEAL_HOOKS = {}
 end
@@ -38,6 +73,12 @@ wac = wac or {
 	player = function(p)
 		p.wac = p.wac or {}
 	end,
+
+	rip = rip,
+
+	ripTarget = ripTarget,
+
+	ripVector = ripVector,
 
 	smoothApproach = function(x,y,s,c)
 		if not x then error("first argument nil", 2) end
@@ -116,4 +157,12 @@ wac = wac or {
 		
 	end,
 	
+	sprinting = function(p)
+		if p and IsValid(p) then
+			local b = ((p:KeyDown(IN_SPEED) and (p:GetVelocity():Length()+10)>100))
+			return b
+		end
+		return false
+	end
+  
 }

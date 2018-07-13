@@ -4,7 +4,7 @@ if SERVER then
 	AddCSLuaFile ("shared.lua")	
 end
 
-SWEP.Category			=wac.menu.category .. " Tactical Weapons"
+SWEP.Category			=wac.menu.category
 
 SWEP.Spawnable		= true
 SWEP.AdminSpawnable	= true
@@ -12,11 +12,9 @@ SWEP.AdminSpawnable	= true
 SWEP.PrintName		= "M24"
 
 SWEP.AimAng			= Angle(0,0,0)
-SWEP.AimPos			= Vector(3.36, -1, 1.92)
-SWEP.RunPos			= Vector(-5,0,3)
-SWEP.zoomStages		= {45, 60, 65}
-SWEP.zoomStart		= 45
-SWEP.zoomEnd			= 67
+SWEP.AimPos			= Vector(-3, -5, 1.92)
+SWEP.RunPos			= Vector(-5,0,1)
+SWEP.ZoomStages		= {15, 5}
 SWEP.ViewPunch		= 5
 
 SWEP.Slot				= 3

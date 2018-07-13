@@ -2,10 +2,12 @@
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
+SWEP.IsWACWeapon		= true
+
 SWEP.HoldType			= "smg"
 
-SWEP.PrintName			= "MP5"
-SWEP.Category				= wac.menu.category .. " Counter-Strike: Source"
+SWEP.PrintName			= "Ignore This"
+SWEP.Category				= wac.menu.category
 SWEP.Author				= wac.author
 SWEP.Instructions			="Shoot stuff with  LMB. Reload with R.\nUse Ironsights/Scope with RMB.\nHold R to holster weapon and grab stuff with E."
 SWEP.Slot					= 2
@@ -14,14 +16,12 @@ SWEP.ViewModel			= "models/weapons/v_smg_mp5.mdl"
 SWEP.WorldModel			= "models/weapons/w_smg_mp5.mdl"
 SWEP.AimPos				= Vector(4.74, -3.97, 1.71)
 SWEP.AimAng				= Angle(-1.32,0,0)
-SWEP.RunAng				= Angle(15, -50, 0)
-SWEP.RunPos				= Vector(-5,-1,2)
+SWEP.RunAng				= Angle(15, -30, 30)
+SWEP.RunPos				= Vector(-5,-1,0)
+SWEP.UseWACSway 		= true
 SWEP.ZoomSpeed			= {x=20, y=20, z=20}
 SWEP.CanReload			= false
 SWEP.CanZoom				= true
-SWEP.zoomStart			= 20
-SWEP.zoomEnd				= false
-SWEP.zoomAdd				= 0
 SWEP.FakeZoomStart		= 0
 SWEP.FakeZoomEnd		= 0
 
@@ -89,10 +89,36 @@ SWEP.NextZoomed			= 0
 SWEP.NextZoom			= 0
 SWEP.ReloadStart			= 0
 
+SWEP.BulletTable={
+	Num=1,
+	Spread=Vector(0,0,0),
+	Tracer=0,
+	TracerName="Tracer",
+}
+
+
 function SWEP:Initialize()
 	self:SetWeaponHoldType(self.HoldType)
 end
-	
+
+function SWEP:PrimaryAttack()
+	if self:CustomAttack() then return end
+	if !self:CanPrimaryAttack() or !self:CanAct() then return end
+	self.NextShoot=CurTime()+self.Primary.Delay
+	self.Owner:EmitSound(self.Primary.Sound or "")
+	--WAC.CreatePhysBullet(self.Owner:GetShootPos(), self.Owner:GetAimVector(), self.Primary.Damage, 400, self.Primary.Cone, self.Owner, self.Primary.NumShots, self.BulletTable)
+	wac.createBullet(self.Owner, self.Primary.Damage, 400, self.Primary.Cone, 1, self.BulletTable)
+	self:CallOnClient("AddRecoil", "")
+	self:Muzzle()
+	self.Owner:ViewPunch(Angle((self:Zoomed() and -self.ViewPunch/10 or -self.ViewPunch), 0, 0))
+	if ((!self:Zoomed() or self.SendZoomedAnim) and self.SendShootAnim) then
+		self.Weapon:SendWeaponAnim(ACT_VM_PRIMARYATTACK)
+	end
+	self:TakePrimaryAmmo(1)
+	self.Weapon:SetNextPrimaryFire(CurTime() + self.Primary.Delay)
+	self.Weapon:SetNextSecondaryFire(CurTime()+0.5)
+end
+
 function SWEP:CustomAttack()
 	return false
 end
@@ -119,7 +145,7 @@ function SWEP:Muzzle()
 	local fx = EffectData()
 	fx:SetOrigin(self.Owner:GetShootPos())
 	fx:SetEntity(self.Owner)
-	fx:SetAngle(Angle(255,200,120))
+	fx:SetAngles(Angle(255,200,120))
 	fx:SetRadius(24)
 	util.Effect("ins_muzzle",fx,true)
 end
@@ -183,11 +209,13 @@ function SWEP:Think()
 	if SERVER then
 		if self:Holstered() then
 			if self.Owner:KeyDown(IN_USE) then
-				local trd={}
-				trd.start=self.Owner:EyePos()
 				local dist=100
-				trd.endpos=trd.start+self.Owner:GetAimVector()*dist
-				trd.filter=self.Owner
+				local trd={
+					start=self.Owner:EyePos(),
+					endpos=self.Owner:EyePos()+self.Owner:GetAimVector()*dist,
+					filter=self.Owner,
+					mask=MASK_SHOT,
+				}
 				local tr=util.TraceLine(trd)
 				if tr.Hit and !self.TrEntity then
 					self.TrEntity=tr.Entity
@@ -242,8 +270,6 @@ function SWEP:Sprinting()
 			b and (p:GetActiveWeapon().NDS_Allocated or p:GetActiveWeapon().wac_swep_alt)
 			and p:GetActiveWeapon():GetClass() != "weapon_physgun"
 		then
-			p:ConCommand("-attack")
-			p:ConCommand("-attack2")
 			return true
 		end
 		return false

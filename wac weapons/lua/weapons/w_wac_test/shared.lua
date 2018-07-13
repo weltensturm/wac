@@ -21,7 +21,14 @@ local TEST = {
 	Ry=CreateClientConVar("wac_cl_wep_help_ray", -50, true, false),
 	Rr=CreateClientConVar("wac_cl_wep_help_rar", 0, true, false),
 	Sprint=CreateClientConVar("wac_cl_wep_help_sprint",0,true,false),
+	Zoomed=CreateClientConVar("wac_cl_wep_help_zoom",0,true,false),
 }
+
+if SERVER then
+	concommand.Add("wac_cl_wep_help_setmodel", function(p, c, a)
+		TEST.M:SetString(p:GetViewModel():GetModel())
+	end) 
+end
 
 SWEP.Spawnable			= false
 SWEP.AdminSpawnable		= false
@@ -39,25 +46,30 @@ function SWEP:CustomThink()
 		self.RunPos=Vector(TEST.RX:GetFloat(), TEST.RY:GetFloat(), TEST.RZ:GetFloat())
 		self.RunAng=Angle(TEST.Rp:GetFloat(), TEST.Ry:GetFloat(), TEST.Rr:GetFloat())
 		local t=self:GetTable()
-		t.ViewModel=TEST.M:GetString()
-		self.ViewModel=t.ViewModel
-		LocalPlayer():GetViewModel():SetModel(t.ViewModel)
-		self:SendWeaponAnim(ACT_VM_IDLE)
+		local vm = TEST.M:GetString()
+		if vm != self.ViewModel then
+			t.ViewModel=vm
+			self.ViewModel=t.ViewModel
+			print("CHANGED VIEWMODEL", vm)
+			LocalPlayer():GetViewModel():SetModel(vm)
+			self:SendWeaponAnim(ACT_VM_DRAW)
+		end
 		self.ViewModelFlip=(TEST.Flip:GetInt()==1 and true or false)
 	end
 	return false
 end
 
 function SWEP:Zoomed()
-	if !self.Owner:KeyDown(IN_ATTACK2) and !WAC.Sprinting(self.Owner) and TEST.Sprint:GetInt()==0 then
-		return true
+	if !self.Owner:KeyDown(IN_ATTACK2) and !wac.sprinting(self.Owner) and TEST.Sprint:GetInt()==0 then
+		return TEST.Zoomed:GetInt() == 1
 	end
 end
 
 SWEP.ViewModel			= TEST.M:GetString()
-SWEP.WorldModel			= "models/weapons/w_shot_m3super90.mdl"
+SWEP.WorldModel			= "models/weapons/c_357.mdl"
 SWEP.AimPos				= Vector(4, 0, 2)
 SWEP.ViewModelFlip		= false
+SWEP.UseHands			= true
 
 SWEP.Primary.Damage		= 15
 SWEP.Primary.NumShots	= 1

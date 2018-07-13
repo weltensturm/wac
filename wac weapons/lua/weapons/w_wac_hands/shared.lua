@@ -9,7 +9,7 @@ SWEP.Base 				= "w_wac_base"
 SWEP.Spawnable			= true
 SWEP.AdminSpawnable		= true
 
-SWEP.Category				= wac.menu.category .. " Weapons"
+SWEP.Category				= wac.menu.category
 
 SWEP.PrintName			= "Hands"
 SWEP.Instructions			= "Grab stuff with E"

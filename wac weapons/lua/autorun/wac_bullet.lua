@@ -34,16 +34,16 @@ local defaultTable = {
 
 local bullets = {}
 
-wac.createBullet = function(owner, damage, speed, spread, num, table)
+wac.createBullet = function(owner, damage, speed, spread, num, data)
 	for i=1, num do
 		local bullet = {}
 		bullet.pos = owner:GetShootPos();
-		bullet.dir = owner:GetAimVector():Normalize() + VectorRand()*spread*0.8
+		bullet.dir = owner:GetAimVector():GetNormalized() + VectorRand()*spread*0.8
 		bullet.dmg = damage
 		bullet.speed = speed
 		bullet.time = CurTime() + 5
 		bullet.owner = owner
-		bullet.t = table.Copy(table or defaultTable)
+		bullet.t = table.Copy(data or defaultTable)
 		umsg.Start("wac_bullet_add")
 		umsg.Vector(bullet.pos)
 		umsg.Vector(bullet.dir)
@@ -78,22 +78,23 @@ wac.hook("Think", "wac_bullet_think", function()
 			if tr.Hit then
 				b.t.Src = b.pos
 				b.t.Dir = tr.Normal
-				b.t.Force = b.dmg/2
+				b.t.Force = b.dmg/6
 				b.t.Damage = b.dmg
 				b.owner:FireBullets(b.t)
-				if b2:GetInt() == 1 and tr.MatType != 83 then
+				if use:GetInt() == 1 and tr.MatType != 83 then
 					local mul = 0
 					local matm = 5
 					if materials[tr.MatType] then
 						matm = materials[tr.MatType]
 					end
+					local trd = {}
 					trd.start = tr.HitPos+b.dir*matm
 					trd.endpos = trd.start-b.dir*matm
 					local tr2 = util.TraceLine(trd)
 					mul = trd.start:Distance(tr2.HitPos)
 					if mul != 0 and tr2.Hit then
 						b.t.Src = trd.start
-						b.t.Dir = r.Normal*-1
+						b.t.Dir = tr.Normal*-1
 						b.t.Damage = 0
 						b.t.Force = 0
 						b.owner:FireBullets(b.t)
@@ -101,10 +102,10 @@ wac.hook("Think", "wac_bullet_think", function()
 					b.pos=tr2.HitPos+tr.Normal
 					b.dmg=b.dmg*mul/matm
 					if mul==0 or mul>matm or !util.IsInWorld(trd.start) then
-						table.remove(WAC.PhysBullets, k)
+						table.remove(bullets, k)
 					end
 				else
-					table.remove(WAC.PhysBullets, k)
+					table.remove(bullets, k)
 				end
 			else
 				b.pos=tr.HitPos
