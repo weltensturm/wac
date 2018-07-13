@@ -8,7 +8,7 @@ hook.Add("InitPostEntity", "hl2cInitPostEntity", function()
 	for _, fdr in pairs(ents.FindByClass("func_door_rotating")) do
 		if fdr:GetName() == "long_plank_1_rotator" then
 			fdr:SetMoveType(0)
-			fdr:SetAngles(fdr:GetAngles() + Vector(0, -45, 0))
+			fdr:SetAngles(fdr:GetAngles() + Angle(0, -45, 0))
 		end
 	end
 end)

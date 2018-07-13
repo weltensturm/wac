@@ -50,9 +50,9 @@ function ENT:StartTouch(ent)
 			end
 		end
 		
-		table.remove(checkpointPositions, 1)
+		table.remove(GAMEMODE.checkpointPositions, 1)
 		umsg.Start("SetCheckpointPosition", RecipientFilter():AddAllPlayers())
-		umsg.Vector(checkpointPositions[1])
+		umsg.Vector(GAMEMODE.checkpointPositions[1])
 		umsg.End()
 		
 		self:Remove()

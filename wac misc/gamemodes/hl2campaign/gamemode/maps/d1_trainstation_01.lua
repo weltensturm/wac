@@ -9,3 +9,5 @@ TRIGGER_CHECKPOINT = {
 	{Vector(-3533, -454, -32), Vector(-3490, -349, 65)},
 	{Vector(-3427, -118, -32), Vector(-3417, -13, 62)}
 }
+
+PLAYER_INVULNERABLE = true

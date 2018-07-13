@@ -101,55 +101,97 @@ concommand.Add("wac_reloadhooks" .. (CLIENT and "_cl" or ""), function(player, c
 	end
 end)
 
-hook.Add("Think", "wac_stealhooks", function()
-    for gmname, hooks in pairs(hook.GetTable()) do
-        if WAC_STEAL_HOOKS[gmname] then
-            for name, cb in pairs(hooks) do
-                if not wac.hooks[name] and (not wac.hooksOverride[gmname] or not wac.hooksOverride[gmname][name]) then
-                    print("WAC is stealing hook "..gmname.." "..tostring(name))
-                    wac.stolenHooks[gmname] = wac.stolenHooks[gmname] or {}
-                    wac.stolenHooks[gmname][name] = cb
-                    hook.Remove(gmname, name)
-                end
-            end
-        end
-    end
-end)
 
-hook.Add("CalcView", "wac_calcview", function(pl, pos, ang, fov)
-	local r = wac.calcView(pl, pos, ang, fov)
-	if r then
-		return r
-	end
-	if wac.stolenHooks["CalcView"] then
-		for _, f in pairs(wac.stolenHooks["CalcView"]) do
-			r = f(pl, pos, ang, fov)
+if CLIENT then
+
+	local madness = CreateClientConVar("wac_steal_hooks", "0")
+
+	if madness:GetBool() then
+
+		wac.hookRemoveOld = wac.hookRemoveOld or hook.Remove
+
+		hook.Remove = function(event, identifier)
+			wac.hookRemoveOld(event, identifier)
+			if wac.stolenHooks[event] and wac.stolenHooks[event][identifier] then
+				print("WAC is cleaning up hook " .. event .. " " .. tostring(identifier))
+				wac.stolenHooks[event][identifier] = nil
+			end
+		end
+		
+		hook.Add("Think", "wac_stealhooks", function()
+			for gmname, hooks in pairs(hook.GetTable()) do
+				if WAC_STEAL_HOOKS[gmname] then
+					for name, cb in pairs(hooks) do
+						if not wac.hooks[name] and (not wac.hooksOverride[gmname] or not wac.hooksOverride[gmname][name]) then
+							print("WAC is stealing hook "..gmname.." "..tostring(name))
+							wac.stolenHooks[gmname] = wac.stolenHooks[gmname] or {}
+							wac.stolenHooks[gmname][name] = cb
+							wac.hookRemoveOld(gmname, name)
+						end
+					end
+				end
+			end
+		end)
+
+		hook.Add("CalcView", "wac_calcview", function(pl, pos, ang, fov)
+			local r = wac.calcView(pl, pos, ang, fov)
 			if r then
 				return r
 			end
-		end
-	end
-end)
-wac.hooks["wac_calcview"] = true
+			if wac.stolenHooks["CalcView"] then
+				for n, f in pairs(wac.stolenHooks["CalcView"]) do
+					r = f(pl, pos, ang, fov)
+					if r then
+						return r
+					end
+				end
+			end
+		end)
+		wac.hooks["wac_calcview"] = true
 
-hook.Add("CreateMove", "wac_createmove", function(move)
-	local result = nil
-	if wac.hooksOverride["CreateMove"] then
-		for _, hook in pairs(wac.hooksOverride["CreateMove"]) do
-			local r = hook.f(move)
-			if r then
-				result = r
+		hook.Add("CreateMove", "wac_createmove", function(move)
+			local result = nil
+			if wac.hooksOverride["CreateMove"] then
+				for _, hook in pairs(wac.hooksOverride["CreateMove"]) do
+					local r = hook.f(move)
+					if r then
+						result = r
+					end
+				end
 			end
-		end
-	end
-	if wac.stolenHooks["CreateMove"] then
-		for _, f in pairs(wac.stolenHooks["CreateMove"]) do
-			local r = f(move)
-			if r then
-				result = r
+			if wac.stolenHooks["CreateMove"] then
+				for _, f in pairs(wac.stolenHooks["CreateMove"]) do
+					local r = f(move)
+					if r then
+						return r
+					end
+				end
 			end
-		end
+			return result
+		end)
+		wac.hooks["wac_createmove"] = true
+
+	else
+
+		hook.Add("CalcView", "wac_calcview", function(pl, pos, ang, fov)
+			return wac.calcView(pl, pos, ang, fov)
+		end)
+		wac.hooks["wac_calcview"] = true
+
+		hook.Add("CreateMove", "wac_createmove", function(move)
+			local result = nil
+			if wac.hooksOverride["CreateMove"] then
+				for _, hook in pairs(wac.hooksOverride["CreateMove"]) do
+					local r = hook.f(move)
+					if r then
+						result = r
+					end
+				end
+			end
+			return result
+		end)
+		wac.hooks["wac_createmove"] = true
+
 	end
-	return result
-end)
-wac.hooks["wac_createmove"] = true
+
+end
