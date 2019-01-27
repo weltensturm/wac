@@ -1,7 +1,14 @@
 include('shared.lua')     
 
 function ENT:Initialize()
+	self.isInitialized = true
 	self.Glow=Material("sprites/light_glow02_add")
+end
+
+function ENT:Think()
+	if not self.isInitialized then
+		self:Initialize()
+	end
 end
 
 function ENT:Draw()
