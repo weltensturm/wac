@@ -35,6 +35,7 @@ end
 
 
 function ENT:Initialize()
+	self.isInitialized = true
 	self:addSounds()
 	self.smoothUp = 0
 	self.engineRpm = 0
@@ -73,6 +74,10 @@ end
 
 function ENT:Think()
 	
+	if not self.isInitialized then
+		self:Initialize()
+	end
+
 	if not self.valid then return end
 
 	if self.skin ~= self:GetSkin() then
