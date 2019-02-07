@@ -3,10 +3,16 @@ include("shared.lua")
 
 
 function ENT:Initialize()
+	self.isInitialized = true
 	self.seats = {}
 	self.passengers = {}
 end
 
+function ENT:Think()
+	if not self.isInitialized then
+		self:Initialize()
+	end
+end
 
 wac.hook("wacKey", "wac_seatswitcher_input", function(key, pressed)
 	if not pressed or vgui.CursorVisible() then return end
