@@ -229,7 +229,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	panel:CheckBox("Dynamic View Angle","wac_cl_air_smoothview")
 	
 	panel:CheckBox("Dynamic View Position","wac_cl_air_shakeview")
-	
+
 	panel:CheckBox("Override Field of View", "wac_cl_air_overridefov");
 
 	panel:CheckBox("Use Mouse","wac_cl_air_mouse")
