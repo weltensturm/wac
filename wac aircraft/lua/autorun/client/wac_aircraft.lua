@@ -223,7 +223,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		Max=1,
 		Command="wac_cl_air_volume",
 	})
-	
+
 	panel:CheckBox("Arcade Mode","wac_cl_air_arcade")
 	
 	panel:CheckBox("Dynamic View Angle","wac_cl_air_smoothview")
@@ -256,7 +256,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 			Command="wac_cl_air_fov",
 		})
 	end
-	
+
 	panel:AddControl("Button", {
 		Label = "Joystick Configuration",
 		Command = "joyconfig"
