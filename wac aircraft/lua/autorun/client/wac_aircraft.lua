@@ -9,6 +9,8 @@ CreateClientConVar("wac_cl_air_mouse_invert_pitch", 0, true, true)
 CreateClientConVar("wac_cl_air_mouse_invert_yawroll", 0, true, true)
 CreateClientConVar("wac_cl_air_smoothview", 1, true, true)
 CreateClientConVar("wac_cl_air_shakeview", 1, true, true)
+CreateClientConVar("wac_cl_air_overridefov", 1, true, true)
+CreateClientConVar("wac_cl_air_fov", 75, true, true)
 CreateClientConVar("wac_cl_air_smoothkeyboard", 1, true, true)
 CreateClientConVar("wac_cl_air_arcade", 0, true, true)
 CreateClientConVar("wac_cl_air_volume", 1, true, true)
@@ -75,7 +77,10 @@ wac.hook("CalcView", "wac_air_calcview", function(p, pos, ang, fov)
 	
 	local i = p:GetNWInt("wac_passenger_id")
 	if p.wac.air.vehicle and GetViewEntity() == p and aircraft.Seats then
-		return aircraft:viewCalc((i==0 and 1 or i), p, pos, ang, 75)
+		if p:GetInfoNum( "wac_cl_air_overridefov", 1 ) == 1 then
+			fov = p:GetInfoNum( "wac_cl_air_fov", 75 );
+		end
+		return aircraft:viewCalc((i==0 and 1 or i), p, pos, ang, fov)
 	end
 
 end)
@@ -225,6 +230,8 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	
 	panel:CheckBox("Dynamic View Position","wac_cl_air_shakeview")
 
+	panel:CheckBox("Override Field of View", "wac_cl_air_overridefov");
+
 	panel:CheckBox("Use Mouse","wac_cl_air_mouse")
 	if info["wac_cl_air_mouse"]=="1" then
 		panel:CheckBox(" - Invert Pitch","wac_cl_air_mouse_invert_pitch")
@@ -240,6 +247,16 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 		})
 	end
 	
+	if info["wac_cl_air_overridefov"]=="1" then
+		panel:AddControl("Slider", {
+			Label="Field of View",
+			Type="integer",
+			Min=60,
+			Max=140,
+			Command="wac_cl_air_fov",
+		})
+	end
+
 	panel:AddControl("Button", {
 		Label = "Joystick Configuration",
 		Command = "joyconfig"
@@ -310,6 +327,7 @@ wac.addMenuPanel(wac.menu.tab, wac.menu.category, wac.menu.aircraft, function(pa
 	end
 end,
 	"wac_cl_air_mouse",
-	"wac_cl_air_showdevhelp"
+	"wac_cl_air_showdevhelp",
+	"wac_cl_air_overridefov"
 )
 
