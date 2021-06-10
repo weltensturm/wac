@@ -67,12 +67,15 @@ if SERVER then
 
 	wac.hook("Think", "wac_aircraft_mouseinput", function()
 		for _, p in pairs(player.GetAll()) do
-			local v = p:GetVehicle()
-			if IsValid(v) then
-				local e = v:GetNWEntity("wac_aircraft")
+			local seat = p:GetVehicle()
+			if IsValid(seat) then
+				local e = seat:GetNWEntity("wac_aircraft")
 				if IsValid(e) and p.wac.mouseInput and p:GetInfo("wac_cl_air_mouse") == "1" then
 					local m = tonumber(p:GetInfo("wac_cl_air_sensitivity") or "1")/1.5
 					local v = e:WorldToLocal(e:GetPos() + p:GetAimVector())
+                    if (p.LocalEyeAngles) then
+                        v = e:WorldToLocal(e:GetPos() + p:EyeAngles():Forward())
+                    end
 					local pid = p:GetNWInt("wac_passenger_id")
 					e:receiveInput(
 						"Pitch",
