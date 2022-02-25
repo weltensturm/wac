@@ -559,6 +559,7 @@ function ENT:Draw()
 	if self.engineRpm > 0.2 and self.SmokePos then
 		if !self.lastHeatDrawn or self.lastHeatDrawn < CurTime()-0.1 then
 			if type(self.SmokePos) == "table" then
+				if !self.Emitter or !self.Emitter:IsValid() then return end	-- sometimes it isnt valid for some reason
 				for _, v in self.SmokePos do
 					local particle = self.Emitter:Add("sprites/heatwave",self:LocalToWorld(v))
 					particle:SetVelocity(self:GetVelocity()+self:GetForward()*-100)
